@@ -11,10 +11,10 @@ namespace Main
     internal static class UserData
     {
         private const string GroupID = "6O5NH5SPYHBT";
-        static public List<Dictionary<string, string>?> Content { get; set; }
+        static public List<Dictionary<string, string>?> Content { get; private set; }
         static public List<DateTime> ContentDates { get; private set; } = new List<DateTime>();
         static public int SubjectCount { get; private set; }
-        static public DateTime Date { get; set; }
+        static public DateTime Date { get; private set; }
 
         static public async Task Initialize()
         {

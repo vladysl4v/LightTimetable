@@ -27,6 +27,10 @@
         <Button x:Name="btnNavPrev" Grid.Column="3" Content="←" HorizontalAlignment="Center" VerticalAlignment="Center" Height="26" Width="25" Click="btnNavPrev_Click"/>
         <!-- BACK TO TODAY NAVIGATION BUTTON -->
         <Button x:Name="btnNavHome" Content="⌂" HorizontalAlignment="Center" VerticalAlignment="Center" Height="26" Width="26" Click="btnNavHome_Click"/>
+        <!-- CURRENT DATE LABEL -->
+        <Label x:Name="lblCurrDate" Grid.Column="1" Content="DD.MM.YYYY" HorizontalAlignment="Center" VerticalAlignment="Center" Width="96" HorizontalContentAlignment="Center" Height="26"/>
+        <!-- CURRENT DAY OF WEEK LABEL -->
+        <Label x:Name="lblDayOfWeek" Grid.Column="2" Content="" HorizontalAlignment="Left" VerticalAlignment="Center" Width="196" HorizontalContentAlignment="Center"/>
         <!-- TIMETABLE -->
         <DataGrid x:Name="tableSchedule" Margin="0,1,0,0" ItemsSource="{Binding ListLessons}" GridLinesVisibility ="None" Grid.ColumnSpan="6" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Disabled" CanUserReorderColumns="False" CanUserResizeColumns="False" CanUserSortColumns="False" SelectionMode="Single" SelectionUnit="Cell" CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeRows="False" IsReadOnly="True" Grid.Row="1" HeadersVisibility="Column" AutoGenerateColumns="False" IsHitTestVisible="False">
             <DataGrid.Columns>
@@ -36,7 +40,5 @@
                 <DataGridTextColumn Header="Кабiнет"    Binding="{Binding Cabinet}" Width="52"></DataGridTextColumn>
             </DataGrid.Columns>
         </DataGrid>
-        <!-- CURRENT DATE LABEL -->
-        <Label x:Name="lblCurrDate" Grid.Column="1" Content="DD.MM.YYYY" HorizontalAlignment="Center" VerticalAlignment="Center" Width="96" HorizontalContentAlignment="Center" Height="26"/>
     </Grid>
 </Window>
