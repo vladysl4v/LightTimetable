@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Main"
         mc:Ignorable="d"
-        Title="Timetable" Height="120" Width="400" ResizeMode="NoResize" WindowStyle="None">
+        Title="Timetable" Height="120" Width="400" ResizeMode="NoResize" WindowStyle="None" Topmost="True" ShowInTaskbar="False">
     <Grid ScrollViewer.VerticalScrollBarVisibility="Disabled">
         <Grid.RowDefinitions>
             <RowDefinition Height="26"/>

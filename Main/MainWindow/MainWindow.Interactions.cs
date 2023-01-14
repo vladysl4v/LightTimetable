@@ -10,7 +10,7 @@ namespace Main
     {
         private void btnNavClose_Click(object sender, RoutedEventArgs e)
         {
-            Close();
+            WindowState = WindowState.Minimized;
         }
 
         private void btnNavNext_Click(object sender, RoutedEventArgs e)

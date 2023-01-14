@@ -15,10 +15,10 @@ namespace Main
             InitializeComponent();
             FillTimetable();
             SetLblCurrDate();
-            // Temporary positioning
+            InitializeTray();
+            // Positioning
+            this.SizeChanged += OnWindowSizeChanged;
             this.Left = SystemParameters.FullPrimaryScreenWidth - Width;
-            this.Top = SystemParameters.FullPrimaryScreenHeight - 90;
-            
         }
 
         private void SetLblCurrDate()
@@ -41,13 +41,13 @@ namespace Main
             string localized = string.Empty;
             switch (UserData.Date.DayOfWeek)
             {
-                case DayOfWeek.Monday: localized = "понедiлок"; break;
-                case DayOfWeek.Tuesday: localized = "вiвторок"; break;
-                case DayOfWeek.Wednesday: localized = "середу"; break;
-                case DayOfWeek.Thursday: localized = "четвер"; break;
-                case DayOfWeek.Friday: localized = "п'ятницю"; break;
-                case DayOfWeek.Saturday: localized = "суботу"; break;
-                case DayOfWeek.Sunday: localized = "недiлю"; break;
+                case DayOfWeek.Monday:     localized = "понедiлок"; break;
+                case DayOfWeek.Tuesday:    localized = "вiвторок"; break;
+                case DayOfWeek.Wednesday:  localized = "середу"; break;
+                case DayOfWeek.Thursday:   localized = "четвер"; break;
+                case DayOfWeek.Friday:     localized = "п'ятницю"; break;
+                case DayOfWeek.Saturday:   localized = "суботу"; break;
+                case DayOfWeek.Sunday:     localized = "недiлю"; break;
             }
             lblDayOfWeek.Content = "Розклад на " + localized;
         }
@@ -57,6 +57,11 @@ namespace Main
             UserData.SetSubjectCount();
             SetLblCurrDate();
             FillTimetable();
+        }
+
+        protected void OnWindowSizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            this.Top = SystemParameters.WorkArea.Height - e.NewSize.Height;
         }
     }
 }
