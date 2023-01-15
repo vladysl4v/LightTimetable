@@ -5,43 +5,55 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Main"
         mc:Ignorable="d"
-        Title="Timetable" Height="120" Width="400" ResizeMode="NoResize" WindowStyle="None" Topmost="True" ShowInTaskbar="False">
-    <Grid ScrollViewer.VerticalScrollBarVisibility="Disabled">
+        Title="Timetable" Height="90" Width="400" ResizeMode="NoResize" WindowStyle="None" Topmost="True" ShowInTaskbar="False">
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="25"/>
-            <RowDefinition Height="12"/>
             <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="25"/>
-            <ColumnDefinition Width="75"/>
-            <ColumnDefinition Width="225*"/>
+            <ColumnDefinition Width="85"/>
+            <ColumnDefinition Width="1*"/>
             <ColumnDefinition Width="25"/>
             <ColumnDefinition Width="25"/>
             <ColumnDefinition Width="25"/>
         </Grid.ColumnDefinitions>
-        <!-- CLOSE NAVIGATION BUTTON -->
-        <Button x:Name="btnNavClose" Grid.Column="5" Content="X" HorizontalAlignment="Center" Height="25" Width="25" VerticalAlignment="Center" VerticalContentAlignment="Center" Click="btnNavClose_Click"/>
-        <!-- GO NEXT NAVIGATION BUTTON -->
-        <Button x:Name="btnNavNext" Grid.Column="4" Content="→" HorizontalAlignment="Center" VerticalAlignment="Center" Height="25" Width="25" Click="btnNavNext_Click"/>
-        <!-- GO BACK NAVIGATION BUTTON -->
-        <Button x:Name="btnNavPrev" Grid.Column="3" Content="←" HorizontalAlignment="Center" VerticalAlignment="Center" Height="25" Width="25" Click="btnNavPrev_Click"/>
-        <!-- BACK TO TODAY NAVIGATION BUTTON -->
-        <Button x:Name="btnNavHome" Content="⌂" HorizontalAlignment="Center" VerticalAlignment="Center" Height="25" Width="25" Click="btnNavHome_Click"/>
-        <!-- CURRENT DATE LABEL -->
-        <Label x:Name="lblCurrDate" Grid.Column="1" Content="DD.MM.YYYY" HorizontalAlignment="Center" VerticalAlignment="Center" Width="96" HorizontalContentAlignment="Center" Height="26"/>
         <!-- CURRENT DAY OF WEEK LABEL -->
-        <Label x:Name="lblDayOfWeek" Grid.Column="2" Content="" HorizontalAlignment="Left" VerticalAlignment="Center" Width="196" HorizontalContentAlignment="Center" Height="25"/>
+        <Label x:Name="lblDayOfWeek" HorizontalContentAlignment="Center" Grid.ColumnSpan="6"/>
+        <!-- CLOSE NAVIGATION BUTTON -->
+        <Button x:Name="btnNavClose" Grid.Column="5" Content="✕" Click="btnNavClose_Click"/>
+        <!-- GO NEXT NAVIGATION BUTTON -->
+        <Button x:Name="btnNavNext" Grid.Column="4" Content="→" Click="btnNavNext_Click"/>
+        <!-- GO BACK NAVIGATION BUTTON -->
+        <Button x:Name="btnNavPrev" Grid.Column="3" Content="←" Click="btnNavPrev_Click"/>
+        <!-- CURRENT DATE LABEL -->
+        <Label x:Name="lblCurrDate" Grid.Column="1"/>
+        <!-- BACK TO TODAY NAVIGATION BUTTON -->
+        <Button x:Name="btnNavHome" Grid.Column="0" Content="⌂" Click="btnNavHome_Click"/>
         <!-- TIMETABLE -->
-        <DataGrid x:Name="tableSchedule" ItemsSource="{Binding ListLessons}" GridLinesVisibility ="None" Grid.ColumnSpan="6" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Disabled" CanUserReorderColumns="False" CanUserResizeColumns="False" CanUserSortColumns="False" SelectionMode="Single" SelectionUnit="Cell" CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeRows="False" IsReadOnly="True" Grid.Row="1" HeadersVisibility="Column" AutoGenerateColumns="False" IsHitTestVisible="False" RowHeight="20" Grid.RowSpan="2">
+        <DataGrid x:Name="tableSchedule" 
+                  ItemsSource="{Binding ListLessons}" 
+                  IsHitTestVisible="False"
+                  RowHeight="20" 
+                  GridLinesVisibility ="None" 
+                  Grid.ColumnSpan="6"
+                  Grid.Row="1" 
+                  VerticalScrollBarVisibility="Disabled" 
+                  HorizontalScrollBarVisibility="Disabled" 
+                  SelectionMode="Single" 
+                  SelectionUnit="FullRow" 
+                  HeadersVisibility="Column" 
+                  AutoGenerateColumns="False">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Час"        Binding="{Binding Study_time}" Width="70"></DataGridTextColumn>
-                <DataGridTextColumn Header="Дисциплiна" Binding="{Binding Discipline}" Width="200"></DataGridTextColumn>
-                <DataGridTextColumn Header="Тип"        Binding="{Binding Study_type}" Width="78"></DataGridTextColumn>
-                <DataGridTextColumn Header="Кабiнет"    Binding="{Binding Cabinet}" Width="52"></DataGridTextColumn>
-                <DataGridTextColumn Header="Викладач"    Binding="{Binding Employee}" Width="100"></DataGridTextColumn>
+                <DataGridTextColumn Header="Час"        Binding="{Binding Study_time}" Width="70"/>
+                <DataGridTextColumn Header="Дисциплiна" Binding="{Binding Discipline}" Width="200"/>
+                <DataGridTextColumn Header="Тип"        Binding="{Binding Study_type}" Width="78"/>
+                <DataGridTextColumn Header="Кабiнет"    Binding="{Binding Cabinet}"    Width="52"/>
+                <DataGridTextColumn Header="Викладач"   Binding="{Binding Employee}"   Width="100"/>
             </DataGrid.Columns>
         </DataGrid>
-        <Button x:Name="btnShowTeachersColumn"  Content="{StaticResource ExpandIcon}" Grid.Column="5" Grid.Row="1" BorderBrush="{x:Null}" Background="{x:Null}" Margin="9,0,0,0" Click="btnShowTeachersColumn_Click"/>
+        <!-- SHOW EMPLOYEE COLUMN BUTTON -->
+        <Button x:Name="btnShowTeachersColumn" Content="{StaticResource ExpandIcon}" Grid.Column="5" Grid.Row="1" VerticalAlignment="Top" BorderBrush="{x:Null}" Background="{x:Null}" Margin="9,0,0,0" Click="btnShowTeachersColumn_Click"/>
     </Grid>
 </Window>

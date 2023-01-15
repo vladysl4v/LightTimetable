@@ -11,14 +11,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="expand.png" />
-    <None Remove="Resources\expand.png" />
-    <None Remove="Resources\ExpandIcon.ico" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Resource Include="Resources\ExpandIcon.ico" />
-    <Resource Include="Resources\Expand.png" />
   </ItemGroup>
 
   <ItemGroup>
