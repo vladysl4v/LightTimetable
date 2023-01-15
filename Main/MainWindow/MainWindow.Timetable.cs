@@ -4,18 +4,14 @@ using System.Collections.ObjectModel;
 
 namespace Main
 {
-    /// <summary>
     /// Timetable logic in MainWindow
-    /// </summary>
     public partial class MainWindow : Window
     {
         public ObservableCollection<Lesson> ListLessons { get; set; } = new ObservableCollection<Lesson>();
 
         private void FillTimetable()
         {
-            ListLessons.Clear();
-            // Window height depending on the number of lessons / their miss
-            Height = UserData.SubjectCount > 0 ? (50 + 20 * UserData.SubjectCount) : 90;
+            ListLessons.Clear();       
             foreach (var lesson in UserData.Content.Where(lesson => lesson["full_date"] == UserData.Date.ToShortDateString()))
             {
                 ListLessons.Add(
@@ -24,10 +20,24 @@ namespace Main
                         Study_time = lesson["study_time"],
                         Discipline = lesson["discipline"],
                         Study_type = lesson["study_type"],
-                        Cabinet = lesson["cabinet"]
+                        Cabinet = lesson["cabinet"],
+                        Employee = EmployeeShortener(lesson["employee"])
                     });
             }
             DataContext = this;
+            UserData.LessonsCount = ListLessons.Count;
+            // Window height depending on the number of lessons / their miss     
+            Height = UserData.LessonsCount > 0 ? (50 + 20 * UserData.LessonsCount) : 90;
+        }
+
+        private string EmployeeShortener(string employee)
+        {
+            if (employee != default)
+            {
+                string[] EmplSplitted = employee.Split();
+                return $"{EmplSplitted[0]} {EmplSplitted[1][0]}.{EmplSplitted[2][0]}.";
+            }
+            return "";
         }
     }
 

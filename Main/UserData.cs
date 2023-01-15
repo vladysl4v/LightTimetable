@@ -8,12 +8,15 @@ using System.Collections.Generic;
 
 namespace Main
 {
+    /// <summary>
+    /// User information keeper
+    /// </summary>
     internal static class UserData
     {
         private const string GroupID = "6O5NH5SPYHBT";
         static public List<Dictionary<string, string>?> Content { get; private set; }
         static public List<DateTime> ContentDates { get; private set; } = new List<DateTime>();
-        static public int SubjectCount { get; private set; }
+        static public int LessonsCount { get; set; }
         static public DateTime Date { get; private set; }
 
         static public async Task Initialize()
@@ -21,12 +24,6 @@ namespace Main
             await CollectContent();
             SetContentDates();
             InitDate();
-            SetSubjectCount();
-        }
-
-        static public void SetSubjectCount()
-        {
-            SubjectCount = (from lesson in Content where lesson["full_date"] == Date.ToShortDateString() select lesson).Count();
         }
 
         static private void SetContentDates()
@@ -43,6 +40,10 @@ namespace Main
                 curr_date = curr_date.AddDays(1);
 
             Date = (from date in ContentDates where date >= curr_date select date).First();
+            if (Date == default)
+            {
+                Date = ContentDates.Last();
+            }
         }
 
         static public void ChangeDate(int amount)

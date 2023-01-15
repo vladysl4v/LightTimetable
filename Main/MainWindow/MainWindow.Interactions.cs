@@ -3,9 +3,7 @@
 
 namespace Main
 {
-    /// <summary>
-    /// Interactions with widgets in MainWindow
-    /// </summary>
+    /// Interactions with widgets in MainWindow 
     public partial class MainWindow : Window
     {
         private void btnNavClose_Click(object sender, RoutedEventArgs e)
@@ -29,6 +27,10 @@ namespace Main
         {
             UserData.InitDate();
             RenderWidgets();
+        }
+        private void btnShowTeachersColumn_Click(object sender, RoutedEventArgs e)
+        {
+            this.Width = (Width == 400) ? 500 : 400;
         }
     }
 }

@@ -8,37 +8,40 @@
         Title="Timetable" Height="120" Width="400" ResizeMode="NoResize" WindowStyle="None" Topmost="True" ShowInTaskbar="False">
     <Grid ScrollViewer.VerticalScrollBarVisibility="Disabled">
         <Grid.RowDefinitions>
-            <RowDefinition Height="26"/>
-            <RowDefinition/>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="12"/>
+            <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="26"/>
+            <ColumnDefinition Width="25"/>
             <ColumnDefinition Width="75"/>
-            <ColumnDefinition Width="224"/>
+            <ColumnDefinition Width="225*"/>
             <ColumnDefinition Width="25"/>
             <ColumnDefinition Width="25"/>
             <ColumnDefinition Width="25"/>
         </Grid.ColumnDefinitions>
         <!-- CLOSE NAVIGATION BUTTON -->
-        <Button x:Name="btnNavClose" Grid.Column="5" Content="X" HorizontalAlignment="Center" Height="26" Width="25" VerticalAlignment="Center" VerticalContentAlignment="Center" Click="btnNavClose_Click"/>
+        <Button x:Name="btnNavClose" Grid.Column="5" Content="X" HorizontalAlignment="Center" Height="25" Width="25" VerticalAlignment="Center" VerticalContentAlignment="Center" Click="btnNavClose_Click"/>
         <!-- GO NEXT NAVIGATION BUTTON -->
-        <Button x:Name="btnNavNext" Grid.Column="4" Content="→" HorizontalAlignment="Center" VerticalAlignment="Center" Height="26" Width="25" Click="btnNavNext_Click"/>
+        <Button x:Name="btnNavNext" Grid.Column="4" Content="→" HorizontalAlignment="Center" VerticalAlignment="Center" Height="25" Width="25" Click="btnNavNext_Click"/>
         <!-- GO BACK NAVIGATION BUTTON -->
-        <Button x:Name="btnNavPrev" Grid.Column="3" Content="←" HorizontalAlignment="Center" VerticalAlignment="Center" Height="26" Width="25" Click="btnNavPrev_Click"/>
+        <Button x:Name="btnNavPrev" Grid.Column="3" Content="←" HorizontalAlignment="Center" VerticalAlignment="Center" Height="25" Width="25" Click="btnNavPrev_Click"/>
         <!-- BACK TO TODAY NAVIGATION BUTTON -->
-        <Button x:Name="btnNavHome" Content="⌂" HorizontalAlignment="Center" VerticalAlignment="Center" Height="26" Width="26" Click="btnNavHome_Click"/>
+        <Button x:Name="btnNavHome" Content="⌂" HorizontalAlignment="Center" VerticalAlignment="Center" Height="25" Width="25" Click="btnNavHome_Click"/>
         <!-- CURRENT DATE LABEL -->
         <Label x:Name="lblCurrDate" Grid.Column="1" Content="DD.MM.YYYY" HorizontalAlignment="Center" VerticalAlignment="Center" Width="96" HorizontalContentAlignment="Center" Height="26"/>
         <!-- CURRENT DAY OF WEEK LABEL -->
-        <Label x:Name="lblDayOfWeek" Grid.Column="2" Content="" HorizontalAlignment="Left" VerticalAlignment="Center" Width="196" HorizontalContentAlignment="Center"/>
+        <Label x:Name="lblDayOfWeek" Grid.Column="2" Content="" HorizontalAlignment="Left" VerticalAlignment="Center" Width="196" HorizontalContentAlignment="Center" Height="25"/>
         <!-- TIMETABLE -->
-        <DataGrid x:Name="tableSchedule" Margin="0,1,0,0" ItemsSource="{Binding ListLessons}" GridLinesVisibility ="None" Grid.ColumnSpan="6" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Disabled" CanUserReorderColumns="False" CanUserResizeColumns="False" CanUserSortColumns="False" SelectionMode="Single" SelectionUnit="Cell" CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeRows="False" IsReadOnly="True" Grid.Row="1" HeadersVisibility="Column" AutoGenerateColumns="False" IsHitTestVisible="False">
+        <DataGrid x:Name="tableSchedule" ItemsSource="{Binding ListLessons}" GridLinesVisibility ="None" Grid.ColumnSpan="6" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Disabled" CanUserReorderColumns="False" CanUserResizeColumns="False" CanUserSortColumns="False" SelectionMode="Single" SelectionUnit="Cell" CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeRows="False" IsReadOnly="True" Grid.Row="1" HeadersVisibility="Column" AutoGenerateColumns="False" IsHitTestVisible="False" RowHeight="20" Grid.RowSpan="2">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Час"        Binding="{Binding Study_time}" Width="70"></DataGridTextColumn>
                 <DataGridTextColumn Header="Дисциплiна" Binding="{Binding Discipline}" Width="200"></DataGridTextColumn>
                 <DataGridTextColumn Header="Тип"        Binding="{Binding Study_type}" Width="78"></DataGridTextColumn>
                 <DataGridTextColumn Header="Кабiнет"    Binding="{Binding Cabinet}" Width="52"></DataGridTextColumn>
+                <DataGridTextColumn Header="Викладач"    Binding="{Binding Employee}" Width="100"></DataGridTextColumn>
             </DataGrid.Columns>
         </DataGrid>
+        <Button x:Name="btnShowTeachersColumn"  Content="{StaticResource ExpandIcon}" Grid.Column="5" Grid.Row="1" BorderBrush="{x:Null}" Background="{x:Null}" Margin="9,0,0,0" Click="btnShowTeachersColumn_Click"/>
     </Grid>
 </Window>

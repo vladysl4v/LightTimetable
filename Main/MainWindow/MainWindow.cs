@@ -5,7 +5,7 @@ using System.Windows.Media;
 namespace Main
 {
     /// <summary>
-    /// Main logic for MainWindow
+    /// Central logic for MainWindow
     /// </summary>
 
     public partial class MainWindow : Window
@@ -13,12 +13,10 @@ namespace Main
         public MainWindow()
         {
             InitializeComponent();
-            FillTimetable();
-            SetLblCurrDate();
+            RenderWidgets();
             InitializeTray();
             // Positioning
             this.SizeChanged += OnWindowSizeChanged;
-            this.Left = SystemParameters.FullPrimaryScreenWidth - Width;
         }
 
         private void SetLblCurrDate()
@@ -54,7 +52,6 @@ namespace Main
 
         private void RenderWidgets()
         {
-            UserData.SetSubjectCount();
             SetLblCurrDate();
             FillTimetable();
         }
@@ -62,6 +59,7 @@ namespace Main
         protected void OnWindowSizeChanged(object sender, SizeChangedEventArgs e)
         {
             this.Top = SystemParameters.WorkArea.Height - e.NewSize.Height;
+            this.Left = SystemParameters.FullPrimaryScreenWidth - e.NewSize.Width;
         }
     }
 }

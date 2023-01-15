@@ -4,6 +4,6 @@
              xmlns:local="clr-namespace:Main"
              Startup="Application_Startup">
     <Application.Resources>
-        
+        <Image Width="8" Height="8" x:Key="ExpandIcon" Source="Resources/ExpandIcon.ico"/>
     </Application.Resources>
 </Application>
