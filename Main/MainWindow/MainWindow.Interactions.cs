@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using DatePicker;
+
+using System.Windows;
 
 
 namespace Main
@@ -28,6 +30,19 @@ namespace Main
             UserData.InitDate();
             RenderWidgets();
         }
+
+        private void lblCurrDate_Click(object sender, RoutedEventArgs e)
+        {
+            // datepickerWindow is defined on first use because the mainWindow must be shown to be defined as owner to datepickerWindow (Crutch?)
+            if (datepickerWindow == null)
+                datepickerWindow = new DatePickerWindow(this);
+
+            if (datepickerWindow.isVisible == true)
+                datepickerWindow.Hide();
+            else
+                datepickerWindow.Show();
+        }
+
         private void btnShowTeachersColumn_Click(object sender, RoutedEventArgs e)
         {
             this.Width = (Width == 400) ? 500 : 400;

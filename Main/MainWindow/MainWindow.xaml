@@ -28,7 +28,7 @@
         <!-- GO BACK NAVIGATION BUTTON -->
         <Button x:Name="btnNavPrev" Grid.Column="3" Content="←" Click="btnNavPrev_Click"/>
         <!-- CURRENT DATE LABEL -->
-        <Label x:Name="lblCurrDate" Grid.Column="1"/>
+        <Label x:Name="lblCurrDate" Grid.Column="1" MouseLeftButtonUp="lblCurrDate_Click"/>
         <!-- BACK TO TODAY NAVIGATION BUTTON -->
         <Button x:Name="btnNavHome" Grid.Column="0" Content="⌂" Click="btnNavHome_Click"/>
         <!-- TIMETABLE -->

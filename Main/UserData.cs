@@ -17,7 +17,7 @@ namespace Main
         static public List<Dictionary<string, string>?> Content { get; private set; }
         static public List<DateTime> ContentDates { get; private set; } = new List<DateTime>();
         static public int LessonsCount { get; set; }
-        static public DateTime Date { get; private set; }
+        static public DateTime Date { get; set; }
 
         static public async Task Initialize()
         {
@@ -35,12 +35,19 @@ namespace Main
 
         static public void InitDate()
         {
+            if (ContentDates.Count == 0)
+            {
+                Date = DateTime.Now;
+                return;
+            }
             var curr_date = DateTime.Today;
             if (DateTime.Now.Hour > 18)
                 curr_date = curr_date.AddDays(1);
-
-            Date = (from date in ContentDates where date >= curr_date select date).First();
-            if (Date == default)
+            try
+            {
+                Date = (from date in ContentDates where date >= curr_date select date).First();
+            }
+            catch (System.InvalidOperationException)
             {
                 Date = ContentDates.Last();
             }

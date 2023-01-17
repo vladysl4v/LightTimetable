@@ -1,4 +1,6 @@
-﻿using System;
+﻿using DatePicker;
+
+using System;
 using System.Windows;
 using System.Windows.Media;
 
@@ -10,6 +12,7 @@ namespace Main
 
     public partial class MainWindow : Window
     {
+        private DatePickerWindow? datepickerWindow = null;
         public MainWindow()
         {
             InitializeComponent();
@@ -50,7 +53,7 @@ namespace Main
             lblDayOfWeek.Content = "Розклад на " + localized;
         }
 
-        private void RenderWidgets()
+        public void RenderWidgets()
         {
             SetLblCurrDate();
             FillTimetable();
@@ -60,6 +63,9 @@ namespace Main
         {
             this.Top = SystemParameters.WorkArea.Height - e.NewSize.Height;
             this.Left = SystemParameters.FullPrimaryScreenWidth - e.NewSize.Width;
+
+            if (datepickerWindow != null)
+                datepickerWindow.ClarifyPosition();
         }
     }
 }

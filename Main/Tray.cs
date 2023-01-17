@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Drawing;
-using System.Reflection;
 using System.Windows;
 using System.Windows.Forms;
-using System.Windows.Media;
 
 namespace Main
 {
