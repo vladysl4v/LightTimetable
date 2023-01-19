@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Main"
         mc:Ignorable="d"
         Title="Timetable" Height="90" Width="400" ResizeMode="NoResize" WindowStyle="None" Topmost="True" ShowInTaskbar="False">
-    <Grid>
+    <Grid Name="gridMain">
         <Grid.RowDefinitions>
             <RowDefinition Height="25"/>
             <RowDefinition Height="1*"/>
@@ -14,19 +14,21 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="25"/>
             <ColumnDefinition Width="85"/>
-            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="139"/>
+            <ColumnDefinition Width="23"/>
+            <ColumnDefinition/>
             <ColumnDefinition Width="25"/>
             <ColumnDefinition Width="25"/>
             <ColumnDefinition Width="25"/>
         </Grid.ColumnDefinitions>
         <!-- CURRENT DAY OF WEEK LABEL -->
-        <Label x:Name="lblDayOfWeek" HorizontalContentAlignment="Center" Grid.ColumnSpan="6"/>
+        <Label x:Name="lblDayOfWeek" HorizontalContentAlignment="Center" Grid.ColumnSpan="8"/>
         <!-- CLOSE NAVIGATION BUTTON -->
-        <Button x:Name="btnNavClose" Grid.Column="5" Content="✕" Click="btnNavClose_Click"/>
+        <Button x:Name="btnNavClose" Grid.Column="7" Content="✕" Click="btnNavClose_Click"/>
         <!-- GO NEXT NAVIGATION BUTTON -->
-        <Button x:Name="btnNavNext" Grid.Column="4" Content="→" Click="btnNavNext_Click"/>
+        <Button x:Name="btnNavNext" Grid.Column="6" Content="→" Click="btnNavNext_Click"/>
         <!-- GO BACK NAVIGATION BUTTON -->
-        <Button x:Name="btnNavPrev" Grid.Column="3" Content="←" Click="btnNavPrev_Click"/>
+        <Button x:Name="btnNavPrev" Grid.Column="5" Content="←" Click="btnNavPrev_Click"/>
         <!-- CURRENT DATE LABEL -->
         <Label x:Name="lblCurrDate" Grid.Column="1" MouseLeftButtonUp="lblCurrDate_Click"/>
         <!-- BACK TO TODAY NAVIGATION BUTTON -->
@@ -37,7 +39,7 @@
                   IsHitTestVisible="False"
                   RowHeight="20" 
                   GridLinesVisibility ="None" 
-                  Grid.ColumnSpan="6"
+                  Grid.ColumnSpan="8"
                   Grid.Row="1" 
                   VerticalScrollBarVisibility="Disabled" 
                   HorizontalScrollBarVisibility="Disabled" 
@@ -54,6 +56,6 @@
             </DataGrid.Columns>
         </DataGrid>
         <!-- SHOW EMPLOYEE COLUMN BUTTON -->
-        <Button x:Name="btnShowTeachersColumn" Content="{StaticResource ExpandIcon}" Grid.Column="5" Grid.Row="1" VerticalAlignment="Top" BorderBrush="{x:Null}" Background="{x:Null}" Margin="9,0,0,0" Click="btnShowTeachersColumn_Click"/>
+        <Button x:Name="btnShowTeachersColumn" Content="{StaticResource ExpandIcon}" Grid.Column="7" Grid.Row="1" VerticalAlignment="Top" BorderBrush="{x:Null}" Background="{x:Null}" Margin="9,0,0,0" Click="btnShowTeachersColumn_Click" Height="12"/>
     </Grid>
 </Window>

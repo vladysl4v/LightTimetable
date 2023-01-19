@@ -5,5 +5,6 @@
              Startup="Application_Startup">
     <Application.Resources>
         <Image Width="8" Height="8" x:Key="ExpandIcon" Source="Resources/ExpandIcon.ico"/>
+        <Image Width="12" Height="12" x:Key="SubgroupIcon" Source="Resources/SubgroupIcon.ico" x:Shared="False"/>
     </Application.Resources>
 </Application>

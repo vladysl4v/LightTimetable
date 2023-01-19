@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <Resource Include="Resources\ExpandIcon.ico" />
+    <Resource Include="Resources\SubgroupIcon.ico" />
   </ItemGroup>
 
   <ItemGroup>

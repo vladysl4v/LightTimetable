@@ -1,5 +1,7 @@
 ﻿using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace Main
@@ -8,9 +10,11 @@ namespace Main
     public partial class MainWindow : Window
     {
         public ObservableCollection<Lesson> ListLessons { get; set; } = new ObservableCollection<Lesson>();
+        private List<Label> ListSubgroupTips { get; set; } = new List<Label>();
 
         private void FillTimetable()
         {
+            SubGroupTipsClear();
             ListLessons.Clear();       
             foreach (var lesson in UserData.Content.Where(lesson => lesson["full_date"] == UserData.Date.ToShortDateString()))
             {
@@ -23,6 +27,8 @@ namespace Main
                         Cabinet = lesson["cabinet"],
                         Employee = EmployeeShortener(lesson["employee"])
                     });
+                if (lesson["study_subgroup"] != null)
+                    AddSubgroupTip(lesson["study_subgroup"], ListLessons.Count);
             }
             DataContext = this;
             UserData.LessonsCount = ListLessons.Count;
@@ -39,7 +45,35 @@ namespace Main
             }
             return "";
         }
+
+        private void AddSubgroupTip(string text, int margin)
+        {
+            Label SubgroupTip = new Label
+            {
+                Content = FindResource("SubgroupIcon"),
+                Height = 25,
+                VerticalAlignment = VerticalAlignment.Top,
+                Margin = new Thickness { Top = (22 * margin)},
+                ToolTip = text,
+            };
+            Grid.SetColumn(SubgroupTip, 3);
+            Grid.SetRow(SubgroupTip, 1);
+            ToolTipService.SetInitialShowDelay(SubgroupTip, 200);
+            ListSubgroupTips.Add(SubgroupTip);
+            gridMain.Children.Add(SubgroupTip);
+        }
+
+        private void SubGroupTipsClear()
+        {
+            foreach (var tip in ListSubgroupTips)
+            {
+                gridMain.Children.Remove(tip);
+            }
+            ListSubgroupTips.Clear();
+        }
     }
+
+
 
     /// <summary>
     /// Provides data source for timetable
