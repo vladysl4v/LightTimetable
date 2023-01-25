@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace Main
+namespace Timetable
 {
     /// <summary>
     /// Interaction logic for App.xaml
@@ -10,7 +10,7 @@ namespace Main
         private async void Application_Startup(object sender, StartupEventArgs e)
         {
             await UserData.Initialize();
-            var mainWindow = new MainWindow();
+            var trayMenu = new TrayMenu();
         }
     }
 }

@@ -1,9 +1,7 @@
-﻿using DatePicker;
-
-using System.Windows;
+﻿using System.Windows;
 
 
-namespace Main
+namespace Timetable.Main
 {
     /// Interactions with widgets in MainWindow 
     public partial class MainWindow : Window
@@ -33,14 +31,10 @@ namespace Main
 
         private void lblCurrDate_Click(object sender, RoutedEventArgs e)
         {
-            // datepickerWindow is defined on first use because the mainWindow must be shown to be defined as owner to datepickerWindow (Crutch?)
-            if (datepickerWindow == null)
-                datepickerWindow = new DatePickerWindow(this);
-
-            if (datepickerWindow.isVisible == true)
-                datepickerWindow.Hide();
+            if (datepickerWindow.Value.isVisible == true)
+                datepickerWindow.Value.Hide();
             else
-                datepickerWindow.Show();
+                datepickerWindow.Value.Show();
         }
 
         private void btnShowTeachersColumn_Click(object sender, RoutedEventArgs e)

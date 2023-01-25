@@ -1,10 +1,9 @@
-﻿using Main;
-using System;
+﻿using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Automation;
 
-namespace DatePicker
+namespace Timetable.Main.DatePicker
 {
     /// <summary>
     /// Central logic for DatePickerWindow

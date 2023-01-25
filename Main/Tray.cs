@@ -1,63 +1,71 @@
-﻿using System;
+﻿using Timetable.Main;
+
+using System;
 using System.Drawing;
 using System.Windows;
 using System.Windows.Forms;
 
-namespace Main
+
+namespace Timetable
 {
     /// <summary>
     /// Interactions with tray
     /// </summary>
 
-    public partial class MainWindow : Window
+    public class TrayMenu 
     {
-        private void InitializeTray()
+        private NotifyIcon Tray { get; } = new NotifyIcon();
+        private MainWindow mainWindow { get; } = new MainWindow();
+
+
+        public TrayMenu()
         {
-            NotifyIcon Tray = new NotifyIcon();
-            Tray.Icon = new Icon(this.GetType(), "Resources.MainWindowIcon.ico");
+            Tray.Icon = new Icon("Resources/MainWindowIcon.ico");
             Tray.Text = "Розклад";
             Tray.Visible = true;
-            Tray.ContextMenuStrip = InitializeTrayMenu(Tray);
+            Tray.ContextMenuStrip = InitializeTrayMenu();
             Tray.DoubleClick += DeiconifyWindow;
         }
 
-        private ContextMenuStrip InitializeTrayMenu(NotifyIcon Tray)
+        private ContextMenuStrip InitializeTrayMenu()
         {
             ContextMenuStrip TrayContextMenu = new ContextMenuStrip();
 
             var MenuItem_Show = new ToolStripMenuItem("Показати");
             MenuItem_Show.Click += DeiconifyWindow;
-            TrayContextMenu.Items.Add(MenuItem_Show);
-
-            TrayContextMenu.Items.Add("-");
-
+            
+            var MenuItem_Refresh = new ToolStripMenuItem("Обновити");
+            MenuItem_Refresh.Click += RefreshData;
+            
             var MenuItem_Close = new ToolStripMenuItem("Закрити");
-            MenuItem_Close.Click += delegate (object? sender, EventArgs args) 
-            {
-                Tray.Visible = false; 
-                Close(); 
-            };
+            MenuItem_Close.Click += CloseApp;
+
+            TrayContextMenu.Items.Add(MenuItem_Show);
+            TrayContextMenu.Items.Add(MenuItem_Refresh);
+            TrayContextMenu.Items.Add("-");
             TrayContextMenu.Items.Add(MenuItem_Close);
 
             return TrayContextMenu;
         }
 
+        // Actions when selecting a menu item
+        private async void RefreshData(object? sender, EventArgs args)
+        {
+            await UserData.Initialize();
+            mainWindow.FillTimetable();
+            mainWindow.RenderWidgets();
+        }
+
         private void DeiconifyWindow(object? sender, EventArgs args)
         {
-            this.Show(); 
-            this.WindowState = WindowState.Normal;
+            mainWindow.Show();
+            mainWindow.WindowState = WindowState.Normal;
         }
 
-        protected override void OnStateChanged(EventArgs e)
+        private void CloseApp(object? sender, EventArgs args)
         {
-            if (WindowState == WindowState.Minimized)
-            {
-                this.Hide();
-            }
-            base.OnStateChanged(e);
+            Tray.Visible = false;
+            mainWindow.Close();
         }
-
     }
-
-
 }

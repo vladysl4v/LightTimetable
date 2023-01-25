@@ -6,7 +6,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
-namespace Main
+namespace Timetable
 {
     /// <summary>
     /// User information keeper
@@ -14,7 +14,7 @@ namespace Main
     internal static class UserData
     {
         private const string GroupID = "6O5NH5SPYHBT";
-        static public List<Dictionary<string, string>?> Content { get; private set; }
+        static public List<Dictionary<string, string>?>? Content { get; private set; } = default;
         static public List<DateTime> ContentDates { get; private set; } = new List<DateTime>();
         static public int LessonsCount { get; set; }
         static public DateTime Date { get; set; }
@@ -28,6 +28,7 @@ namespace Main
 
         static private void SetContentDates()
         {
+            ContentDates.Clear();
             var temp_dates = (from lesson in Content select lesson["full_date"]).Distinct();
             foreach (var date in temp_dates)
                 ContentDates.Add(Convert.ToDateTime(date));

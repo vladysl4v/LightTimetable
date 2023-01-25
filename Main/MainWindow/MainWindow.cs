@@ -1,10 +1,10 @@
-﻿using DatePicker;
+﻿using Timetable.Main.DatePicker;
 
 using System;
 using System.Windows;
 using System.Windows.Media;
 
-namespace Main
+namespace Timetable.Main
 {
     /// <summary>
     /// Central logic for MainWindow
@@ -12,12 +12,12 @@ namespace Main
 
     public partial class MainWindow : Window
     {
-        private DatePickerWindow? datepickerWindow = null;
+        private Lazy<DatePickerWindow> datepickerWindow;
         public MainWindow()
         {
             InitializeComponent();
+            datepickerWindow = new Lazy<DatePickerWindow>(() => new DatePickerWindow(this));
             RenderWidgets();
-            InitializeTray();
             // Positioning
             this.SizeChanged += OnWindowSizeChanged;
         }
@@ -64,8 +64,17 @@ namespace Main
             this.Top = SystemParameters.WorkArea.Height - e.NewSize.Height;
             this.Left = SystemParameters.FullPrimaryScreenWidth - e.NewSize.Width;
 
-            if (datepickerWindow != null)
-                datepickerWindow.ClarifyPosition();
+            if (datepickerWindow.IsValueCreated)
+                datepickerWindow.Value.ClarifyPosition();
+        }
+
+        protected override void OnStateChanged(EventArgs e)
+        {
+            if (WindowState == WindowState.Minimized)
+            {
+                this.Hide();
+            }
+            base.OnStateChanged(e);
         }
     }
 }

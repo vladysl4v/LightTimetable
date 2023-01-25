@@ -4,7 +4,7 @@ using System.Windows.Controls;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-namespace Main
+namespace Timetable.Main
 {
     /// Timetable logic in MainWindow
     public partial class MainWindow : Window
@@ -12,7 +12,7 @@ namespace Main
         public ObservableCollection<Lesson> ListLessons { get; set; } = new ObservableCollection<Lesson>();
         private List<Label> ListSubgroupTips { get; set; } = new List<Label>();
 
-        private void FillTimetable()
+        public void FillTimetable()
         {
             SubGroupTipsClear();
             ListLessons.Clear();       
@@ -51,9 +51,9 @@ namespace Main
             Label SubgroupTip = new Label
             {
                 Content = FindResource("SubgroupIcon"),
-                Height = 25,
+                Height = 20,
                 VerticalAlignment = VerticalAlignment.Top,
-                Margin = new Thickness { Top = (22 * margin)},
+                Margin = new Thickness { Top = 5 + (20 * margin)},
                 ToolTip = text,
             };
             Grid.SetColumn(SubgroupTip, 3);
