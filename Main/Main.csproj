@@ -8,11 +8,15 @@
     <UseWPF>true</UseWPF>
     <ApplicationIcon>Resources\MainWindowIcon.ico</ApplicationIcon>
 	<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+	<SupportedOSPlatformVersion>7.0</SupportedOSPlatformVersion>
+	<RootNamespace>Timetable</RootNamespace>
+	<AssemblyName>Timetable</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
     <Resource Include="Resources\ExpandIcon.ico" />
     <Resource Include="Resources\SubgroupIcon.ico" />
+    <Resource Include="SettingsWindow\Resources\settings.ico" />
   </ItemGroup>
 
   <ItemGroup>
@@ -22,6 +26,21 @@
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
     <PackageReference Include="System.Collections" Version="4.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
 
 </Project>

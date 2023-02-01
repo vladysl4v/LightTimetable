@@ -4,6 +4,7 @@ using System;
 using System.Drawing;
 using System.Windows;
 using System.Windows.Forms;
+using Timetable.Settings;
 
 
 namespace Timetable
@@ -12,11 +13,11 @@ namespace Timetable
     /// Interactions with tray
     /// </summary>
 
-    public class TrayMenu 
+    public class TrayMenu
     {
         private NotifyIcon Tray { get; } = new NotifyIcon();
         private MainWindow mainWindow { get; } = new MainWindow();
-
+        private SettingsWindow settingsWindow { get; set; }
 
         public TrayMenu()
         {
@@ -36,12 +37,17 @@ namespace Timetable
             
             var MenuItem_Refresh = new ToolStripMenuItem("Обновити");
             MenuItem_Refresh.Click += RefreshData;
-            
+
+            var MenuItem_Settings = new ToolStripMenuItem("Налаштування");
+            MenuItem_Settings.Click += OpenSettingsWindow;
+
             var MenuItem_Close = new ToolStripMenuItem("Закрити");
             MenuItem_Close.Click += CloseApp;
 
             TrayContextMenu.Items.Add(MenuItem_Show);
             TrayContextMenu.Items.Add(MenuItem_Refresh);
+            TrayContextMenu.Items.Add("-");
+            TrayContextMenu.Items.Add(MenuItem_Settings);
             TrayContextMenu.Items.Add("-");
             TrayContextMenu.Items.Add(MenuItem_Close);
 
@@ -49,11 +55,18 @@ namespace Timetable
         }
 
         // Actions when selecting a menu item
-        private async void RefreshData(object? sender, EventArgs args)
+        private async void RefreshData(object? sender, EventArgs? args)
         {
             await UserData.Initialize();
             mainWindow.FillTimetable();
+            mainWindow.RefreshDatePicker();
             mainWindow.RenderWidgets();
+        }
+
+        private void OpenSettingsWindow(object? sender, EventArgs args)
+        {
+            settingsWindow = new SettingsWindow(RefreshData);
+            settingsWindow.Show();
         }
 
         private void DeiconifyWindow(object? sender, EventArgs args)

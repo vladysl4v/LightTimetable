@@ -36,7 +36,10 @@ namespace Timetable.Main
             }
             SetDayOfWeek();
         }
-
+        public void RefreshDatePicker()
+        {
+            datepickerWindow.Value.RefreshDates();
+        }
         private void SetDayOfWeek()
         {
             string localized = string.Empty;
@@ -59,7 +62,7 @@ namespace Timetable.Main
             FillTimetable();
         }
 
-        protected void OnWindowSizeChanged(object sender, SizeChangedEventArgs e)
+        private void OnWindowSizeChanged(object sender, SizeChangedEventArgs e)
         {
             this.Top = SystemParameters.WorkArea.Height - e.NewSize.Height;
             this.Left = SystemParameters.FullPrimaryScreenWidth - e.NewSize.Width;

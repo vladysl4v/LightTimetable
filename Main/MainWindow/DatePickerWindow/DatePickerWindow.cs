@@ -35,6 +35,12 @@ namespace Timetable.Main.DatePicker
             this.Top = ParentWindow.Top - this.Height;
             this.Left = ParentWindow.Left;
         }
+        public void RefreshDates()
+        {
+            gridDatePicker.Children.Clear();
+            FillDatePicker();
+            ClarifyPosition();
+        }
         private void btnDate_Click(object sender, RoutedEventArgs e)
         {
             Button clicked_btn = (Button)sender;
