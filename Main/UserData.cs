@@ -11,7 +11,7 @@ namespace Timetable
     /// <summary>
     /// User information keeper
     /// </summary>
-    internal static class UserData
+    static public class UserData
     {
         static public string GroupID { get; private set; } = string.Empty;
         static public List<Dictionary<string, string>?>? Content { get; private set; } = default;

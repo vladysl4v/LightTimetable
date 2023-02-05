@@ -70,5 +70,17 @@ namespace Timetable.Properties {
                 this["StudyGroup"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("{}")]
+        public string _renameList {
+            get {
+                return ((string)(this["_renameList"]));
+            }
+            set {
+                this["_renameList"] = value;
+            }
+        }
     }
 }

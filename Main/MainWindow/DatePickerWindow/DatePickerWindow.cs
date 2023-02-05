@@ -10,13 +10,13 @@ namespace Timetable.Main.DatePicker
     /// </summary>
     public partial class DatePickerWindow : Window
     {
-        private readonly MainWindow ParentWindow;
+        private readonly MainWindow _parentWindow;
         public bool isVisible { get; private set; } = false;
         public DatePickerWindow(MainWindow mainWindow)
         {
             InitializeComponent();
             FillDatePicker();
-            ParentWindow = mainWindow;
+            _parentWindow = mainWindow;
             this.Owner = mainWindow;
             ClarifyPosition();
         }
@@ -32,8 +32,8 @@ namespace Timetable.Main.DatePicker
         }
         public void ClarifyPosition()
         {
-            this.Top = ParentWindow.Top - this.Height;
-            this.Left = ParentWindow.Left;
+            this.Top = _parentWindow.Top - this.Height;
+            this.Left = _parentWindow.Left;
         }
         public void RefreshDates()
         {
@@ -46,7 +46,7 @@ namespace Timetable.Main.DatePicker
             Button clicked_btn = (Button)sender;
             UserData.Date = Convert.ToDateTime(AutomationProperties.GetHelpText(clicked_btn));
             Hide();
-            ParentWindow.RenderWidgets();
+            _parentWindow.RenderWidgets();
         }
         private void FillDatePicker()
         {

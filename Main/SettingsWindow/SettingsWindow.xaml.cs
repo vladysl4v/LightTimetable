@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Collections.Generic;
 
 using Timetable.Settings.Pages;
+
 
 namespace Timetable.Settings
 {
@@ -12,11 +15,11 @@ namespace Timetable.Settings
 
     public partial class SettingsWindow : Window
     {
-        private readonly Action<object?, EventArgs?> RefreshTimetable;
-        object CurrentPage;
+        private readonly Action<object?, EventArgs?> _refreshTimetable;
+        private object _currentPage;
         public SettingsWindow(Action<object?, EventArgs?> refreshTimetable)
         {
-            RefreshTimetable = refreshTimetable;
+            _refreshTimetable = refreshTimetable;
             InitializeComponent();
             Timetable_Selected(this, null);
         }
@@ -24,26 +27,38 @@ namespace Timetable.Settings
         private void Timetable_Selected(object sender, RoutedEventArgs? e)
         {
             SetHeaders("Розклад", "Виберіть свою навчальну групу");
-            CurrentPage = new TimetablePage();
-            MainFrame.Content = CurrentPage;
+            _currentPage = new TimetablePage();
+            MainFrame.Content = _currentPage;
         }
-        
+        private void Renames_Selected(object sender, RoutedEventArgs? e)
+        {
+            SetHeaders("Перейменування", "Список усiх перейменувань пар");
+            _currentPage = new RenamePage();
+            MainFrame.Content = _currentPage;
+        }
+
         private void Save_Click(object sender, RoutedEventArgs e)
         {
             Button button_sender = (Button)sender;
-            if (CurrentPage is TimetablePage thisPage)
+            if (_currentPage is TimetablePage thisPage1)
             {
-                Properties.Settings.Default.Course = Convert.ToString(thisPage.comboCourses.SelectedValue);
-                Properties.Settings.Default.EducForm = Convert.ToString(thisPage.comboEducForms.SelectedValue);
-                Properties.Settings.Default.Faculty = Convert.ToString(thisPage.comboFaculties.SelectedValue);
-                Properties.Settings.Default.StudyGroup = Convert.ToString(thisPage.comboStudyGroups.SelectedValue);
+                Properties.Settings.Default.Course = Convert.ToString(thisPage1.comboCourses.SelectedValue);
+                Properties.Settings.Default.EducForm = Convert.ToString(thisPage1.comboEducForms.SelectedValue);
+                Properties.Settings.Default.Faculty = Convert.ToString(thisPage1.comboFaculties.SelectedValue);
+                Properties.Settings.Default.StudyGroup = Convert.ToString(thisPage1.comboStudyGroups.SelectedValue);
+                Properties.Settings.Default.Save();
+            }
+
+            if (_currentPage is RenamePage thisPage2)
+            {
+               Properties.Settings.Default.RenameList = new(thisPage2.RenameList.Select(pair => new KeyValuePair<string, string>(pair.Key, pair.Value)));
                 Properties.Settings.Default.Save();
             }
 
             if ((string)button_sender.Content == "ОК")
                 this.Close();
 
-            RefreshTimetable(this, null);
+            _refreshTimetable(this, null);
         }
         private void SetHeaders(string h1, string h2)
         {

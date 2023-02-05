@@ -60,7 +60,6 @@ namespace Timetable.Settings.Pages
             string newURL = $"https://vnz.osvita.net/BetaSchedule.asmx/GetStudyGroups?&aVuzID=11784&aFacultyID=\"{comboFaculties.SelectedValue}\"&aEducationForm=\"{comboEducForms.SelectedValue}\"&aCourse=\"{comboCourses.SelectedValue}\"&aGiveStudyTimes=false";
             string request = await httpClient.GetStringAsync(newURL);
             var deserialization = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, dynamic>>>(request);
-
             var CollectedOptions = deserialization["d"];
             comboStudyGroups.ItemsSource = CollectedOptions["studyGroups"];
         }

@@ -7,10 +7,11 @@ using System.Collections.ObjectModel;
 namespace Timetable.Main
 {
     /// Timetable logic in MainWindow
-    public partial class MainWindow : Window
+    public partial class MainWindow
     {
         public ObservableCollection<Lesson> ListLessons { get; set; } = new ObservableCollection<Lesson>();
-        private List<Label> ListSubgroupTips { get; set; } = new List<Label>();
+        private readonly List<Label> _listSubgroupTips = new List<Label>();
+        private string _cellBeforeEdit;
 
         public void FillTimetable()
         {
@@ -22,7 +23,7 @@ namespace Timetable.Main
                     new Lesson()
                     {
                         Study_time = lesson["study_time"],
-                        Discipline = lesson["discipline"],
+                        Discipline = DisciplineRenamer(lesson["discipline"]),
                         Study_type = lesson["study_type"],
                         Cabinet = lesson["cabinet"],
                         Employee = EmployeeShortener(lesson["employee"])
@@ -36,6 +37,17 @@ namespace Timetable.Main
             Height = UserData.LessonsCount > 0 ? (50 + 20 * UserData.LessonsCount) : 90;
         }
 
+        private string DisciplineRenamer(string discipline)
+        {
+            if (Properties.Settings.Default.RenameList.ContainsKey(discipline))
+            {
+                return Properties.Settings.Default.RenameList[discipline];
+            }
+            else
+            {
+                return discipline;
+            }
+        }
         private string EmployeeShortener(string employee)
         {
             if (employee != default)
@@ -43,7 +55,10 @@ namespace Timetable.Main
                 string[] EmplSplitted = employee.Split();
                 return $"{EmplSplitted[0]} {EmplSplitted[1][0]}.{EmplSplitted[2][0]}.";
             }
-            return "";
+            else
+            {
+                return string.Empty;
+            }
         }
 
         private void AddSubgroupTip(string text, int margin)
@@ -59,17 +74,17 @@ namespace Timetable.Main
             Grid.SetColumn(SubgroupTip, 3);
             Grid.SetRow(SubgroupTip, 1);
             ToolTipService.SetInitialShowDelay(SubgroupTip, 200);
-            ListSubgroupTips.Add(SubgroupTip);
+            _listSubgroupTips.Add(SubgroupTip);
             gridMain.Children.Add(SubgroupTip);
         }
 
         private void SubGroupTipsClear()
         {
-            foreach (var tip in ListSubgroupTips)
+            foreach (var tip in _listSubgroupTips)
             {
                 gridMain.Children.Remove(tip);
             }
-            ListSubgroupTips.Clear();
+            _listSubgroupTips.Clear();
         }
     }
 

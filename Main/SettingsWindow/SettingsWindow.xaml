@@ -19,8 +19,14 @@
         <ListBox Margin="10,10,10,0">
             <ListBoxItem Selected="Timetable_Selected">
                 <StackPanel Orientation="Horizontal">
-                    <Image Source="Resources/settings.ico" Height="32" Width="32"/>
-                    <TextBlock Margin="10,0,0,0"  VerticalAlignment="Center">Розклад</TextBlock>
+                    <Image Source="Resources/TimetableCategory.ico" Height="32" Width="32"/>
+                    <TextBlock Margin="10,0,0,0" VerticalAlignment="Center">Розклад</TextBlock>
+                </StackPanel>
+            </ListBoxItem>
+            <ListBoxItem Selected="Renames_Selected">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="Resources/RenamingCategory.ico" Height="32" Width="32"/>
+                    <TextBlock Margin="10,0,0,0" VerticalAlignment="Center">Перейменування</TextBlock>
                 </StackPanel>
             </ListBoxItem>
         </ListBox>
@@ -38,6 +44,6 @@
             </StackPanel>
         </Label>
         <!-- FRAME FOR CATEGORIES PAGES -->
-        <Frame Grid.Column="1" Name="MainFrame" NavigationUIVisibility="Hidden" Margin="0,70,0,0"/>
+        <Frame Grid.Column="1" Name="MainFrame" NavigationUIVisibility="Hidden" Margin="0,70,10,0"/>
     </Grid>
 </Window>

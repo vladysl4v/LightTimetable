@@ -3,21 +3,20 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:setts="clr-namespace:Timetable.Properties"
       xmlns:local="clr-namespace:Timetable.Settings.Pages"
       mc:Ignorable="d"
-      d:DesignHeight="340" d:DesignWidth="615" d:Background="White">
+      d:DesignHeight="340" d:DesignWidth="605" d:Background="White">
 
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="129"/>
-            <RowDefinition/>
+            <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
-        <GroupBox Header="Навчальна група" Margin="0,0,10,0"/>
+        <GroupBox Header="Навчальна група"/>
         <Label Content="Оберiть ваш факультет, форму навчання та курс, пiсля цього ви зможете вибрати вашу групу" HorizontalAlignment="Center" Margin="0,20,0,0" VerticalAlignment="Top" Width="595" Height="26"/>
-        <ComboBox Name="comboFaculties" DisplayMemberPath="Value" SelectedValuePath="Key" HorizontalAlignment="Left" SelectionChanged ="comboBox_Selected" Margin="25,0,0,0" VerticalAlignment="Center" Width="160" Height="22"/>
-        <ComboBox Name="comboEducForms" HorizontalAlignment="Left" SelectionChanged ="comboBox_Selected" Margin="190,0,0,0" VerticalAlignment="Center" Width="120" Height="22"/>
-        <ComboBox Name="comboCourses" DisplayMemberPath="Value" SelectedValuePath="Key" HorizontalAlignment="Left" SelectionChanged ="comboBox_Selected" Margin="315,0,0,0" VerticalAlignment="Center" Width="125" Height="22"/>
-        <ComboBox Name="comboStudyGroups" DisplayMemberPath="Value" SelectedValuePath="Key" HorizontalAlignment="Left" Margin="25,90,0,0" VerticalAlignment="Top" Width="285" Height="22"/>
+        <ComboBox Name="comboFaculties" HorizontalAlignment="Left" SelectionChanged ="comboBox_Selected" Margin="25,0,0,0" VerticalAlignment="Center" Width="160" Height="22" DisplayMemberPath="Value" SelectedValuePath="Key"/>
+        <ComboBox Name="comboEducForms" HorizontalAlignment="Left" SelectionChanged ="comboBox_Selected" Margin="190,0,0,0" VerticalAlignment="Center" Width="120" Height="22" DisplayMemberPath="Value" SelectedValuePath="Key"/>
+        <ComboBox Name="comboCourses"  HorizontalAlignment="Left" SelectionChanged ="comboBox_Selected" Margin="315,0,0,0" VerticalAlignment="Center" Width="125" Height="22" DisplayMemberPath="Value" SelectedValuePath="Key"/>
+        <ComboBox Name="comboStudyGroups" HorizontalAlignment="Left" Margin="25,90,0,0" VerticalAlignment="Top" Width="285" Height="22" DisplayMemberPath="Value" SelectedValuePath="Key"/>
     </Grid>
 </Page>

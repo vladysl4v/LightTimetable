@@ -4,7 +4,7 @@
 namespace Timetable.Main
 {
     /// Interactions with widgets in MainWindow 
-    public partial class MainWindow : Window
+    public partial class MainWindow
     {
         private void btnNavClose_Click(object sender, RoutedEventArgs e)
         {
@@ -31,10 +31,10 @@ namespace Timetable.Main
 
         private void lblCurrDate_Click(object sender, RoutedEventArgs e)
         {
-            if (datepickerWindow.Value.isVisible == true)
-                datepickerWindow.Value.Hide();
+            if (_datepickerWindow.Value.isVisible == true)
+                _datepickerWindow.Value.Hide();
             else
-                datepickerWindow.Value.Show();
+                _datepickerWindow.Value.Show();
         }
 
         private void btnShowTeachersColumn_Click(object sender, RoutedEventArgs e)

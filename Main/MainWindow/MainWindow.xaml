@@ -36,7 +36,7 @@
         <!-- TIMETABLE -->
         <DataGrid x:Name="tableSchedule" 
                   ItemsSource="{Binding ListLessons}" 
-                  IsHitTestVisible="False"
+                  IsHitTestVisible="True"
                   RowHeight="20" 
                   GridLinesVisibility ="None" 
                   Grid.ColumnSpan="8"
@@ -44,18 +44,39 @@
                   VerticalScrollBarVisibility="Disabled" 
                   HorizontalScrollBarVisibility="Disabled" 
                   SelectionMode="Single" 
-                  SelectionUnit="FullRow" 
+                  SelectionUnit="FullRow"
                   HeadersVisibility="Column" 
+                  ScrollViewer.CanContentScroll="False"
+                  CanUserSortColumns="False"
+                  CanUserResizeColumns="False"
+                  CanUserReorderColumns="False"
+                  CanUserAddRows="False"
+                  CanUserDeleteRows="False"
                   AutoGenerateColumns="False">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Час"        Binding="{Binding Study_time}" Width="70"/>
-                <DataGridTextColumn Header="Дисциплiна" Binding="{Binding Discipline}" Width="200"/>
-                <DataGridTextColumn Header="Тип"        Binding="{Binding Study_type}" Width="78"/>
-                <DataGridTextColumn Header="Кабiнет"    Binding="{Binding Cabinet}"    Width="52"/>
-                <DataGridTextColumn Header="Викладач"   Binding="{Binding Employee}"   Width="100"/>
+                <DataGridTextColumn Header="Час"        Binding="{Binding Study_time}" IsReadOnly="True" Width="70"/>
+                <DataGridTextColumn Header="Дисциплiна" Binding="{Binding Discipline}" IsReadOnly="False" Width="200"/>
+                <DataGridTextColumn Header="Тип"        Binding="{Binding Study_type}" IsReadOnly="True" Width="78"/>
+                <DataGridTextColumn Header="Кабiнет"    Binding="{Binding Cabinet}"    IsReadOnly="True" Width="52"/>
+                <DataGridTextColumn Header="Викладач"   Binding="{Binding Employee}"   IsReadOnly="True" Width="100"/>
             </DataGrid.Columns>
+            <!-- HIDING ITEM SELECTION -->
+            <DataGrid.Resources>
+                <Style TargetType="{x:Type DataGridRow}">
+                    <Style.Resources>
+                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent" />
+                        <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="Transparent" />
+                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
+                        <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="DimGray" /> 
+                    </Style.Resources>
+                </Style>
+                <Style TargetType="{x:Type DataGridCell}">
+                    <Setter Property="BorderThickness" Value="0"/>
+                </Style>
+            </DataGrid.Resources>
         </DataGrid>
+        
         <!-- SHOW EMPLOYEE COLUMN BUTTON -->
-        <Button x:Name="btnShowTeachersColumn" Content="{StaticResource ExpandIcon}" Grid.Column="7" Grid.Row="1" VerticalAlignment="Top" BorderBrush="{x:Null}" Background="{x:Null}" Margin="9,0,0,0" Click="btnShowTeachersColumn_Click" Height="12"/>
+        <Button x:Name="btnShowTeachersColumn" Content="{StaticResource ExpandIcon}" Grid.Column="7" Grid.Row="1" VerticalAlignment="Top" BorderBrush="{x:Null}" Background="{x:Null}" Margin="9,0,0,0" Click="btnShowTeachersColumn_Click" Height="12" />
     </Grid>
 </Window>

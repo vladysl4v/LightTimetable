@@ -12,14 +12,15 @@ namespace Timetable.Main
 
     public partial class MainWindow : Window
     {
-        private Lazy<DatePickerWindow> datepickerWindow;
+        private readonly Lazy<DatePickerWindow> _datepickerWindow;
         public MainWindow()
         {
             InitializeComponent();
-            datepickerWindow = new Lazy<DatePickerWindow>(() => new DatePickerWindow(this));
+            _datepickerWindow = new Lazy<DatePickerWindow>(() => new DatePickerWindow(this));
             RenderWidgets();
             // Positioning
             this.SizeChanged += OnWindowSizeChanged;
+            InitializeContextMenu();
         }
 
         private void SetLblCurrDate()
@@ -38,7 +39,8 @@ namespace Timetable.Main
         }
         public void RefreshDatePicker()
         {
-            datepickerWindow.Value.RefreshDates();
+            if (_datepickerWindow.IsValueCreated)
+                _datepickerWindow.Value.RefreshDates();
         }
         private void SetDayOfWeek()
         {
@@ -67,8 +69,8 @@ namespace Timetable.Main
             this.Top = SystemParameters.WorkArea.Height - e.NewSize.Height;
             this.Left = SystemParameters.FullPrimaryScreenWidth - e.NewSize.Width;
 
-            if (datepickerWindow.IsValueCreated)
-                datepickerWindow.Value.ClarifyPosition();
+            if (_datepickerWindow.IsValueCreated)
+                _datepickerWindow.Value.ClarifyPosition();
         }
 
         protected override void OnStateChanged(EventArgs e)

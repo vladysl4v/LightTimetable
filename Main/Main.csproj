@@ -16,7 +16,8 @@
   <ItemGroup>
     <Resource Include="Resources\ExpandIcon.ico" />
     <Resource Include="Resources\SubgroupIcon.ico" />
-    <Resource Include="SettingsWindow\Resources\settings.ico" />
+    <Resource Include="SettingsWindow\Resources\RenamingCategory.ico" />
+    <Resource Include="SettingsWindow\Resources\TimetableCategory.ico" />
   </ItemGroup>
 
   <ItemGroup>

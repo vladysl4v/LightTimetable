@@ -15,17 +15,17 @@ namespace Timetable
 
     public class TrayMenu
     {
-        private NotifyIcon Tray { get; } = new NotifyIcon();
-        private MainWindow mainWindow { get; } = new MainWindow();
-        private SettingsWindow settingsWindow { get; set; }
+        private readonly NotifyIcon _tray = new NotifyIcon();
+        private readonly MainWindow _mainWindow = new MainWindow();
+        private SettingsWindow _settingsWindow;
 
         public TrayMenu()
         {
-            Tray.Icon = new Icon("Resources/MainWindowIcon.ico");
-            Tray.Text = "Розклад";
-            Tray.Visible = true;
-            Tray.ContextMenuStrip = InitializeTrayMenu();
-            Tray.DoubleClick += DeiconifyWindow;
+            _tray.Icon = new Icon("Resources/MainWindowIcon.ico");
+            _tray.Text = "Розклад";
+            _tray.Visible = true;
+            _tray.ContextMenuStrip = InitializeTrayMenu();
+            _tray.DoubleClick += DeiconifyWindow;
         }
 
         private ContextMenuStrip InitializeTrayMenu()
@@ -58,27 +58,27 @@ namespace Timetable
         private async void RefreshData(object? sender, EventArgs? args)
         {
             await UserData.Initialize();
-            mainWindow.FillTimetable();
-            mainWindow.RefreshDatePicker();
-            mainWindow.RenderWidgets();
+            _mainWindow.FillTimetable();
+            _mainWindow.RefreshDatePicker();
+            _mainWindow.RenderWidgets();
         }
 
         private void OpenSettingsWindow(object? sender, EventArgs args)
         {
-            settingsWindow = new SettingsWindow(RefreshData);
-            settingsWindow.Show();
+            _settingsWindow = new SettingsWindow(RefreshData);
+            _settingsWindow.Show();
         }
 
         private void DeiconifyWindow(object? sender, EventArgs args)
         {
-            mainWindow.Show();
-            mainWindow.WindowState = WindowState.Normal;
+            _mainWindow.Show();
+            _mainWindow.WindowState = WindowState.Normal;
         }
 
         private void CloseApp(object? sender, EventArgs args)
         {
-            Tray.Visible = false;
-            mainWindow.Close();
+            _tray.Visible = false;
+            _mainWindow.Close();
         }
     }
 }
