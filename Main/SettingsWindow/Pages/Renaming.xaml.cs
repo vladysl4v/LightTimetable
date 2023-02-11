@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
+using Timetable.Utilities;
 
 namespace Timetable.Settings.Pages
 {
@@ -44,15 +45,6 @@ namespace Timetable.Settings.Pages
     /// <summary>
     /// Mutable version of KeyValuePair
     /// </summary>
-    public class MutablePair<KeyType, ValueType>
-    {
-        public KeyType Key { get; set; }
-        public ValueType Value { get; set; }
-        public MutablePair(KeyValuePair<KeyType, ValueType> keyValuePair)
-        {
-            this.Key = keyValuePair.Key;
-            this.Value = keyValuePair.Value;
-        }
-    }
+
 
 }

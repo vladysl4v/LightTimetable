@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Windows.Controls;
 
+using Timetable.Utilities;
 
 namespace Timetable.Main
 {
@@ -10,26 +11,26 @@ namespace Timetable.Main
         private void InitializeContextMenu()
         {
             ContextMenu _contextMenu = new ContextMenu();
-            tableSchedule.ContextMenu = _contextMenu;
+            MainDataGrid.ContextMenu = _contextMenu;
 
             MenuItem ItemRename = new MenuItem { Header = "Перейменувати пару" };
             ItemRename.Click += RenameLesson;
 
             _contextMenu.Items.Add(ItemRename);
 
-            tableSchedule.BeginningEdit += CellBeginningEdit;
-            tableSchedule.CellEditEnding += CellEditEnding;
+            MainDataGrid.BeginningEdit += CellBeginningEdit;
+            MainDataGrid.CellEditEnding += CellEditEnding;
         }
 
         private void RenameLesson(object s, EventArgs e)
         {
-            tableSchedule.CurrentCell = tableSchedule.SelectedCells[1];
-            tableSchedule.BeginEdit();
+            MainDataGrid.CurrentCell = MainDataGrid.SelectedCells[1];
+            MainDataGrid.BeginEdit();
         }
 
         private void CellBeginningEdit(object? s, EventArgs e)
         {
-            _cellBeforeEdit = ((Lesson)tableSchedule.SelectedItem).Discipline;
+            _cellBeforeEdit = ((Lesson)MainDataGrid.SelectedItem).Discipline;
         }
 
         private void CellEditEnding(object? s, DataGridCellEditEndingEventArgs e)

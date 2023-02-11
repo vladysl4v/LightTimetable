@@ -46,6 +46,9 @@ namespace Timetable.Settings
                 Properties.Settings.Default.EducForm = Convert.ToString(thisPage1.comboEducForms.SelectedValue);
                 Properties.Settings.Default.Faculty = Convert.ToString(thisPage1.comboFaculties.SelectedValue);
                 Properties.Settings.Default.StudyGroup = Convert.ToString(thisPage1.comboStudyGroups.SelectedValue);
+                Properties.Settings.Default.ShowDTEK = thisPage1.checkEnableShutdowns.IsChecked ?? false;
+                Properties.Settings.Default.ShowDTEKMaybe = thisPage1.checkMaybeShutdowns.IsChecked ?? true;
+                Properties.Settings.Default.DTEKGroup = Convert.ToString(((ComboBoxItem)thisPage1.comboDTEKGroup.SelectedItem).Tag);
                 Properties.Settings.Default.Save();
             }
 

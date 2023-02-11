@@ -18,9 +18,10 @@ namespace Timetable.Main
             InitializeComponent();
             _datepickerWindow = new Lazy<DatePickerWindow>(() => new DatePickerWindow(this));
             RenderWidgets();
+            InitializeContextMenu();
             // Positioning
             this.SizeChanged += OnWindowSizeChanged;
-            InitializeContextMenu();
+
         }
 
         private void SetLblCurrDate()

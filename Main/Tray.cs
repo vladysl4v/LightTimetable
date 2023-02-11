@@ -54,7 +54,7 @@ namespace Timetable
             return TrayContextMenu;
         }
 
-        // Actions when selecting a menu item
+
         private async void RefreshData(object? sender, EventArgs? args)
         {
             await UserData.Initialize();
@@ -62,6 +62,8 @@ namespace Timetable
             _mainWindow.RefreshDatePicker();
             _mainWindow.RenderWidgets();
         }
+
+        // Actions when selecting a menu item
 
         private void OpenSettingsWindow(object? sender, EventArgs args)
         {
@@ -78,6 +80,7 @@ namespace Timetable
         private void CloseApp(object? sender, EventArgs args)
         {
             _tray.Visible = false;
+            _settingsWindow?.Close();
             _mainWindow.Close();
         }
     }

@@ -39,7 +39,16 @@ namespace Timetable.Main
 
         private void btnShowTeachersColumn_Click(object sender, RoutedEventArgs e)
         {
-            this.Width = (Width == 400) ? 500 : 400;
+            if (employeeColumn.Visibility == Visibility.Hidden)
+            {
+                employeeColumn.Visibility = Visibility.Visible;
+                this.Width = 500;
+            }
+            else
+            {
+                employeeColumn.Visibility = Visibility.Hidden;
+                this.Width = 400;
+            }
         }
     }
 }

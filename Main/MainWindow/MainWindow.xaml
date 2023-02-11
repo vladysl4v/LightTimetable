@@ -4,8 +4,12 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Timetable.Main"
+        xmlns:setts="clr-namespace:Timetable.Properties"
         mc:Ignorable="d"
         Title="Timetable" Height="90" Width="400" ResizeMode="NoResize" WindowStyle="None" Topmost="True" ShowInTaskbar="False">
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+    </Window.Resources>
     <Grid Name="gridMain">
         <Grid.RowDefinitions>
             <RowDefinition Height="25"/>
@@ -14,7 +18,7 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="25"/>
             <ColumnDefinition Width="85"/>
-            <ColumnDefinition Width="144"/>
+            <ColumnDefinition Width="145"/>
             <ColumnDefinition Width="22"/>
             <ColumnDefinition/>
             <ColumnDefinition Width="25"/>
@@ -34,7 +38,7 @@
         <!-- BACK TO TODAY NAVIGATION BUTTON -->
         <Button x:Name="btnNavHome" Grid.Column="0" Content="⌂" Click="btnNavHome_Click"/>
         <!-- TIMETABLE -->
-        <DataGrid x:Name="tableSchedule" 
+        <DataGrid x:Name="MainDataGrid" 
                   ItemsSource="{Binding ListLessons}" 
                   IsHitTestVisible="True"
                   RowHeight="20" 
@@ -54,11 +58,22 @@
                   CanUserDeleteRows="False"
                   AutoGenerateColumns="False">
             <DataGrid.Columns>
+                <DataGridTemplateColumn x:Name="lightColumn" Header="⚡︎" Width="25" IsReadOnly="{Binding Source={x:Static setts:Settings.Default},Path=ShowDTEK}" Visibility="{Binding Source={x:Static setts:Settings.Default},Path=ShowDTEK, Converter={StaticResource BoolToVis}}">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Image Height="16" Width="16" Source="{Binding Electricity.Icon}" RenderOptions.BitmapScalingMode="HighQuality" ToolTipService.InitialShowDelay="200">
+                                <Image.ToolTip>
+                                    <ToolTip Content="{Binding Electricity.Text}"/>
+                                </Image.ToolTip>
+                            </Image>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
                 <DataGridTextColumn Header="Час"        Binding="{Binding Study_time}" IsReadOnly="True" Width="70"/>
-                <DataGridTextColumn Header="Дисциплiна" Binding="{Binding Discipline}" IsReadOnly="False" Width="200"/>
+                <DataGridTextColumn Header="Дисциплiна" Binding="{Binding Discipline}" IsReadOnly="False" Width="1*"/>
                 <DataGridTextColumn Header="Тип"        Binding="{Binding Study_type}" IsReadOnly="True" Width="78"/>
                 <DataGridTextColumn Header="Кабiнет"    Binding="{Binding Cabinet}"    IsReadOnly="True" Width="52"/>
-                <DataGridTextColumn Header="Викладач"   Binding="{Binding Employee}"   IsReadOnly="True" Width="100"/>
+                <DataGridTextColumn Header="Викладач"   Binding="{Binding Employee}"   IsReadOnly="True" Width="100" x:Name="employeeColumn" Visibility="Hidden"/>
             </DataGrid.Columns>
             <!-- HIDING ITEM SELECTION -->
             <DataGrid.Resources>
@@ -67,7 +82,7 @@
                         <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent" />
                         <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="Transparent" />
                         <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
-                        <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="DimGray" /> 
+                        <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="DimGray" />
                     </Style.Resources>
                 </Style>
                 <Style TargetType="{x:Type DataGridCell}">
@@ -75,8 +90,9 @@
                 </Style>
             </DataGrid.Resources>
         </DataGrid>
-        
+
         <!-- SHOW EMPLOYEE COLUMN BUTTON -->
         <Button x:Name="btnShowTeachersColumn" Content="{StaticResource ExpandIcon}" Grid.Column="7" Grid.Row="1" VerticalAlignment="Top" BorderBrush="{x:Null}" Background="{x:Null}" Margin="9,0,0,0" Click="btnShowTeachersColumn_Click" Height="12" />
     </Grid>
 </Window>
+    

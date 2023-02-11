@@ -82,5 +82,41 @@ namespace Timetable.Properties {
                 this["_renameList"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool ShowDTEKMaybe {
+            get {
+                return ((bool)(this["ShowDTEKMaybe"]));
+            }
+            set {
+                this["ShowDTEKMaybe"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool ShowDTEK {
+            get {
+                return ((bool)(this["ShowDTEK"]));
+            }
+            set {
+                this["ShowDTEK"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string DTEKGroup {
+            get {
+                return ((string)(this["DTEKGroup"]));
+            }
+            set {
+                this["DTEKGroup"] = value;
+            }
+        }
     }
 }

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace Timetable
 {
@@ -18,6 +19,7 @@ namespace Timetable
         static public List<DateTime> ContentDates { get; private set; } = new List<DateTime>();
         static public int LessonsCount { get; set; }
         static public DateTime Date { get; set; }
+        static public Dictionary<string, Dictionary<string, List<string>>> GroupedLights { get; set; } = new();
 
         static public async Task Initialize()
         {
@@ -25,6 +27,8 @@ namespace Timetable
             await CollectContent();
             SetContentDates();
             InitDate();
+            if (Properties.Settings.Default.ShowDTEK)
+                await InitDTEK();
         }
 
         static private void SetContentDates()
@@ -38,6 +42,25 @@ namespace Timetable
         static private void InitSettings()
         {
             GroupID = Properties.Settings.Default.StudyGroup;
+        }
+        
+        static private async Task InitDTEK()
+        {
+            GroupedLights.Clear();
+
+            HttpClient httpClient = new HttpClient();
+
+            string request = await httpClient.GetStringAsync("https://www.dtek-kem.com.ua/ua/shutdowns");
+            string rawInput = Regex.Match(request, "\"data\":{.*").Value[7..^1];
+
+            var LightOffGroups = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, Dictionary<string, string>>>>(rawInput);
+
+            Dictionary<string, Dictionary<string, string>> tempGroup = LightOffGroups[Properties.Settings.Default.DTEKGroup];
+
+            foreach (var group in tempGroup)
+            {
+                GroupedLights.Add(group.Key, group.Value.GroupBy(r => r.Value).ToDictionary(t => t.Key, t => t.Select(r => r.Key).ToList()));
+            }
         }
 
         static public void InitDate()
