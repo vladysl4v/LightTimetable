@@ -46,15 +46,15 @@ namespace Timetable.Settings
                 Properties.Settings.Default.EducForm = Convert.ToString(thisPage1.comboEducForms.SelectedValue);
                 Properties.Settings.Default.Faculty = Convert.ToString(thisPage1.comboFaculties.SelectedValue);
                 Properties.Settings.Default.StudyGroup = Convert.ToString(thisPage1.comboStudyGroups.SelectedValue);
-                Properties.Settings.Default.ShowDTEK = thisPage1.checkEnableShutdowns.IsChecked ?? false;
-                Properties.Settings.Default.ShowDTEKMaybe = thisPage1.checkMaybeShutdowns.IsChecked ?? true;
+                Properties.Settings.Default.ShowBlackouts = thisPage1.checkEnableBlackouts.IsChecked ?? false;
+                Properties.Settings.Default.ShowPossibleBlackouts = thisPage1.checkPossibleBlackouts.IsChecked ?? true;
                 Properties.Settings.Default.DTEKGroup = Convert.ToString(((ComboBoxItem)thisPage1.comboDTEKGroup.SelectedItem).Tag);
                 Properties.Settings.Default.Save();
             }
 
             if (_currentPage is RenamePage thisPage2)
             {
-               Properties.Settings.Default.RenameList = new(thisPage2.RenameList.Select(pair => new KeyValuePair<string, string>(pair.Key, pair.Value)));
+               Properties.Settings.Default.Renames = new(thisPage2.RenameList.Select(pair => new KeyValuePair<string, string>(pair.Key, pair.Value)));
                 Properties.Settings.Default.Save();
             }
 

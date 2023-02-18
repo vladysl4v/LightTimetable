@@ -14,13 +14,13 @@
     <Setting Name="StudyGroup" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="_renameList" Type="System.String" Scope="User">
+    <Setting Name="_renames" Type="System.String" Scope="User">
       <Value Profile="(Default)">{}</Value>
     </Setting>
-    <Setting Name="ShowDTEKMaybe" Type="System.Boolean" Scope="User">
+    <Setting Name="ShowPossibleBlackouts" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
-    <Setting Name="ShowDTEK" Type="System.Boolean" Scope="User">
+    <Setting Name="ShowBlackouts" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="DTEKGroup" Type="System.String" Scope="User">

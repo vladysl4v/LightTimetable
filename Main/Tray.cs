@@ -55,29 +55,28 @@ namespace Timetable
         }
 
 
-        private async void RefreshData(object? sender, EventArgs? args)
+        private async void RefreshData(object? s, EventArgs? e)
         {
             await UserData.Initialize();
-            _mainWindow.FillTimetable();
-            _mainWindow.RefreshDatePicker();
+            _mainWindow.FillSchedule();
             _mainWindow.RenderWidgets();
         }
 
         // Actions when selecting a menu item
 
-        private void OpenSettingsWindow(object? sender, EventArgs args)
+        private void OpenSettingsWindow(object? s, EventArgs e)
         {
             _settingsWindow = new SettingsWindow(RefreshData);
             _settingsWindow.Show();
         }
 
-        private void DeiconifyWindow(object? sender, EventArgs args)
+        private void DeiconifyWindow(object? s, EventArgs e)
         {
             _mainWindow.Show();
             _mainWindow.WindowState = WindowState.Normal;
         }
 
-        private void CloseApp(object? sender, EventArgs args)
+        private void CloseApp(object? s, EventArgs e)
         {
             _tray.Visible = false;
             _settingsWindow?.Close();

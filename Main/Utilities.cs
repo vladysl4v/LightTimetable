@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 
 namespace Timetable.Utilities
+
 {    /// <summary>
      /// Enumeration that makes it easier to understand the kind of lights shutdown
      /// </summary>
@@ -30,19 +31,6 @@ namespace Timetable.Utilities
     }
 
     /// <summary>
-    /// Provides data source for timetable
-    /// </summary>
-    public record class Lesson
-    {
-        public ElectricityStatus? Electricity { get; init; }
-        public string Study_time { get; init; } = string.Empty;
-        public string Discipline { get; init; } = string.Empty;
-        public string Study_type { get; init; } = string.Empty;
-        public string Cabinet { get; init; } = string.Empty;
-        public string Employee { get; init; } = string.Empty;
-    }
-
-    /// <summary>
     /// Class that constructs text and an icon for lights shutdown information
     /// </summary>
     public class ElectricityStatus
@@ -53,7 +41,7 @@ namespace Timetable.Utilities
         private LIGHT_TYPE _type = LIGHT_TYPE.PRESENT;
         private List<string> _maybeTimes = new List<string>();
         private List<string> _definitelyTimes = new List<string>();
-        private readonly bool _showMaybe = Properties.Settings.Default.ShowDTEKMaybe;
+        private readonly bool _showMaybe = Properties.Settings.Default.ShowPossibleBlackouts;
 
         public void Add(string hour, LIGHT_TYPE addType)
         {

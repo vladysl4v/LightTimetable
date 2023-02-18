@@ -16,7 +16,7 @@ namespace Timetable.Settings.Pages
         public ObservableCollection<MutablePair<string, string>> RenameList { get; set; }
         public RenamePage()
         {
-            RenameList = new(Properties.Settings.Default.RenameList.Select(pair => new MutablePair<string, string>(pair)));
+            RenameList = new(Properties.Settings.Default.Renames.Select(pair => new MutablePair<string, string>(pair)));
             InitializeComponent();
             DataContext = this;
         }
@@ -39,12 +39,4 @@ namespace Timetable.Settings.Pages
             RenameList.Remove(selectedItemName);
         }
     }
-
-
-
-    /// <summary>
-    /// Mutable version of KeyValuePair
-    /// </summary>
-
-
 }

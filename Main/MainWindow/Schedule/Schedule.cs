@@ -4,8 +4,6 @@ using System.Windows.Controls;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-using Timetable.Utilities;
-
 
 namespace Timetable.Main
 {
@@ -16,55 +14,20 @@ namespace Timetable.Main
         private readonly List<Label> _listSubgroupTips = new List<Label>();
         private string _cellBeforeEdit;
 
-        public void FillTimetable()
+        public void FillSchedule()
         {
             SubGroupTipsClear();
             ListLessons.Clear();
+            // Loop around the lessons whose date is today
             foreach (var lesson in UserData.Content.Where(lesson => lesson["full_date"] == UserData.Date.ToShortDateString()))
             {
-                //UserData.Date.DayOfWeek;
-                ElectricityStatus? elecInfo = (Properties.Settings.Default.ShowDTEK) ? CalculateLightInfo(lesson["study_time"]) : null;
-                ListLessons.Add(
-                    new Lesson()
-                    {
-                        Electricity = elecInfo,
-                        Study_time = lesson["study_time"],
-                        Discipline = DisciplineRenamer(lesson["discipline"]),
-                        Study_type = lesson["study_type"],
-                        Cabinet = lesson["cabinet"],
-                        Employee = EmployeeShortener(lesson["employee"])
-                    });
+                ListLessons.Add(new Lesson(lesson));
                 if (lesson["study_subgroup"] != null)
                     AddSubgroupTip(lesson["study_subgroup"], ListLessons.Count);
             }
             DataContext = this;
-            UserData.LessonsCount = ListLessons.Count;
             // Window height depending on the number of lessons / their miss     
-            Height = UserData.LessonsCount > 0 ? (50 + 20 * UserData.LessonsCount) : 90;
-        }
-
-        private string DisciplineRenamer(string discipline)
-        {
-            if (Properties.Settings.Default.RenameList.ContainsKey(discipline))
-            {
-                return Properties.Settings.Default.RenameList[discipline];
-            }
-            else
-            {
-                return discipline;
-            }
-        }
-        private string EmployeeShortener(string employee)
-        {
-            if (employee != default)
-            {
-                string[] EmplSplitted = employee.Split();
-                return $"{EmplSplitted[0]} {EmplSplitted[1][0]}.{EmplSplitted[2][0]}.";
-            }
-            else
-            {
-                return string.Empty;
-            }
+            Height = ListLessons.Count > 0 ? (50 + 20 * ListLessons.Count) : 90;
         }
 
         private void AddSubgroupTip(string text, int margin)
@@ -86,7 +49,7 @@ namespace Timetable.Main
 
         private void SubGroupTipsClear()
         {
-            foreach (var tip in _listSubgroupTips)
+            foreach (Label tip in _listSubgroupTips)
             {
                 gridMain.Children.Remove(tip);
             }

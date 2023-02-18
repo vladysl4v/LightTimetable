@@ -1,8 +1,7 @@
-﻿using Timetable.Main.DatePicker;
-
-using System;
+﻿using System;
 using System.Windows;
 using System.Windows.Media;
+
 
 namespace Timetable.Main
 {
@@ -12,38 +11,38 @@ namespace Timetable.Main
 
     public partial class MainWindow : Window
     {
-        private readonly Lazy<DatePickerWindow> _datepickerWindow;
         public MainWindow()
         {
             InitializeComponent();
-            _datepickerWindow = new Lazy<DatePickerWindow>(() => new DatePickerWindow(this));
-            RenderWidgets();
+            InitializeDatePicker();
             InitializeContextMenu();
-            // Positioning
-            this.SizeChanged += OnWindowSizeChanged;
+            RenderWidgets();
 
+            this.SizeChanged += OnWindowSizeChanged;
         }
 
-        private void SetLblCurrDate()
+        public void RenderWidgets()
         {
-            lblCurrDate.Content = UserData.Date.ToShortDateString();
+            ChangeCurrentDate();
+            FillSchedule();
+        }
+
+        private void ChangeCurrentDate()
+        {
+
+            pickerCurrentDate.Text = UserData.Date.ToShortDateString();
 
             if (UserData.Date.Date == DateTime.Now.Date)
             {
-                lblCurrDate.Foreground = Brushes.SeaGreen;
+                pickerCurrentDate.Foreground = Brushes.SeaGreen;
             }
             else
             {
-                lblCurrDate.Foreground = Brushes.Black;
+                pickerCurrentDate.Foreground = Brushes.Black;
             }
-            SetDayOfWeek();
+            ChangeDayOfWeek();
         }
-        public void RefreshDatePicker()
-        {
-            if (_datepickerWindow.IsValueCreated)
-                _datepickerWindow.Value.RefreshDates();
-        }
-        private void SetDayOfWeek()
+        private void ChangeDayOfWeek()
         {
             string localized = string.Empty;
             switch (UserData.Date.DayOfWeek)
@@ -59,19 +58,10 @@ namespace Timetable.Main
             lblDayOfWeek.Content = "Розклад на " + localized;
         }
 
-        public void RenderWidgets()
-        {
-            SetLblCurrDate();
-            FillTimetable();
-        }
-
         private void OnWindowSizeChanged(object sender, SizeChangedEventArgs e)
         {
             this.Top = SystemParameters.WorkArea.Height - e.NewSize.Height;
             this.Left = SystemParameters.FullPrimaryScreenWidth - e.NewSize.Width;
-
-            if (_datepickerWindow.IsValueCreated)
-                _datepickerWindow.Value.ClarifyPosition();
         }
 
         protected override void OnStateChanged(EventArgs e)
@@ -83,4 +73,5 @@ namespace Timetable.Main
             base.OnStateChanged(e);
         }
     }
+
 }

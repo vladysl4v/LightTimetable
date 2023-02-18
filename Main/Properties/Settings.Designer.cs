@@ -74,36 +74,36 @@ namespace Timetable.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("{}")]
-        public string _renameList {
+        public string _renames {
             get {
-                return ((string)(this["_renameList"]));
+                return ((string)(this["_renames"]));
             }
             set {
-                this["_renameList"] = value;
+                this["_renames"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool ShowDTEKMaybe {
+        public bool ShowPossibleBlackouts {
             get {
-                return ((bool)(this["ShowDTEKMaybe"]));
+                return ((bool)(this["ShowPossibleBlackouts"]));
             }
             set {
-                this["ShowDTEKMaybe"] = value;
+                this["ShowPossibleBlackouts"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool ShowDTEK {
+        public bool ShowBlackouts {
             get {
-                return ((bool)(this["ShowDTEK"]));
+                return ((bool)(this["ShowBlackouts"]));
             }
             set {
-                this["ShowDTEK"] = value;
+                this["ShowBlackouts"] = value;
             }
         }
         

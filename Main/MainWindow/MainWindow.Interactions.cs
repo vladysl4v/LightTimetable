@@ -25,18 +25,10 @@ namespace Timetable.Main
 
         private void btnNavHome_Click(object sender, RoutedEventArgs e)
         {
-            UserData.InitDate();
+            UserData.InitializeDate();
             RenderWidgets();
         }
-
-        private void lblCurrDate_Click(object sender, RoutedEventArgs e)
-        {
-            if (_datepickerWindow.Value.isVisible == true)
-                _datepickerWindow.Value.Hide();
-            else
-                _datepickerWindow.Value.Show();
-        }
-
+        
         private void btnShowTeachersColumn_Click(object sender, RoutedEventArgs e)
         {
             if (employeeColumn.Visibility == Visibility.Hidden)

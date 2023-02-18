@@ -7,21 +7,21 @@ namespace Timetable.Properties
 {
     internal sealed partial class Settings
     {
-        public Dictionary<string, string> RenameList
+        public Dictionary<string, string> Renames
         {
             get
             {
-                return JsonConvert.DeserializeObject<Dictionary<string, string>>(Default._renameList);
+                return JsonConvert.DeserializeObject<Dictionary<string, string>>(Default._renames);
             }
             set
             {
-                Default._renameList = JsonConvert.SerializeObject(value);
+                Default._renames = JsonConvert.SerializeObject(value);
                 Default.Save();
             }
         }
-        public void AppendToRenameList(string key, string value)
+        public void AppendToRenames(string key, string value)
         {
-            var tempList = RenameList;
+            var tempList = Renames;
             if (tempList.ContainsKey(key))
             {
                 tempList[key] = value;
@@ -30,7 +30,7 @@ namespace Timetable.Properties
             {
                 tempList.Add(key, value);
             }
-            RenameList = tempList;
+            Renames = tempList;
         }
 
     }

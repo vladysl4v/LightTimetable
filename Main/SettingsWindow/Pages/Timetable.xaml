@@ -22,10 +22,10 @@
         <ComboBox Name="comboStudyGroups" HorizontalAlignment="Left" Margin="25,90,0,0" VerticalAlignment="Top" Width="285" Height="22" DisplayMemberPath="Value" SelectedValuePath="Key"/>
 
         <GroupBox Header="Графiки вiдключень свiтла" Grid.Row="1"/>
-        <CheckBox x:Name="checkEnableShutdowns" Content="Показати iнформацiю про свiтло" IsChecked="{Binding Source={x:Static setts:Settings.Default},Path=ShowDTEK, Mode=OneWay}" HorizontalAlignment="Left" Margin="10,20,0,0" Height="16" VerticalAlignment="Top" Grid.Row="1" Width="201"/>
-        <CheckBox x:Name="checkMaybeShutdowns" Content="Вiдiбражати МОЖЛИВI вiдключення" IsChecked="{Binding Source={x:Static setts:Settings.Default},Path=ShowDTEKMaybe, Mode=OneWay}" IsEnabled="{Binding ElementName=checkEnableShutdowns, Path=IsChecked}" HorizontalAlignment="Left" Margin="10,50,0,0" Height="16" VerticalAlignment="Top" Grid.Row="1" Width="221"/>
+        <CheckBox x:Name="checkEnableBlackouts" Content="Показати iнформацiю про свiтло" IsChecked="{Binding Source={x:Static setts:Settings.Default},Path=ShowBlackouts, Mode=OneWay}" HorizontalAlignment="Left" Margin="10,20,0,0" Height="16" VerticalAlignment="Top" Grid.Row="1" Width="201"/>
+        <CheckBox x:Name="checkPossibleBlackouts" Content="Вiдiбражати МОЖЛИВI вiдключення" IsChecked="{Binding Source={x:Static setts:Settings.Default},Path=ShowPossibleBlackouts, Mode=OneWay}" IsEnabled="{Binding ElementName=checkEnableBlackouts, Path=IsChecked}" HorizontalAlignment="Left" Margin="10,50,0,0" Height="16" VerticalAlignment="Top" Grid.Row="1" Width="221"/>
         <Label Content="Оберiть вашу групу вiдключень" HorizontalAlignment="Right" Margin="0,15,10,0" Height="25" VerticalAlignment="Top" Grid.Row="1" Width="185"/>
-        <ComboBox x:Name="comboDTEKGroup" SelectedValue="{Binding Source={x:Static setts:Settings.Default},Path=DTEKGroup, Mode=OneWay}" SelectedValuePath="Tag" IsEnabled="{Binding ElementName=checkEnableShutdowns, Path=IsChecked}" Width="175" HorizontalAlignment="Right" Margin="0,45,15,0" Height="22" VerticalAlignment="Top" Grid.Row="1">
+        <ComboBox x:Name="comboDTEKGroup" SelectedValue="{Binding Source={x:Static setts:Settings.Default},Path=DTEKGroup, Mode=OneWay}" SelectedValuePath="Tag" IsEnabled="{Binding ElementName=checkEnableBlackouts, Path=IsChecked}" Width="175" HorizontalAlignment="Right" Margin="0,45,15,0" Height="22" VerticalAlignment="Top" Grid.Row="1">
             <ComboBoxItem Content="1 група" Tag="1"/>
             <ComboBoxItem Content="2 група" Tag="2"/>
             <ComboBoxItem Content="3 група" Tag="3"/>

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
 using System.Windows.Controls;
+using System.Collections.Generic;
 
-using Timetable.Utilities;
 
 namespace Timetable.Main
 {
@@ -11,51 +11,51 @@ namespace Timetable.Main
         private void InitializeContextMenu()
         {
             ContextMenu _contextMenu = new ContextMenu();
-            MainDataGrid.ContextMenu = _contextMenu;
+            Schedule.ContextMenu = _contextMenu;
 
             MenuItem ItemRename = new MenuItem { Header = "Перейменувати пару" };
             ItemRename.Click += RenameLesson;
 
             _contextMenu.Items.Add(ItemRename);
 
-            MainDataGrid.BeginningEdit += CellBeginningEdit;
-            MainDataGrid.CellEditEnding += CellEditEnding;
+            Schedule.BeginningEdit += CellBeginningEdit;
+            Schedule.CellEditEnding += CellEditEnding;
         }
 
         private void RenameLesson(object s, EventArgs e)
         {
-            MainDataGrid.CurrentCell = MainDataGrid.SelectedCells[1];
-            MainDataGrid.BeginEdit();
+            Schedule.CurrentCell = (Properties.Settings.Default.ShowBlackouts) ? Schedule.SelectedCells[2] : Schedule.SelectedCells[1];
+            Schedule.BeginEdit();
         }
 
         private void CellBeginningEdit(object? s, EventArgs e)
         {
-            _cellBeforeEdit = ((Lesson)MainDataGrid.SelectedItem).Discipline;
+            _cellBeforeEdit = ((Lesson)Schedule.SelectedItem).Discipline;
         }
 
         private void CellEditEnding(object? s, DataGridCellEditEndingEventArgs e)
         {
             if (e.EditAction == DataGridEditAction.Cancel)
             {
-                FillTimetable();
+                FillSchedule();
                 return;
             }
                 
-            var renameList = Properties.Settings.Default.RenameList;
+            Dictionary<string, string> renames = Properties.Settings.Default.Renames;
             string newCellName = ((TextBox)e.EditingElement).Text;
 
             if (newCellName == _cellBeforeEdit || newCellName == string.Empty)
             {
                 return;
             }
-            if (renameList.ContainsValue(_cellBeforeEdit))
+            if (renames.ContainsValue(_cellBeforeEdit))
             {
-                _cellBeforeEdit = renameList.FirstOrDefault(x => x.Value == _cellBeforeEdit).Key;
+                _cellBeforeEdit = renames.FirstOrDefault(x => x.Value == _cellBeforeEdit).Key;
             }
 
-            Properties.Settings.Default.AppendToRenameList(_cellBeforeEdit, newCellName);
+            Properties.Settings.Default.AppendToRenames(_cellBeforeEdit, newCellName);
 
-            FillTimetable();
+            FillSchedule();
         }
     }
 }
