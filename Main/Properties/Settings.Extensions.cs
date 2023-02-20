@@ -22,16 +22,33 @@ namespace Timetable.Properties
         public void AppendToRenames(string key, string value)
         {
             var tempList = Renames;
-            if (tempList.ContainsKey(key))
-            {
-                tempList[key] = value;
-            }
-            else
-            {
-                tempList.Add(key, value);
-            }
+            tempList[key] = value;
             Renames = tempList;
         }
 
+        public Dictionary<uint, string> Notes
+        {
+            get
+            {
+                return JsonConvert.DeserializeObject<Dictionary<uint, string>>(Default._notes);
+            }
+            set
+            {
+                Default._notes = JsonConvert.SerializeObject(value);
+                Default.Save();
+            }
+        }
+        public void AppendToNotes(uint key, string value)
+        {
+            var tempList = Notes;
+            tempList[key] = value;
+            Notes = tempList;
+        }
+        public void RemoveFromNotes(uint key)
+        {
+            var tempList = Notes;
+            tempList.Remove(key);
+            Notes = tempList;
+        }
     }
 }

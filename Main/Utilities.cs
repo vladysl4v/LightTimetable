@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Linq;
 using System.Text;
+using System.Windows;
+using System.Windows.Controls;
 using System.Collections.Generic;
-
 
 namespace Timetable.Utilities
 
@@ -86,4 +87,78 @@ namespace Timetable.Utilities
             return result.ToString();
         }
     }
+
+    /// <summary>
+    /// User input window
+    /// </summary>
+    public class InputBox : Window
+    {
+        private bool _isOKClicked = false;
+        private readonly StackPanel _panel = new StackPanel();
+        private readonly TextBox _textBox = new TextBox();
+        private readonly Label _label = new Label();
+        private readonly Button _button = new Button();
+
+
+        public InputBox(string title, string text, string defaultText = "")
+        {
+            Title = title;
+            _label.Content = text;
+            _textBox.Text = defaultText;
+
+            _button.Click += OKButton_Clicked;
+            Closing += OnWindowClosing;
+
+            ChangeView();
+        }
+
+        public string GetText()
+        {
+            ShowDialog();
+            return _textBox.Text;
+        }
+
+        private void OnWindowClosing(object? s, EventArgs e)
+        {
+            if (!_isOKClicked)
+                _textBox.Text = string.Empty;
+        }
+        private void OKButton_Clicked(object s, EventArgs e)
+        {
+            _isOKClicked = true;
+            Close();
+        }
+        private void ChangeView()
+        {
+            Topmost = true;
+            WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            ResizeMode = ResizeMode.NoResize;
+            Content = _panel;
+            Height = 150;
+            Width = 300;
+
+            _label.Width = 260;
+            _label.HorizontalAlignment = HorizontalAlignment.Center;
+            _label.VerticalAlignment = VerticalAlignment.Top;
+            _textBox.Height = 40;
+            _textBox.Width = 250;
+            _textBox.MaxLines = 2;
+            _textBox.HorizontalAlignment = HorizontalAlignment.Right;
+            _textBox.Margin = new Thickness { Right = 15 };
+            _textBox.VerticalAlignment = VerticalAlignment.Center;
+            _button.Content = "ОК";
+            _button.Height = 20;
+            _button.Width = 90;
+            _button.HorizontalAlignment = HorizontalAlignment.Right;
+            _button.VerticalAlignment = VerticalAlignment.Bottom;
+            _button.Margin = new Thickness { Top = 10, Right = 15 };
+            _button.IsDefault = true;
+
+            _panel.Children.Add(_label);
+            _panel.Children.Add(_textBox);
+            _panel.Children.Add(_button);
+        }
+    }
+
+
 }

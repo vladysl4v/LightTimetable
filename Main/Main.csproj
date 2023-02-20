@@ -14,10 +14,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\NotesIcon.png" />
+    <None Remove="Resources\SubgroupIcon.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\SubgroupIcon.png" />
     <Resource Include="Resources\MaybeElectricityIcon.png" />
     <Resource Include="Resources\NoElectricityIcon.png" />
     <Resource Include="Resources\ExpandIcon.ico" />
-    <Resource Include="Resources\SubgroupIcon.ico" />
+    <Resource Include="Resources\NotesIcon.png" />
     <Resource Include="SettingsWindow\Resources\RenamingCategory.ico" />
     <Resource Include="SettingsWindow\Resources\TimetableCategory.ico" />
   </ItemGroup>

@@ -37,7 +37,7 @@ namespace Timetable.Settings
             MainFrame.Content = _currentPage;
         }
 
-        private void Save_Click(object sender, RoutedEventArgs e)
+        private async void Save_Click(object sender, RoutedEventArgs e)
         {
             Button button_sender = (Button)sender;
             if (_currentPage is TimetablePage thisPage1)
@@ -46,9 +46,15 @@ namespace Timetable.Settings
                 Properties.Settings.Default.EducForm = Convert.ToString(thisPage1.comboEducForms.SelectedValue);
                 Properties.Settings.Default.Faculty = Convert.ToString(thisPage1.comboFaculties.SelectedValue);
                 Properties.Settings.Default.StudyGroup = Convert.ToString(thisPage1.comboStudyGroups.SelectedValue);
-                Properties.Settings.Default.ShowBlackouts = thisPage1.checkEnableBlackouts.IsChecked ?? false;
                 Properties.Settings.Default.ShowPossibleBlackouts = thisPage1.checkPossibleBlackouts.IsChecked ?? true;
                 Properties.Settings.Default.DTEKGroup = Convert.ToString(((ComboBoxItem)thisPage1.comboDTEKGroup.SelectedItem).Tag);
+                if ((thisPage1.checkEnableBlackouts.IsChecked ?? false) && !Properties.Settings.Default.ShowBlackouts)
+                {
+                    await UserData.InitializeBlackouts();
+                    UserData.RestructurizeContent();
+                }
+                Properties.Settings.Default.ShowBlackouts = thisPage1.checkEnableBlackouts.IsChecked ?? false;
+
                 Properties.Settings.Default.Save();
             }
 

@@ -118,5 +118,17 @@ namespace Timetable.Properties {
                 this["DTEKGroup"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("{}")]
+        public string _notes {
+            get {
+                return ((string)(this["_notes"]));
+            }
+            set {
+                this["_notes"] = value;
+            }
+        }
     }
 }

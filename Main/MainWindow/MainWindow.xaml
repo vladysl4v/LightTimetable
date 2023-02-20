@@ -18,21 +18,22 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="25"/>
             <ColumnDefinition Width="90"/>
-            <ColumnDefinition Width="135"/>
-            <ColumnDefinition Width="22"/>
+            <ColumnDefinition Width="133"/>
+            <ColumnDefinition Width="12"/>
+            <ColumnDefinition Width="12"/>
             <ColumnDefinition Width="1*"/>
             <ColumnDefinition Width="25"/>
             <ColumnDefinition Width="25"/>
             <ColumnDefinition Width="25"/>
         </Grid.ColumnDefinitions>
         <!-- CURRENT DAY OF WEEK LABEL -->
-        <Label x:Name="lblDayOfWeek" HorizontalContentAlignment="Center" Grid.ColumnSpan="8"/>
+        <Label x:Name="lblDayOfWeek" HorizontalContentAlignment="Center" Grid.ColumnSpan="9"/>
         <!-- CLOSE NAVIGATION BUTTON -->
-        <Button x:Name="btnNavClose" Grid.Column="7" Content="✕" Click="btnNavClose_Click"/>
+        <Button x:Name="btnNavClose" Grid.Column="8" Content="✕" Click="btnNavClose_Click"/>
         <!-- GO NEXT NAVIGATION BUTTON -->
-        <Button x:Name="btnNavNext" Grid.Column="6" Content="→" Click="btnNavNext_Click"/>
+        <Button x:Name="btnNavNext" Grid.Column="7" Content="→" Click="btnNavNext_Click"/>
         <!-- GO BACK NAVIGATION BUTTON -->
-        <Button x:Name="btnNavPrev" Grid.Column="5" Content="←" Click="btnNavPrev_Click"/>
+        <Button x:Name="btnNavPrev" Grid.Column="6" Content="←" Click="btnNavPrev_Click"/>
         <!-- BACK TO TODAY NAVIGATION BUTTON -->
         <Button x:Name="btnNavHome" Grid.Column="0" Content="⌂" Click="btnNavHome_Click"/>
         <!-- TIMETABLE -->
@@ -41,7 +42,7 @@
                   IsHitTestVisible="True"
                   RowHeight="20" 
                   GridLinesVisibility ="None" 
-                  Grid.ColumnSpan="8"
+                  Grid.ColumnSpan="9"
                   Grid.Row="1" 
                   VerticalScrollBarVisibility="Disabled" 
                   HorizontalScrollBarVisibility="Disabled" 
@@ -89,7 +90,7 @@
             </DataGrid.Resources>
         </DataGrid>
         <!-- SHOW EMPLOYEE COLUMN BUTTON -->
-        <Button x:Name="btnShowTeachersColumn" Content="{StaticResource ExpandIcon}" Grid.Column="7" Grid.Row="1" VerticalAlignment="Top" BorderBrush="{x:Null}" Background="{x:Null}" Margin="9,0,0,0" Click="btnShowTeachersColumn_Click" Height="12" />
+        <Button x:Name="btnShowTeachersColumn" Content="{StaticResource ExpandIcon}" Grid.Column="8" Grid.Row="1" VerticalAlignment="Top" BorderBrush="{x:Null}" Background="{x:Null}" Margin="9,0,0,0" Click="btnShowTeachersColumn_Click" Height="12" />
         <!-- DATE PICKER -->
         <local:CustomDatePicker x:Name="pickerCurrentDate" Grid.Column="1" BorderThickness="0" Focusable="False" FirstDayOfWeek="Monday" SelectedDateChanged="SelectedDate_Changed">
             <local:CustomDatePicker.Resources>

@@ -5,6 +5,8 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+
+using Timetable.Utilities;
 using System.Text.RegularExpressions;
 
 namespace Timetable
@@ -15,29 +17,27 @@ namespace Timetable
     static public class UserData
     {
         static public string GroupID { get; private set; } = string.Empty;
-        static public List<Dictionary<string, string>?>? Content { get; private set; }
+        static public Dictionary<DateTime, List<Lesson>> Content { get; private set; } = new();
         static public List<DateTime> ContentDates { get; private set; } = new List<DateTime>();
         static public DateTime Date { get; set; }
         static public Dictionary<string, Dictionary<string, List<string>>> GroupedLights { get; set; } = new();
+        static private List<Dictionary<string, string>> _content;
 
         static public async Task Initialize()
         {
             InitializeSettings();
+            if (Properties.Settings.Default.ShowBlackouts)
+                await InitializeBlackouts();
             await CollectContent();
             FillContentDates();
             InitializeDate();
-            if (Properties.Settings.Default.ShowBlackouts)
-                await InitializeBlackouts();
         }
 
         static public void FillContentDates()
         {
             ContentDates.Clear();
-            var temp_dates = (from lesson in Content select lesson["full_date"]).Distinct();
-            foreach (var date in temp_dates)
-                ContentDates.Add(Convert.ToDateTime(date));
+            ContentDates = Content.Keys.ToList();
         }
-
 
         static public void ChangeDate(int amount)
         {
@@ -71,8 +71,24 @@ namespace Timetable
             {
                 request = "";
             }
-            var deserialization = JsonConvert.DeserializeObject<Dictionary<string, List<Dictionary<string, string>>>>(request);
-            Content = deserialization["d"];
+            _content = JsonConvert.DeserializeObject<Dictionary<string, List<Dictionary<string, string>>>>(request)["d"];
+            RestructurizeContent();
+        }
+
+        static public void RestructurizeContent()
+        {
+            Content.Clear();
+            foreach (var pair in _content)
+            {
+                if (Content.ContainsKey(Convert.ToDateTime(pair["full_date"])))
+                {
+                    Content[Convert.ToDateTime(pair["full_date"])].Add(new Lesson(pair));
+                }
+                else
+                {
+                    Content[Convert.ToDateTime(pair["full_date"])] = new List<Lesson>() { new Lesson(pair) };
+                }
+            }
         }
 
         static private void InitializeSettings()
@@ -80,7 +96,7 @@ namespace Timetable
             GroupID = Properties.Settings.Default.StudyGroup;
         }
         
-        static private async Task InitializeBlackouts()
+        static public async Task InitializeBlackouts()
         {
             GroupedLights.Clear();
 
