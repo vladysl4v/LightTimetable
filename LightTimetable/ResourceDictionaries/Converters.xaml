@@ -1,0 +1,13 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:converters="clr-namespace:LightTimetable.Tools.Converters">
+
+    <BooleanToVisibilityConverter x:Key="Boolean2Visibility" />
+    <converters:DayOfWeekToTitleConverter x:Key="DayOfWeek2Title" />
+    <converters:DataIndexationByDateConverter x:Key="DataIndexationByDate" />
+    <converters:ForegroundByDateConverter x:Key="ForegroundByDate" />
+    <converters:AnythingToVisibilityConverter x:Key="Anything2Visibility" />
+    <converters:AnythingToIconSourceConverter x:Key="Anything2IconSource" />
+    <converters:HighlightCalendarConverter x:Key="HighlightCalendar" />
+
+</ResourceDictionary>

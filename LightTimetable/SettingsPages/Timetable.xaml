@@ -1,0 +1,37 @@
+﻿<Page x:Class="LightTimetable.SettingsPages.TimetablePage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:vm="clr-namespace:LightTimetable.ViewModels.Pages"
+      xmlns:setts="clr-namespace:LightTimetable.Properties"
+      mc:Ignorable="d"
+      d:DesignHeight="340" d:DesignWidth="605" d:Background="White">
+    <Page.DataContext>
+        <vm:TimetablePageViewModel/>
+    </Page.DataContext>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="124"/>
+            <RowDefinition Height="87"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <GroupBox Header="Навчальна група" Grid.Row="0"/>
+        <Label Content="Оберiть ваш факультет, форму навчання та курс, пiсля цього ви зможете вибрати вашу групу" HorizontalAlignment="Center" Margin="0,20,0,0" VerticalAlignment="Top" Width="595" Height="26"/>
+        <ComboBox x:Name="FacultiesComboBox" ItemsSource="{Binding AllFaculties}" SelectedValue="{Binding CurrentFaculty}" HorizontalAlignment="Left" Margin="25,54,0,0" VerticalAlignment="Top" Width="160" Height="22" DisplayMemberPath="Value" SelectedValuePath="Key"/>
+        <ComboBox x:Name="EducFormsComboBox" ItemsSource="{Binding AllEducForms}" SelectedValue="{Binding CurrentEducForm}" HorizontalAlignment="Left" Margin="190,54,0,0" VerticalAlignment="Top" Width="120" Height="22" DisplayMemberPath="Value" SelectedValuePath="Key"/>
+        <ComboBox x:Name="CoursesComboBox" ItemsSource="{Binding AllCourses}" SelectedValue="{Binding CurrentCourse}" HorizontalAlignment="Left" Margin="315,54,0,0" VerticalAlignment="Top" Width="125" Height="22" DisplayMemberPath="Value" SelectedValuePath="Key"/>
+        <ComboBox x:Name="StudyGroupsComboBox" ItemsSource="{Binding AllStudyGroups}" SelectedValue="{Binding CurrentStudyGroup}" HorizontalAlignment="Left" Margin="25,90,0,0" VerticalAlignment="Top" Width="285" Height="22" DisplayMemberPath="Value" SelectedValuePath="Key"/>
+
+        <GroupBox Header="Графiки вiдключень свiтла" Grid.Row="1"/>
+        <CheckBox Content="Показати iнформацiю про свiтло" IsChecked="{Binding Source={x:Static setts:Settings.Default},Path=ShowBlackouts}" HorizontalAlignment="Left" Margin="10,20,0,0" Height="16" VerticalAlignment="Top" Grid.Row="1" Width="201"/>
+        <CheckBox Content="Вiдiбражати МОЖЛИВI вiдключення" IsChecked="{Binding Source={x:Static setts:Settings.Default},Path=ShowPossibleBlackouts}" IsEnabled="{Binding Source={x:Static setts:Settings.Default},Path=ShowBlackouts}" HorizontalAlignment="Left" Margin="10,50,0,0" Height="16" VerticalAlignment="Top" Grid.Row="1" Width="221"/>
+        <Label Content="Оберiть вашу групу вiдключень" HorizontalAlignment="Right" Margin="0,15,10,0" Height="25" VerticalAlignment="Top" Grid.Row="1" Width="185"/>
+        <ComboBox SelectedValue="{Binding Source={x:Static setts:Settings.Default},Path=DTEKGroup}" SelectedValuePath="Tag" IsEnabled="{Binding Source={x:Static setts:Settings.Default},Path=ShowBlackouts}" Width="175" HorizontalAlignment="Right" Margin="0,45,15,0" Height="22" VerticalAlignment="Top" Grid.Row="1">
+            <ComboBoxItem Content="1 група" Tag="1"/>
+            <ComboBoxItem Content="2 група" Tag="2"/>
+            <ComboBoxItem Content="3 група" Tag="3"/>
+        </ComboBox>
+
+    </Grid>
+</Page>

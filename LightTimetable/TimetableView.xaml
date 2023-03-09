@@ -1,0 +1,93 @@
+﻿<Window x:Class="LightTimetable.TimetableView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:LightTimetable.ViewModels"
+        xmlns:settings="clr-namespace:LightTimetable.Properties"
+        mc:Ignorable="d" 
+        x:Name="TimetableWindow" Title="Timetable" MinHeight="91" MinWidth="400"
+        SizeToContent="WidthAndHeight" ResizeMode="NoResize" Topmost="True"
+        ShowInTaskbar="False" WindowStyle="None" SizeChanged="OnWindowSizeChanged">
+    <Window.DataContext>
+        <vm:TimetableViewModel/>
+    </Window.DataContext>
+    <StackPanel>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="25"/>
+                <ColumnDefinition Width="90"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="25"/>
+                <ColumnDefinition Width="25"/>
+                <ColumnDefinition Width="25"/>
+                <ColumnDefinition Width="25"/>
+            </Grid.ColumnDefinitions>
+            <!-- CURRENT DAY OF WEEK LABEL -->
+            <Label Content="{Binding Date, Converter={StaticResource DayOfWeek2Title}}" HorizontalContentAlignment="Center" Grid.ColumnSpan="7"/>
+            <!-- BACK TO TODAY BUTTON -->
+            <Button Content="⌂" Command="{Binding ResetDateCommand}" Grid.Column="0"/>
+            <!-- CURRENT DATE DATEPICKER -->
+            <DatePicker SelectedDate="{Binding Date}" CalendarStyle="{StaticResource CalendarWithHighlightedDates}" Foreground="{Binding Date, Converter={StaticResource ForegroundByDate}}" Grid.Column="1" BorderThickness="0" Focusable="False">
+                <DatePicker.Resources>
+                    <Style TargetType="DatePickerTextBox">
+                        <Setter Property="IsReadOnly" Value="True"/>
+                        <Setter Property="Margin" Value="0 2 0 0"/>
+                    </Style>
+                </DatePicker.Resources>
+            </DatePicker>
+            <!-- EXPAND DATAGRID BUTTON -->
+            <Expander IsExpanded="{Binding IsDataGridExpanded}" Grid.Column="3" ExpandDirection="Right" Focusable="False" Width="23" Height="23"/>
+            <!-- PREVIOUS DAY BUTTON -->
+            <Button Content="←" Command="{Binding ChangeDateCommand}" CommandParameter="-1" Grid.Column="4"/>
+            <!-- NEXT DAY BUTTON -->
+            <Button Content="→" Command="{Binding ChangeDateCommand}" CommandParameter="+1" Grid.Column="5"/>
+            <!-- HIDE WINDOW BUTTON -->
+            <Button Content="✕" Command="{Binding HideWindowCommand}" CommandParameter="{Binding ElementName=TimetableWindow}" Grid.Column="6"/>
+        </Grid>
+        <!-- DUMMY THAT ALLOWS TO BIND THE VISIBILITY OF A DATAGRID COLUMN -->
+        <FrameworkElement x:Name="DummyElement" Visibility="Collapsed"/>
+        <!-- MAIN DATAGRID -->
+        <DataGrid SelectedItem="{Binding SelectedDataItem}"
+                  RowHeight="20" 
+                  MinHeight="67"
+                  GridLinesVisibility = "None"
+                  IsReadOnly="True"
+                  VerticalScrollBarVisibility="Disabled" 
+                  HorizontalScrollBarVisibility="Disabled" 
+                  SelectionMode="Single" 
+                  SelectionUnit="FullRow"
+                  HeadersVisibility="Column" 
+                  ScrollViewer.CanContentScroll="False"
+                  CanUserSortColumns="False"
+                  CanUserResizeColumns="False"
+                  CanUserReorderColumns="False"
+                  CanUserAddRows="False"
+                  CanUserDeleteRows="False"
+                  AutoGenerateColumns="False">
+            <DataGrid.ItemsSource>
+                <MultiBinding Converter="{StaticResource DataIndexationByDate}">
+                    <Binding Path="ScheduleData"/>
+                    <Binding Path="Date"/>
+                </MultiBinding>
+            </DataGrid.ItemsSource>
+            <DataGrid.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Змінити нотатку" Command="{Binding ChangeNoteCommand}" Visibility="{Binding DataContext.SelectedDataItem.Note, Source={x:Reference DummyElement}, Converter={StaticResource Anything2Visibility}}"/>
+                    <MenuItem Header="Видалити нотатку" Command="{Binding DeleteNoteCommand}" Visibility="{Binding DataContext.SelectedDataItem.Note, Source={x:Reference DummyElement}, Converter={StaticResource Anything2Visibility}}"/>
+                    <MenuItem Header="Додати нотатку" Command="{Binding AddNoteCommand}" Visibility="{Binding DataContext.SelectedDataItem.Note, Source={x:Reference DummyElement}, Converter={StaticResource Anything2Visibility}, ConverterParameter=Invert}"/>
+                    <Separator/>
+                    <MenuItem Header="Перейменувати пару" Command="{Binding RenameItemCommand}"/>
+                </ContextMenu>
+            </DataGrid.ContextMenu>
+            <DataGrid.Columns>
+                <DataGridTemplateColumn Header="⚡︎"         Width="25"  CellTemplate="{StaticResource BlackoutsCellTemplate}" Visibility="{Binding Source={x:Static settings:Settings.Default},Path=ShowBlackouts, Converter={StaticResource Boolean2Visibility}}"/>
+                <DataGridTextColumn     Header="Час"        Width="70"  Binding="{Binding StudyTime}" />
+                <DataGridTemplateColumn Header="Дисципліна" Width="200"  CellTemplate="{StaticResource DisciplineWithToolTipsCellTemplate}" />
+                <DataGridTextColumn     Header="Тип"        Width="78"  Binding="{Binding StudyType}" />
+                <DataGridTextColumn     Header="Кабінет"    Width="52"  Binding="{Binding Cabinet}" />
+                <DataGridTextColumn     Header="Викладач"   Width="100" Binding="{Binding Employee}" Visibility="{Binding DataContext.IsDataGridExpanded, Source={x:Reference DummyElement}, Converter={StaticResource Boolean2Visibility}}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </StackPanel>
+</Window>

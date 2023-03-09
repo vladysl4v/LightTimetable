@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33110.190
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LightTimetable", "LightTimetable\LightTimetable.csproj", "{110B1CA3-AE42-4E6E-A2F9-3F49B67FAC30}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{110B1CA3-AE42-4E6E-A2F9-3F49B67FAC30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{110B1CA3-AE42-4E6E-A2F9-3F49B67FAC30}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{110B1CA3-AE42-4E6E-A2F9-3F49B67FAC30}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{110B1CA3-AE42-4E6E-A2F9-3F49B67FAC30}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B1903C9D-3598-4BEF-B9FD-2B6B37B2338B}
+	EndGlobalSection
+EndGlobal

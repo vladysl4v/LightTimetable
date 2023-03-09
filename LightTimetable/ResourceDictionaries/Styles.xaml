@@ -1,0 +1,22 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- COLORIZED CALENDAR DAYS -->
+    <Style x:Key="DayColorBinding" TargetType="CalendarDayButton">
+        <Style.Triggers>
+            <DataTrigger Value="True">
+                <DataTrigger.Binding>
+                    <MultiBinding Converter="{StaticResource HighlightCalendar}">
+                        <Binding />
+                        <Binding Path="DataContext.AvailableDates" RelativeSource="{RelativeSource AncestorType=Calendar}" />
+                    </MultiBinding>
+                </DataTrigger.Binding>
+                <Setter Property="Background" Value="LightGreen" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style x:Key="CalendarWithHighlightedDates" TargetType="Calendar">
+        <Setter Property="CalendarDayButtonStyle" Value="{StaticResource DayColorBinding}"/>
+    </Style>
+
+</ResourceDictionary>
