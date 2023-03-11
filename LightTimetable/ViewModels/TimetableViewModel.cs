@@ -5,7 +5,6 @@ using System.Collections.Generic;
 
 using LightTimetable.Model;
 using LightTimetable.Tools;
-using LightTimetable.Tools.Data;
 
 using static LightTimetable.Properties.Settings;
 
@@ -14,17 +13,40 @@ namespace LightTimetable.ViewModels
 {
     public class TimetableViewModel : ViewModelBase
     {
-        private readonly UserData _userData;
+        private readonly DataProvider _dataProvider;
+        private readonly DateControl _dateControl;
 
         public TimetableViewModel()
         {
-            _userData = new UserData();
+            _dataProvider = new DataProvider();
+            _dateControl = new DateControl(_dataProvider.AvailableDates);
+
+            // Commands
+            HideWindowCommand = new RelayCommand(HideWindow);
+            ChangeDateCommand = new RelayCommand(ChangeDate);
+            ResetDateCommand  = new RelayCommand(_ => ResetDate());
+
+            AddNoteCommand    = new RelayCommand(_ => AddNote());
+            ChangeNoteCommand = new RelayCommand(_ => ChangeNote());
+            DeleteNoteCommand = new RelayCommand(_ => DeleteNote());
+            RenameItemCommand = new RelayCommand(_ => RenameItem());
         }
 
         #region Properties
 
         private bool _isDataGridExpanded;
-        private DataItem _selectedDataItem = null!;
+        private DataItem _selectedDataItem;
+
+        public List<DataItem> CurrentSchedule
+        {
+            get
+            {
+                if (Date == DateTime.MinValue)
+                    return new List<DataItem>();
+
+                return _dataProvider.ScheduleDictionary.TryGetValue(Date, out List<DataItem> correctDataItems) ? correctDataItems : new List<DataItem>();
+            }
+        }
 
         public DataItem SelectedDataItem
         {
@@ -39,66 +61,45 @@ namespace LightTimetable.ViewModels
             set => SetProperty(ref _isDataGridExpanded, value);
         }
 
-        public Dictionary<DateTime, List<DataItem>> ScheduleData
-        {
-            get => _userData.ScheduleData;
-        }
-
-        public List<DateTime> AvailableDates
-        {
-            get => _userData.ScheduleData.Keys.ToList();
-        }
-
         public DateTime Date
         {
-            get => _userData.Date;
+            get => _dateControl.Date;
             set
             {
-                _userData.Date = value;
-                OnPropertyChanged(nameof(Date));
+                _dateControl.Date = value;
+                OnDateChanged();
             }
+        }
+
+        public DateTime[] AvailableDates
+        {
+            get => _dataProvider.AvailableDates;
         }
         #endregion
 
         #region Commands
-        private RelayCommand _hideWindowCommand = null!;
-        private RelayCommand _changeDateCommand = null!;
-        private RelayCommand _resetDateCommand = null!;
 
-        public RelayCommand HideWindowCommand
+        public RelayCommand HideWindowCommand { get; }
+        public RelayCommand ChangeDateCommand { get; }
+        public RelayCommand ResetDateCommand { get; }
+
+        private void ResetDate()
         {
-            get
-            {
-                return _hideWindowCommand ??= new RelayCommand(objectWindow =>
-                {
-                    if (objectWindow is Window thisWindow)
-                    {
-                        thisWindow.Hide();
-                    }
-                });
-            }
+            _dateControl.SetCorrectDate();
+            OnDateChanged();
         }
 
-        public RelayCommand ChangeDateCommand
+        private void ChangeDate(object amount)
         {
-            get
-            {
-                return _changeDateCommand ??= new RelayCommand(amount =>
-                  {
-                    _userData.ChangeDate(int.Parse((string)amount));
-                    OnPropertyChanged(nameof(Date));
-                  });
-            }
+            _dateControl.ChangeDate(int.Parse((string)amount));
+            OnDateChanged();
         }
-        public RelayCommand ResetDateCommand
+
+        private void HideWindow(object win)
         {
-            get
+            if (win is Window thisWindow)
             {
-                return _resetDateCommand ??= new RelayCommand(_ =>
-                {
-                    _userData.ResetDate();
-                    OnPropertyChanged(nameof(Date));
-                });
+                thisWindow.Hide();
             }
         }
 
@@ -106,94 +107,89 @@ namespace LightTimetable.ViewModels
 
         #region Context menu
 
-        private RelayCommand _changeNoteCommand = null!;
-        private RelayCommand _deleteNoteCommand = null!;
-        private RelayCommand _addNoteCommand = null!;
-        private RelayCommand _renameItemCommand = null!;
+        public RelayCommand AddNoteCommand { get; }
+        public RelayCommand ChangeNoteCommand { get; }
+        public RelayCommand DeleteNoteCommand { get; }
+        public RelayCommand RenameItemCommand { get; }
 
-        public RelayCommand ChangeNoteCommand
+        private void AddNote()
         {
-            get
+            string noteText = new InputBox("Нотатка", "Введіть текст нотатки:").GetText();
+            if (noteText.Any())
             {
-                return _changeNoteCommand ??= new RelayCommand(obj =>
-                {
-                    string noteText = new InputBox("Нотатка", "Введіть новий текст нотатки:", SelectedDataItem.Note).GetText();
-                    if (noteText.Any() && noteText != SelectedDataItem.Note)
-                    {
-                        Default.AppendToNotes(SelectedDataItem.ID, noteText);
-                        SelectedDataItem.Note = noteText;
-                        UpdateDataGrid();
-                    }
-                });
+                Default.AppendToNotes(SelectedDataItem.Id, noteText);
+                SelectedDataItem.Note = noteText;
+                UpdateDataGrid();
             }
         }
 
-        public RelayCommand DeleteNoteCommand
+        private void ChangeNote()
         {
-            get
+            string noteText = new InputBox("Нотатка", "Введіть новий текст нотатки:", SelectedDataItem.Note).GetText();
+            if (noteText.Any() && noteText != SelectedDataItem.Note)
             {
-                return _deleteNoteCommand ??= new RelayCommand(obj =>
-                {
-                    MessageBoxResult result = MessageBox.Show("Ви впевнені що хочете видалити цю нотатку?", "Нотатка", MessageBoxButton.YesNo);
-                    if (result == MessageBoxResult.Yes)
-                    {
-                        Default.RemoveFromNotes(SelectedDataItem.ID);
-                        SelectedDataItem.Note = string.Empty;
-                        UpdateDataGrid();
-                    }
-                });
+                Default.AppendToNotes(SelectedDataItem.Id, noteText);
+                SelectedDataItem.Note = noteText;
+                UpdateDataGrid();
+            }
+        }
+        private void DeleteNote()
+        {
+            MessageBoxResult result = MessageBox.Show("Ви впевнені що хочете видалити цю нотатку?", "Нотатка", MessageBoxButton.YesNo);
+            if (result == MessageBoxResult.Yes)
+            {
+                Default.RemoveFromNotes(SelectedDataItem.Id);
+                SelectedDataItem.Note = string.Empty;
+                UpdateDataGrid();
             }
         }
 
-        public RelayCommand AddNoteCommand
+        private void RenameItem()
         {
-            get
+            string newItemName = new InputBox("Перейменування", $"Введіть нову назву для \"{SelectedDataItem.Discipline.Value}\":", SelectedDataItem.Discipline.Key).GetText();
+            if (newItemName.Any() && newItemName != SelectedDataItem.Discipline.Key)
             {
-                return _addNoteCommand ??= new RelayCommand(obj =>
-                {
-                    string noteText = new InputBox("Нотатка", "Введіть текст нотатки:").GetText();
-                    if (noteText.Any())
-                    {
-                        Default.AppendToNotes(SelectedDataItem.ID, noteText);
-                        SelectedDataItem.Note = noteText;
-                        UpdateDataGrid();
-                    }
-                });
-            }
-        }
-
-        public RelayCommand RenameItemCommand
-        {
-            get
-            {
-                return _renameItemCommand ??= new RelayCommand(obj =>
-                {
-                    string newItemName= new InputBox("Перейменування", $"Введіть нову назву для \"{SelectedDataItem.Discipline.Value}\":", SelectedDataItem.Discipline.Key).GetText();
-                    if (newItemName.Any() && newItemName != SelectedDataItem.Discipline.Key)
-                    {
-                        Default.AppendToRenames(SelectedDataItem.Discipline.Value, newItemName);
-                        SelectedDataItem.Discipline.Key = newItemName;
-                        UpdateDataGrid(SelectedDataItem.Discipline);
-                    }
-                });
+                Default.AppendToRenames(SelectedDataItem.Discipline.Value, newItemName);
+                SelectedDataItem.Discipline.Key = newItemName;
+                UpdateDataGrid(SelectedDataItem.Discipline);
             }
         }
 
         #endregion
 
+        #region Methods
+
+        private void OnDateChanged()
+        {
+            OnPropertyChanged(nameof(Date));
+            OnPropertyChanged(nameof(CurrentSchedule));
+        }
+
         public void UpdateDataGrid(MutablePair<string, string> renamePair = null)
         {
             // temporary condition to update data grid cells
             if (renamePair != null)
-                _userData.UpdateRenames(renamePair);
+                UpdateRenames(renamePair);
             DateTime temp = Date;
             Date = DateTime.MinValue;
             Date = temp;
         }
 
+        private void UpdateRenames(MutablePair<string, string> renamePair)
+        {
+            foreach (var item in from dateItems in _dataProvider.ScheduleDictionary.Values from item in dateItems where item.Discipline.Value == renamePair.Value select item)
+            {
+                item.Discipline.Key = renamePair.Key;
+            }
+        }
+
         public void ReloadData()
         {
-            _userData.UpdateData();
+            _dataProvider.ReloadData();
+            OnPropertyChanged(nameof(AvailableDates));
+            _dateControl.UpdateDates(_dataProvider.AvailableDates);
         }
+
+        #endregion
     }
 }

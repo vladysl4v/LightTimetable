@@ -20,5 +20,10 @@ namespace LightTimetable.Tools
             this.Key = key;
             this.Value = value;
         }
+
+        public override string ToString()
+        {
+            return (string)(object)Key;
+        }
     }
 }

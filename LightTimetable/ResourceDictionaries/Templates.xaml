@@ -8,7 +8,7 @@
                 <ColumnDefinition Width="168"/>
                 <ColumnDefinition Width="24"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding Discipline.Key}"/>
+            <TextBlock Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding Discipline}"/>
             <!-- TIPS -->
             <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
                 <Image VerticalAlignment="Center" Visibility="{Binding Note, Converter={StaticResource Anything2Visibility}}" Height="12" Width="12" Source="{Binding Note, Converter={StaticResource Anything2IconSource}, ConverterParameter=Note}" RenderOptions.BitmapScalingMode="HighQuality" ToolTipService.InitialShowDelay="200">
@@ -25,6 +25,7 @@
         </Grid>
     </DataTemplate>
 
+    
     <!-- BLACKOUTS COLUMN -->
     <DataTemplate x:Key="BlackoutsCellTemplate">
         <Image Height="16" Width="16" Source="{Binding Electricity.ImagePath}" RenderOptions.BitmapScalingMode="HighQuality" ToolTipService.InitialShowDelay="200">
@@ -32,6 +33,10 @@
                 <ToolTip Content="{Binding Electricity.ToolTipText}"/>
             </Image.ToolTip>
         </Image>
+    </DataTemplate>
+
+    <DataTemplate x:Key="ToHiddenBinding">
+        <DataGridColumnHeader Visibility="{Binding IsDataGridExpanded, Converter={StaticResource Boolean2Visibility}}"/>
     </DataTemplate>
 
 </ResourceDictionary>

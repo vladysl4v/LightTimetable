@@ -7,7 +7,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="NotifyIcon.xaml"/>
                 <ResourceDictionary Source="/ResourceDictionaries/Converters.xaml"/>
-                <ResourceDictionary Source="/ResourceDictionaries/DataTemplates.xaml"/>
+                <ResourceDictionary Source="/ResourceDictionaries/Templates.xaml"/>
                 <ResourceDictionary Source="/ResourceDictionaries/Styles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>

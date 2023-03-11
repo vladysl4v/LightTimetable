@@ -1,13 +1,12 @@
 ﻿using System.Windows;
 using System.Threading.Tasks;
 
+using LightTimetable.Model;
 using LightTimetable.Tools;
-using LightTimetable.Tools.Data;
-using LightTimetable.Tools.Electricity;
-
+using LightTimetable.Model.Electricity;
 
 namespace LightTimetable.ViewModels
-{ 
+{
     /// <summary>
     /// Provides bindable properties and commands for the NotifyIcon.
     /// </summary>
@@ -20,6 +19,11 @@ namespace LightTimetable.ViewModels
         public NotifyIconViewModel()
         {
             InitializeNotifyIcon();
+
+            ShowTimetableCommand = new RelayCommand(_ => ShowTimetable());
+            RefreshDataCommand = new RelayCommand(_ => RefreshData());
+            OpenSettingsCommand = new RelayCommand(_ => OpenSettings());
+            CloseApplicationCommand = new RelayCommand(_ => CloseApplication());
         }
 
         private async Task InitializeNotifyIcon()
@@ -32,65 +36,39 @@ namespace LightTimetable.ViewModels
         }
 
         #region Commands
+        public RelayCommand ShowTimetableCommand { get; }
+        public RelayCommand RefreshDataCommand { get; }
+        public RelayCommand OpenSettingsCommand { get; }
+        public RelayCommand CloseApplicationCommand { get; }
 
-        private RelayCommand _closeApplicationCommand = null!;
-        private RelayCommand _showTimetableCommand = null!;
-        private RelayCommand _openSettingsCommand = null!;
-        private RelayCommand _refreshDataCommand = null!;
-
-
-        public RelayCommand RefreshDataCommand
+        private void ShowTimetable()
         {
-            get
+            if (_isWindowInitialized)
+                Application.Current.MainWindow.Show();
+        }
+
+        private async void RefreshData()
+        {
+            await DataProvider.InitializeDataAsync();
+            ((TimetableView)Application.Current.MainWindow).ReloadData();
+            ((TimetableView)Application.Current.MainWindow).RefreshTimetable();
+        }
+
+        private void OpenSettings()
+        {
+            if (_settingsWindow == null)
             {
-                return _refreshDataCommand ??= new RelayCommand(async obj =>
-                {
-                    await DataProvider.InitializeDataAsync();
-                    await ElectricityProvider.InitializeBlackoutsAsync();
-                    ((TimetableView)Application.Current.MainWindow).ReloadData();
-                    ((TimetableView)Application.Current.MainWindow).RefreshTimetable();
-                });
+                _settingsWindow = new SettingsView();
+                _settingsWindow.Closed += (s, e) => _settingsWindow = null;
+                _settingsWindow.Show();
             }
         }
 
-        public RelayCommand OpenSettingsCommand
+        private void CloseApplication()
         {
-            get
-            {
-                return _openSettingsCommand ??= new RelayCommand(obj =>
-                {
-                    if (_settingsWindow == null)
-                    {
-                        _settingsWindow = new SettingsView();
-                        _settingsWindow.Closed += (s, e) => _settingsWindow = null;
-                        _settingsWindow.Show();
-                    }
-                });
-            }
+            Application.Current.Shutdown();
         }
 
-        public RelayCommand ShowTimetableCommand
-        {
-            get
-            {
-                return _showTimetableCommand ??= new RelayCommand(obj =>
-                {
-                    if (_isWindowInitialized)
-                        Application.Current.MainWindow.Show();
-                });
-            }
-        }
-
-        public RelayCommand CloseApplicationCommand
-        {
-            get
-            {
-                return _closeApplicationCommand ??= new RelayCommand(obj =>
-                {
-                    Application.Current.Shutdown();
-                });
-            }
-        }
         #endregion
     }
 }

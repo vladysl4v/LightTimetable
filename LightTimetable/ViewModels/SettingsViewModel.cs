@@ -13,7 +13,12 @@ namespace LightTimetable.ViewModels
         public SettingsViewModel()
         {
             // Default page
-            ChangePageCommand.Execute("TimetablePage");
+            ChangePage("TimetablePage");
+
+            // Commands
+            ChangePageCommand    = new RelayCommand(ChangePage);
+            SaveSettingsCommand  = new RelayCommand(_ => SaveSettings());
+            ResetSettingsCommand = new RelayCommand(_ => ResetSettings());
         }
 
         #region Properties
@@ -41,45 +46,31 @@ namespace LightTimetable.ViewModels
         #endregion
 
         #region Commands
-        private RelayCommand _changePageCommand = null!;
-        private RelayCommand _saveSettingsCommand = null!;
-        private RelayCommand _resetSettingsCommand = null!;
-        public RelayCommand ChangePageCommand
+
+        public RelayCommand ChangePageCommand { get; }
+        public RelayCommand SaveSettingsCommand { get; }
+        public RelayCommand ResetSettingsCommand { get; }
+
+        private void ChangePage(object pageName)
         {
-            get
+            if ((string)pageName == "TimetablePage")
             {
-                return _changePageCommand ??= new RelayCommand(obj =>
-                {
-                    if ((string)obj != "TimetablePage") 
-                        return;
-                    CurrentPage = new TimetablePage();
-                    Lvl1Header = "Розклад";
-                    Lvl2Header = "Виберіть свою навчальну групу";
-                });
+                CurrentPage = new TimetablePage();
+                Lvl1Header = "Розклад";
+                Lvl2Header = "Виберіть свою навчальну групу";
             }
+        }
+
+        private void SaveSettings()
+        {
+            Default.Save();
+        }
+
+        private void ResetSettings()
+        {
+            Default.Reload();
         }
         
-        public RelayCommand SaveSettingsCommand
-        {
-            get
-            {
-                return _saveSettingsCommand ??= new RelayCommand(obj =>
-                {
-                    Default.Save();
-                });
-            }
-        }
-        
-        public RelayCommand ResetSettingsCommand
-        {
-            get
-            {
-                return _resetSettingsCommand ??= new RelayCommand(obj =>
-                {
-                    Default.Reload();
-                });
-            }
-        }
         #endregion
 
     }

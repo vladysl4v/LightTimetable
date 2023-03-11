@@ -4,7 +4,6 @@
 
     <BooleanToVisibilityConverter x:Key="Boolean2Visibility" />
     <converters:DayOfWeekToTitleConverter x:Key="DayOfWeek2Title" />
-    <converters:DataIndexationByDateConverter x:Key="DataIndexationByDate" />
     <converters:ForegroundByDateConverter x:Key="ForegroundByDate" />
     <converters:AnythingToVisibilityConverter x:Key="Anything2Visibility" />
     <converters:AnythingToIconSourceConverter x:Key="Anything2IconSource" />

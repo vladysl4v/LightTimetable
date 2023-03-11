@@ -2,6 +2,7 @@
 using System.Windows.Data;
 using System.Globalization;
 using System.Collections.Generic;
+using System.Linq;
 
 
 namespace LightTimetable.Tools.Converters
@@ -10,11 +11,11 @@ namespace LightTimetable.Tools.Converters
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            if (values == null)
+            if (values == null || values[0] == null)
                 return false;
-            var date = (DateTime)values[0];
-            var dates = values[1] as List<DateTime>;
-            return dates.Contains(date);
+            var currentDate = (DateTime)values[0];
+            var availableDates = values[1] as DateTime[];
+            return availableDates.Contains(currentDate);
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)

@@ -51,6 +51,7 @@
         <DataGrid SelectedItem="{Binding SelectedDataItem}"
                   RowHeight="20" 
                   MinHeight="67"
+                  ItemsSource="{Binding CurrentSchedule}"
                   GridLinesVisibility = "None"
                   IsReadOnly="True"
                   VerticalScrollBarVisibility="Disabled" 
@@ -65,12 +66,14 @@
                   CanUserAddRows="False"
                   CanUserDeleteRows="False"
                   AutoGenerateColumns="False">
-            <DataGrid.ItemsSource>
-                <MultiBinding Converter="{StaticResource DataIndexationByDate}">
-                    <Binding Path="ScheduleData"/>
-                    <Binding Path="Date"/>
-                </MultiBinding>
-            </DataGrid.ItemsSource>
+            <DataGrid.Columns>
+                <DataGridTemplateColumn Header="⚡︎"         Width="25"  CellTemplate="{StaticResource BlackoutsCellTemplate}" Visibility="{Binding Source={x:Static settings:Settings.Default},Path=ShowBlackouts, Converter={StaticResource Boolean2Visibility}}"/>
+                <DataGridTextColumn     Header="Час"        Width="70"  Binding="{Binding StudyTime}" />
+                <DataGridTemplateColumn Header="Дисципліна" Width="200"  CellTemplate="{StaticResource DisciplineWithToolTipsCellTemplate}" />
+                <DataGridTextColumn     Header="Тип"        Width="78"  Binding="{Binding StudyType}" />
+                <DataGridTextColumn     Header="Кабінет"    Width="52"  Binding="{Binding Cabinet}" />
+                <DataGridTextColumn     Header="Викладач"   Width="100" Binding="{Binding Employee}" Visibility="{Binding DataContext.IsDataGridExpanded, Source={x:Reference DummyElement}, Converter={StaticResource Boolean2Visibility}}"/>
+            </DataGrid.Columns>
             <DataGrid.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="Змінити нотатку" Command="{Binding ChangeNoteCommand}" Visibility="{Binding DataContext.SelectedDataItem.Note, Source={x:Reference DummyElement}, Converter={StaticResource Anything2Visibility}}"/>
@@ -80,14 +83,6 @@
                     <MenuItem Header="Перейменувати пару" Command="{Binding RenameItemCommand}"/>
                 </ContextMenu>
             </DataGrid.ContextMenu>
-            <DataGrid.Columns>
-                <DataGridTemplateColumn Header="⚡︎"         Width="25"  CellTemplate="{StaticResource BlackoutsCellTemplate}" Visibility="{Binding Source={x:Static settings:Settings.Default},Path=ShowBlackouts, Converter={StaticResource Boolean2Visibility}}"/>
-                <DataGridTextColumn     Header="Час"        Width="70"  Binding="{Binding StudyTime}" />
-                <DataGridTemplateColumn Header="Дисципліна" Width="200"  CellTemplate="{StaticResource DisciplineWithToolTipsCellTemplate}" />
-                <DataGridTextColumn     Header="Тип"        Width="78"  Binding="{Binding StudyType}" />
-                <DataGridTextColumn     Header="Кабінет"    Width="52"  Binding="{Binding Cabinet}" />
-                <DataGridTextColumn     Header="Викладач"   Width="100" Binding="{Binding Employee}" Visibility="{Binding DataContext.IsDataGridExpanded, Source={x:Reference DummyElement}, Converter={StaticResource Boolean2Visibility}}"/>
-            </DataGrid.Columns>
         </DataGrid>
     </StackPanel>
 </Window>
