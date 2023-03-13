@@ -11,7 +11,7 @@ using LightTimetable.Tools;
 using static LightTimetable.Properties.Settings;
 
 
-namespace LightTimetable.Model.Electricity
+namespace LightTimetable.Models.Electricity
 {
     public class ElectricityProvider
     {

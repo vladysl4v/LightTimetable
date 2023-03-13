@@ -14,11 +14,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Assets\AutoStart.png" />
     <Resource Include="Assets\LightTimetable-Logo.ico" />
     <Resource Include="Assets\MaybeElectricity.png" />
     <Resource Include="Assets\NoElectricity.png" />
     <Resource Include="Assets\Notes.png" />
     <Resource Include="Assets\RenamingCategory.ico" />
+    <Resource Include="Assets\SettingsCategory.ico" />
+    <Resource Include="Assets\StartManually.png" />
     <Resource Include="Assets\Subgroup.png" />
     <Resource Include="Assets\TimetableCategory.ico" />
   </ItemGroup>
@@ -28,6 +31,12 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Update="SettingsPages\Views\ApplicationPageView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="SettingsPages\Views\RenamingPageView.xaml.cs">
+      <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
 

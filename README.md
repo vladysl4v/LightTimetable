@@ -20,7 +20,7 @@
   <img width="586" height="336" src="https://user-images.githubusercontent.com/106306927/224055748-96cd49c9-77e5-4521-835c-3fd2700fd42b.gif">
 </p>
 <p align="center">
-  <img width="782" height="442" src="https://user-images.githubusercontent.com/106306927/224057094-04376426-7c6c-48f5-be55-88efe9c176c9.png">
+  <img width="786" height="443" src="https://user-images.githubusercontent.com/106306927/224853031-a9781ab8-499a-4c64-863f-c88e0346364e.gif">
 </p>
 
 <h2 align="left">SOON</h1>

@@ -1,9 +1,12 @@
 ﻿using System.Windows;
 using System.Threading.Tasks;
 
-using LightTimetable.Model;
+using LightTimetable.Models;
 using LightTimetable.Tools;
-using LightTimetable.Model.Electricity;
+using LightTimetable.Models.Electricity;
+using LightTimetable.Views;
+
+using static LightTimetable.Properties.Settings;
 
 namespace LightTimetable.ViewModels
 {
@@ -19,6 +22,11 @@ namespace LightTimetable.ViewModels
         public NotifyIconViewModel()
         {
             InitializeNotifyIcon();
+
+            // Commands
+            SingleClickCommand = new RelayCommand(_ => SingleClick());
+            DoubleClickCommand = new RelayCommand(_ => DoubleClick());
+            MiddleClickCommand = new RelayCommand(_ => MiddleClick());
 
             ShowTimetableCommand = new RelayCommand(_ => ShowTimetable());
             RefreshDataCommand = new RelayCommand(_ => RefreshData());
@@ -36,10 +44,34 @@ namespace LightTimetable.ViewModels
         }
 
         #region Commands
+        public RelayCommand DoubleClickCommand { get; }
+        public RelayCommand SingleClickCommand { get; }
+        public RelayCommand MiddleClickCommand { get; }
         public RelayCommand ShowTimetableCommand { get; }
         public RelayCommand RefreshDataCommand { get; }
         public RelayCommand OpenSettingsCommand { get; }
         public RelayCommand CloseApplicationCommand { get; }
+
+        private void SingleClick()
+        {
+            if (Default.OpenWindowMode == 0)
+                ShowTimetable();
+        }
+
+        private void DoubleClick()
+        {
+            if (Default.OpenWindowMode == 1)
+                ShowTimetable();
+        }
+
+        private void MiddleClick()
+        {
+            switch (Default.MiddleMouseClick)
+            {
+                case 1: RefreshData(); break;
+                case 2: OpenSettings(); break;
+            }
+        }
 
         private void ShowTimetable()
         {

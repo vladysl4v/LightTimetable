@@ -130,5 +130,41 @@ namespace LightTimetable.Properties {
                 this["_notes"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int Autostart {
+            get {
+                return ((int)(this["Autostart"]));
+            }
+            set {
+                this["Autostart"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int OpenWindowMode {
+            get {
+                return ((int)(this["OpenWindowMode"]));
+            }
+            set {
+                this["OpenWindowMode"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int MiddleMouseClick {
+            get {
+                return ((int)(this["MiddleMouseClick"]));
+            }
+            set {
+                this["MiddleMouseClick"] = value;
+            }
+        }
     }
 }

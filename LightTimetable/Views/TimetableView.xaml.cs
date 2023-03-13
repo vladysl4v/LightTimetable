@@ -4,7 +4,7 @@ using System.Windows;
 using LightTimetable.ViewModels;
 
 
-namespace LightTimetable
+namespace LightTimetable.Views
 {
     /// <summary>
     /// Interaction logic for TimetableView.xaml

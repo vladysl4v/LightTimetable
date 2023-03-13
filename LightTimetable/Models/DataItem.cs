@@ -4,11 +4,12 @@ using System.Text;
 using System.Collections.Generic;
 
 using LightTimetable.Tools;
-using LightTimetable.Model.Electricity;
+using LightTimetable.Models.Electricity;
+
 using static LightTimetable.Properties.Settings;
 
 
-namespace LightTimetable.Model
+namespace LightTimetable.Models
 {
     public class DataItem
     {

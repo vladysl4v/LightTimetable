@@ -5,7 +5,7 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="NotifyIcon.xaml"/>
+                <ResourceDictionary Source="/Views/NotifyIconView.xaml"/>
                 <ResourceDictionary Source="/ResourceDictionaries/Converters.xaml"/>
                 <ResourceDictionary Source="/ResourceDictionaries/Templates.xaml"/>
                 <ResourceDictionary Source="/ResourceDictionaries/Styles.xaml"/>

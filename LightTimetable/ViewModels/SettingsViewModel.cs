@@ -1,77 +1,77 @@
-﻿using System.Windows.Controls;
+﻿using System.Windows;
 
+using LightTimetable.SettingsPages.ViewModels;
 using LightTimetable.Tools;
-using LightTimetable.SettingsPages;
-
-using static LightTimetable.Properties.Settings;
 
 
 namespace LightTimetable.ViewModels
 {
-    public class SettingsViewModel : ViewModelBase
+    class SettingsViewModel : ViewModelBase
     {
+        private PageViewModelBase _currentView;
+
+        public PageViewModelBase CurrentView
+        {
+            get => _currentView;
+            set => SetProperty(ref _currentView, value);
+        }
+
         public SettingsViewModel()
         {
-            // Default page
-            ChangePage("TimetablePage");
-
             // Commands
-            ChangePageCommand    = new RelayCommand(ChangePage);
-            SaveSettingsCommand  = new RelayCommand(_ => SaveSettings());
-            ResetSettingsCommand = new RelayCommand(_ => ResetSettings());
+            SaveAndCloseCommand = new RelayCommand(SaveAndCloseSettings);
+            CloseSettingsCommand = new RelayCommand(CloseSettings);
+            SaveSettingsCommand = new RelayCommand(SaveSettings);
+
+            ApplicationCategoryCommand = new RelayCommand(_ => SetApplicationCategory());
+            ScheduleCategoryCommand = new RelayCommand(_ => SetScheduleCategory());
+            RenamingCategoryCommand = new RelayCommand(_ => SetRenamingCategory());
+
+            // Startup page
+            CurrentView = new ApplicationPageViewModel();
         }
 
-        #region Properties
-
-        private Page _currentPage = null!;
-        private string _lvl1Header = null!;
-        private string _lvl2Header = null!;
-        public Page CurrentPage
-        {
-            get => _currentPage;
-            set => SetProperty(ref _currentPage, value);
-        }
-
-        public string Lvl1Header
-        {
-            get => _lvl1Header;
-            set => SetProperty(ref _lvl1Header, value.ToUpper());
-        }
-
-        public string Lvl2Header
-        {
-            get => _lvl2Header;
-            set => SetProperty(ref _lvl2Header, value);
-        }
-        #endregion
-
-        #region Commands
-
-        public RelayCommand ChangePageCommand { get; }
+        // Button commands
         public RelayCommand SaveSettingsCommand { get; }
-        public RelayCommand ResetSettingsCommand { get; }
+        public RelayCommand SaveAndCloseCommand { get; }
+        public RelayCommand CloseSettingsCommand { get; }
 
-        private void ChangePage(object pageName)
+        private void SaveSettings(object win)
         {
-            if ((string)pageName == "TimetablePage")
+            if (win is not Window thisWindow) return;
+            CurrentView.Save();
+        }
+
+        private void SaveAndCloseSettings(object win)
+        {
+            if (win is not Window thisWindow) return;
+            CurrentView.Save();
+            thisWindow.Close();
+        }
+
+        private void CloseSettings(object win)
+        {
+            if (win is not Window thisWindow) return;
+
+            if (!CurrentView.IsAnythingChanged)
             {
-                CurrentPage = new TimetablePage();
-                Lvl1Header = "Розклад";
-                Lvl2Header = "Виберіть свою навчальну групу";
+                thisWindow.Close();
+            }
+            var msgResult = MessageBox.Show("Ви внесли не збережені зміни. Все одно закрити налаштування?", "Налаштування",
+                    MessageBoxButton.YesNo);
+            if (msgResult == MessageBoxResult.Yes)
+            {
+                thisWindow.Close();
             }
         }
 
-        private void SaveSettings()
-        {
-            Default.Save();
-        }
+        // Categories commands
+        public RelayCommand ApplicationCategoryCommand { get; }
+        public RelayCommand ScheduleCategoryCommand { get; }
+        public RelayCommand RenamingCategoryCommand { get; }
 
-        private void ResetSettings()
-        {
-            Default.Reload();
-        }
-        
-        #endregion
-
+        private void SetApplicationCategory() => CurrentView = new ApplicationPageViewModel();
+        private void SetScheduleCategory() => CurrentView = new SchedulePageViewModel();
+        private void SetRenamingCategory() => CurrentView = new RenamingPageViewModel();
     }
 }

@@ -5,10 +5,11 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using LightTimetable.Model.Electricity;
+
+using LightTimetable.Models.Electricity;
 
 
-namespace LightTimetable.Model
+namespace LightTimetable.Models
 {
     public class DataProvider
     {

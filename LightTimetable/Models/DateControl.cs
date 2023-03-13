@@ -2,7 +2,7 @@
 using System.Linq;
 
 
-namespace LightTimetable.Model
+namespace LightTimetable.Models
 {
     public class DateControl
     {

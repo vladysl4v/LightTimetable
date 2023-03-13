@@ -3,7 +3,7 @@ using System.Linq;
 using System.Windows;
 using System.Collections.Generic;
 
-using LightTimetable.Model;
+using LightTimetable.Models;
 using LightTimetable.Tools;
 
 using static LightTimetable.Properties.Settings;
@@ -35,7 +35,7 @@ namespace LightTimetable.ViewModels
         #region Properties
 
         private bool _isDataGridExpanded;
-        private DataItem _selectedDataItem;
+        private DataItem? _selectedDataItem;
 
         public List<DataItem> CurrentSchedule
         {
@@ -48,11 +48,10 @@ namespace LightTimetable.ViewModels
             }
         }
 
-        public DataItem SelectedDataItem
+        public DataItem? SelectedDataItem
         {
             get => _selectedDataItem;
             set => SetProperty(ref _selectedDataItem, value);
-
         }
 
         public bool IsDataGridExpanded
@@ -114,45 +113,49 @@ namespace LightTimetable.ViewModels
 
         private void AddNote()
         {
+            if (SelectedDataItem == null)
+                return;
             string noteText = new InputBox("Нотатка", "Введіть текст нотатки:").GetText();
-            if (noteText.Any())
-            {
-                Default.AppendToNotes(SelectedDataItem.Id, noteText);
-                SelectedDataItem.Note = noteText;
-                UpdateDataGrid();
-            }
+            if (string.IsNullOrWhiteSpace(noteText)) 
+                return;
+            Default.AppendToNotes(SelectedDataItem.Id, noteText);
+            SelectedDataItem.Note = noteText;
+            UpdateDataGrid();
         }
 
         private void ChangeNote()
         {
+            if (SelectedDataItem == null)
+                return;
             string noteText = new InputBox("Нотатка", "Введіть новий текст нотатки:", SelectedDataItem.Note).GetText();
-            if (noteText.Any() && noteText != SelectedDataItem.Note)
-            {
-                Default.AppendToNotes(SelectedDataItem.Id, noteText);
-                SelectedDataItem.Note = noteText;
-                UpdateDataGrid();
-            }
+            if (string.IsNullOrWhiteSpace(noteText) || noteText == SelectedDataItem.Note) 
+                return;
+            Default.AppendToNotes(SelectedDataItem.Id, noteText);
+            SelectedDataItem.Note = noteText;
+            UpdateDataGrid();
         }
         private void DeleteNote()
         {
-            MessageBoxResult result = MessageBox.Show("Ви впевнені що хочете видалити цю нотатку?", "Нотатка", MessageBoxButton.YesNo);
-            if (result == MessageBoxResult.Yes)
-            {
-                Default.RemoveFromNotes(SelectedDataItem.Id);
-                SelectedDataItem.Note = string.Empty;
-                UpdateDataGrid();
-            }
+            if (SelectedDataItem == null)
+                return;
+            var result = MessageBox.Show("Ви впевнені що хочете видалити цю нотатку?", "Нотатка", MessageBoxButton.YesNo);
+            if (result != MessageBoxResult.Yes) 
+                return;
+            Default.RemoveFromNotes(SelectedDataItem.Id);
+            SelectedDataItem.Note = string.Empty;
+            UpdateDataGrid();
         }
 
         private void RenameItem()
         {
+            if (SelectedDataItem == null)
+                return;
             string newItemName = new InputBox("Перейменування", $"Введіть нову назву для \"{SelectedDataItem.Discipline.Value}\":", SelectedDataItem.Discipline.Key).GetText();
-            if (newItemName.Any() && newItemName != SelectedDataItem.Discipline.Key)
-            {
-                Default.AppendToRenames(SelectedDataItem.Discipline.Value, newItemName);
-                SelectedDataItem.Discipline.Key = newItemName;
-                UpdateDataGrid(SelectedDataItem.Discipline);
-            }
+            if (string.IsNullOrWhiteSpace(newItemName) || newItemName == SelectedDataItem.Discipline.Key) 
+                return;
+            Default.AppendToRenames(SelectedDataItem.Discipline.Value, newItemName);
+            SelectedDataItem.Discipline.Key = newItemName;
+            UpdateDataGrid(SelectedDataItem.Discipline);
         }
 
         #endregion

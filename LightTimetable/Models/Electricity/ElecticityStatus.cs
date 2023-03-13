@@ -1,4 +1,4 @@
-﻿namespace LightTimetable.Model.Electricity
+﻿namespace LightTimetable.Models.Electricity
 {
     public struct ElecticityStatus
     {
