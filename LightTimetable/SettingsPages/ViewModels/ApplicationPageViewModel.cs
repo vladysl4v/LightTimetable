@@ -56,7 +56,7 @@ namespace LightTimetable.SettingsPages.ViewModels
         private void AddAppToAutostart()
         {
             RegistryKey rk = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
-            rk.SetValue("LightTimetable", AppDomain.CurrentDomain.BaseDirectory + "\\LightTimetable.exe");
+            rk.SetValue("LightTimetable", AppDomain.CurrentDomain.BaseDirectory + "LightTimetable.exe");
         }
 
         private void RemoveFromAutostart()
