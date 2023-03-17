@@ -58,9 +58,17 @@ namespace LightTimetable.SettingsPages.ViewModels
 
         private void SaveAndCloseSettings(object control)
         {
-            if (control is not UserControl thisPage) return;
-            Save();
-            Window.GetWindow(thisPage).Close();
+            if (control is not UserControl and not Window) return;
+            if (control is Window thisWindow)
+            {
+                Save();
+                thisWindow.Close();
+            }
+            if (control is UserControl thisPage)
+            {
+                Save();
+                Window.GetWindow(thisPage).Close();
+            }
         }
 
         private void CloseSettings(object control)

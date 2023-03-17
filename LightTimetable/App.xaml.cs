@@ -7,6 +7,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
+using LightTimetable.Views;
+
 namespace LightTimetable
 {
     /// <summary>
@@ -22,6 +24,12 @@ namespace LightTimetable
 
             //create the notifyicon (it's a resource declared in NotifyIconResources.xaml
             _notifyIcon = (TaskbarIcon)FindResource("NotifyIcon");
+
+            if (string.IsNullOrEmpty(LightTimetable.Properties.Settings.Default.StudyGroup))
+            {
+                var initSetupWindow = new InitialSetupView();
+                initSetupWindow.ShowDialog();
+            }
         }
 
         protected override void OnExit(ExitEventArgs e)

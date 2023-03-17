@@ -56,6 +56,10 @@ namespace LightTimetable.Models
                 int startHour = int.Parse(intersections[0].First()) - 1;
                 result.Append($"\n{startHour}:00-{intersections[0].Last()}:00 - можливе відключення");
             }
+
+            if (!isDefinitelyBlackout && !Default.ShowPossibleBlackouts)
+                return null;
+
             return new ElecticityStatus(result.ToString(), isDefinitelyBlackout);
         }
 
