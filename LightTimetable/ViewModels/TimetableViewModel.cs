@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Windows;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 using LightTimetable.Models;
 using LightTimetable.Tools;
@@ -14,29 +15,44 @@ namespace LightTimetable.ViewModels
     public class TimetableViewModel : ViewModelBase
     {
         private readonly DataProvider _dataProvider;
-        private readonly DateControl _dateControl;
+        private DateControl? _dateControl;
 
         public TimetableViewModel()
         {
-            _dataProvider = new DataProvider();
-            _dateControl = new DateControl(_dataProvider.AvailableDates);
-
+            AppStatus = TimetableStatus.Loading;
             // Commands
             HideWindowCommand = new RelayCommand(HideWindow);
             ChangeDateCommand = new RelayCommand(ChangeDate);
-            ResetDateCommand  = new RelayCommand(_ => ResetDate());
+            ResetDateCommand = new RelayCommand(_ => ResetDate());
 
-            AddNoteCommand    = new RelayCommand(_ => AddNote());
+            AddNoteCommand = new RelayCommand(_ => AddNote());
             ChangeNoteCommand = new RelayCommand(_ => ChangeNote());
             DeleteNoteCommand = new RelayCommand(_ => DeleteNote());
             RenameItemCommand = new RelayCommand(_ => RenameItem());
+
+            _dataProvider = new DataProvider();
+
+            if (!DataProvider.IsDataInitialized)
+            {
+                DataProvider.DataInitialized += LateDataInitializing;
+                return;
+            }
+            _dateControl = new DateControl(_dataProvider.AvailableDates);
+            AppStatus = TimetableStatus.Default;
         }
 
         #region Properties
 
         private bool _isDataGridExpanded;
         private DataItem? _selectedDataItem;
+        private TimetableStatus _appStatus;
 
+        public TimetableStatus AppStatus
+        {
+            get => _appStatus;
+            set => SetProperty(ref _appStatus, value);
+        }
+        
         public List<DataItem> CurrentSchedule
         {
             get
@@ -62,9 +78,11 @@ namespace LightTimetable.ViewModels
 
         public DateTime Date
         {
-            get => _dateControl.Date;
+            get => _dateControl?.Date ?? DateTime.MinValue;
             set
             {
+                if (_dateControl == null)
+                    return;
                 _dateControl.Date = value;
                 OnDateChanged();
             }
@@ -72,7 +90,7 @@ namespace LightTimetable.ViewModels
 
         public DateTime[] AvailableDates
         {
-            get => _dataProvider.AvailableDates;
+            get => _dataProvider?.AvailableDates;
         }
         #endregion
 
@@ -84,13 +102,13 @@ namespace LightTimetable.ViewModels
 
         private void ResetDate()
         {
-            _dateControl.SetCorrectDate();
+            _dateControl?.SetCorrectDate();
             OnDateChanged();
         }
 
         private void ChangeDate(object amount)
         {
-            _dateControl.ChangeDate(int.Parse((string)amount));
+            _dateControl?.ChangeDate(int.Parse((string)amount));
             OnDateChanged();
         }
 
@@ -168,6 +186,13 @@ namespace LightTimetable.ViewModels
             OnPropertyChanged(nameof(CurrentSchedule));
         }
 
+        private void LateDataInitializing(object? s, EventArgs e)
+        {
+            AppStatus = TimetableStatus.Default;
+            _dateControl = new DateControl(_dataProvider.AvailableDates);
+            ReloadData();
+            OnDateChanged();
+        }
         public void UpdateDataGrid(MutablePair<string, string> renamePair = null)
         {
             // temporary condition to update data grid cells

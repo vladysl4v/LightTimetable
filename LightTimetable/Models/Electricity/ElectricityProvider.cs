@@ -16,6 +16,9 @@ namespace LightTimetable.Models.Electricity
     public class ElectricityProvider
     {
         private static string _serializedData;
+        public static bool IsElectricityInitialized { get; set; }
+
+        public static event EventHandler ElectricityInitialized;
 
         private Dictionary<string, Dictionary<string, List<string>>> _blackoutsData;
 
@@ -63,12 +66,14 @@ namespace LightTimetable.Models.Electricity
 
             string request = await httpClient.GetStringAsync("https://www.dtek-kem.com.ua/ua/shutdowns");
             _serializedData = Regex.Match(request, "\"data\":{.*").Value[7..^1];
+            IsElectricityInitialized = true;
+            OnElectricityInitialized();
         }
 
         private Dictionary<string, Dictionary<string, List<string>>> GetData()
         {
             Dictionary<string, Dictionary<string, List<string>>> tempDictionary = new();
-            if (_serializedData == string.Empty)
+            if (_serializedData is "" or null)
             {
                 return new Dictionary<string, Dictionary<string, List<string>>>();
             }
@@ -78,6 +83,11 @@ namespace LightTimetable.Models.Electricity
                 tempDictionary.Add(group.Key, group.Value.GroupBy(r => r.Value).ToDictionary(t => t.Key, t => t.Select(r => r.Key).ToList()));
             }
             return tempDictionary;
+        }
+
+        static void OnElectricityInitialized()
+        {
+            ElectricityInitialized.Invoke(null, EventArgs.Empty);
         }
     }
 }

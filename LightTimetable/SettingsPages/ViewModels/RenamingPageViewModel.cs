@@ -10,12 +10,11 @@ namespace LightTimetable.SettingsPages.ViewModels
 {
     class RenamingPageViewModel : PageViewModelBase
     {
-
         public RenamingPageViewModel()
         {
             // Commands
-            ChangeRenameCommand = new RelayCommand(_ => ChangeRename());
-            RemoveRenameCommand = new RelayCommand(_ => RemoveRename());
+            ChangeRenameCommand = new RelayCommand(ChangeRename);
+            RemoveRenameCommand = new RelayCommand(RemoveRename);
         }
         public override void Save()
         {
@@ -27,7 +26,6 @@ namespace LightTimetable.SettingsPages.ViewModels
         #region Properties
 
         private List<KeyValuePair<string, string>> _renamesList = Default.Renames.ToList();
-        private KeyValuePair<string, string>? _selectedItem;
 
         public ObservableCollection<KeyValuePair<string, string>> RenamesList
         {
@@ -35,11 +33,6 @@ namespace LightTimetable.SettingsPages.ViewModels
             set => SetProperty(ref _renamesList, value.ToList());
         }
 
-        public KeyValuePair<string, string>? SelectedItem
-        {
-            get => _selectedItem;
-            set => SetProperty(ref _selectedItem, value);
-        }
 
         #endregion
 
@@ -48,27 +41,35 @@ namespace LightTimetable.SettingsPages.ViewModels
         public RelayCommand ChangeRenameCommand { get; }
         public RelayCommand RemoveRenameCommand { get; }
 
-        private void ChangeRename()
+        private void ChangeRename(object selectedItem)
         {
-            if (SelectedItem == null)
+            if (selectedItem == null)
                 return;
-            string newItemName = new InputBox("Перейменування", $"Введіть нову назву для \"{SelectedItem?.Key}\":", SelectedItem?.Value).GetText();
+
+            var thisItem = (KeyValuePair<string, string>)selectedItem;
+
+            string newItemName = new InputBox("Перейменування", $"Введіть нову назву для \"{thisItem.Key}\":", thisItem.Value).GetText();
             if (string.IsNullOrWhiteSpace(newItemName))
                 return;
-            var item = _renamesList.First(x => x.Key == SelectedItem?.Key);
+            var item = _renamesList.First(x => x.Key == thisItem.Key);
             _renamesList.Remove(item);
             _renamesList.Add(new KeyValuePair<string, string>(item.Key, newItemName));
+
+            IsAnythingChanged = true;
             OnPropertyChanged(nameof(RenamesList));
 
         }
 
-        private void RemoveRename()
+        private void RemoveRename(object selectedItem)
         {
-            if (SelectedItem == null)
+            if (selectedItem == null)
                 return;
 
-            var item = _renamesList.First(x => x.Key == SelectedItem?.Key);
+            var thisItem = (KeyValuePair<string, string>)selectedItem;
+            var item = _renamesList.First(x => x.Key == thisItem.Key);
             _renamesList.Remove(item);
+
+            IsAnythingChanged = true;
             OnPropertyChanged(nameof(RenamesList));
         }
 

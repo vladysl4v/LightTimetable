@@ -1,5 +1,4 @@
 ﻿using System.Windows;
-using System.Threading.Tasks;
 
 using LightTimetable.Models;
 using LightTimetable.Tools;
@@ -16,13 +15,10 @@ namespace LightTimetable.ViewModels
     public class NotifyIconViewModel
     {
         private SettingsView? _settingsWindow;
-
         private bool _isWindowInitialized;
 
         public NotifyIconViewModel()
         {
-            InitializeNotifyIcon();
-
             // Commands
             SingleClickCommand = new RelayCommand(_ => SingleClick());
             DoubleClickCommand = new RelayCommand(_ => DoubleClick());
@@ -32,15 +28,15 @@ namespace LightTimetable.ViewModels
             RefreshDataCommand = new RelayCommand(_ => RefreshData());
             OpenSettingsCommand = new RelayCommand(_ => OpenSettings());
             CloseApplicationCommand = new RelayCommand(_ => CloseApplication());
+
+            InitializeNotifyIcon();
         }
 
-        private async Task InitializeNotifyIcon()
+        private void InitializeNotifyIcon()
         {
-            await DataProvider.InitializeDataAsync();
-            await ElectricityProvider.InitializeBlackoutsAsync();
-
-            _isWindowInitialized = true;
             Application.Current.MainWindow = new TimetableView();
+            DataProvider.InitializeDataAsync();
+            ElectricityProvider.InitializeBlackoutsAsync();
         }
 
         #region Commands
@@ -75,25 +71,24 @@ namespace LightTimetable.ViewModels
 
         private void ShowTimetable()
         {
-            if (_isWindowInitialized)
-                Application.Current.MainWindow.Show();
+            Application.Current.MainWindow.Show();
         }
 
         private async void RefreshData()
         {
+            var mainWindow = Application.Current.MainWindow as TimetableView;
             await DataProvider.InitializeDataAsync();
-            ((TimetableView)Application.Current.MainWindow).ReloadData();
-            ((TimetableView)Application.Current.MainWindow).RefreshTimetable();
+            mainWindow.ReloadData();
+            mainWindow.RefreshTimetable();
         }
 
         private void OpenSettings()
         {
-            if (_settingsWindow == null)
-            {
-                _settingsWindow = new SettingsView();
-                _settingsWindow.Closed += (s, e) => _settingsWindow = null;
-                _settingsWindow.Show();
-            }
+            if (_settingsWindow != null) 
+                return;
+            _settingsWindow = new SettingsView();
+            _settingsWindow.Closed += (s, e) => _settingsWindow = null;
+            _settingsWindow.Show();
         }
 
         private void CloseApplication()

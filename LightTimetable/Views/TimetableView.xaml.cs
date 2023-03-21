@@ -29,21 +29,13 @@ namespace LightTimetable.Views
         private void OnWindowSizeChanged(object sender, SizeChangedEventArgs e)
         {
             bool isWidthChanged = Math.Abs(e.PreviousSize.Width - e.NewSize.Width) > 10;
-             bool isHeightChanged = Math.Abs(e.PreviousSize.Height - e.NewSize.Height) > 10;
+            bool isHeightChanged = Math.Abs(e.PreviousSize.Height - e.NewSize.Height) > 10;
 
-             if (!isHeightChanged && !isWidthChanged)
-                 return;
+            if (isHeightChanged)
+                this.Top = SystemParameters.WorkArea.Height - e.NewSize.Height;
 
-             if (isHeightChanged && isWidthChanged)
-             {
-                 this.Left = SystemParameters.FullPrimaryScreenWidth - e.NewSize.Width;
-                 this.Top = SystemParameters.WorkArea.Height - e.NewSize.Height;
-             }
-             if (isHeightChanged && !isWidthChanged)
-                 this.Top = SystemParameters.WorkArea.Height - e.NewSize.Height;
-
-             if (!isHeightChanged && isWidthChanged)
-                 this.Left = SystemParameters.FullPrimaryScreenWidth - e.NewSize.Width;
+            if (isWidthChanged)
+                this.Left = SystemParameters.FullPrimaryScreenWidth - e.NewSize.Width;
         }
     }
 }

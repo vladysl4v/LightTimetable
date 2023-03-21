@@ -19,7 +19,7 @@
             <RowDefinition Height="40"/>
         </Grid.RowDefinitions>
         <DataGrid ItemsSource="{Binding RenamesList}"
-                  SelectedItem="{Binding SelectedItem}"
+                  x:Name="MainDataGrid"
                   RowHeight="20"
                   GridLinesVisibility = "None" 
                   VerticalScrollBarVisibility="Auto" 
@@ -40,8 +40,8 @@
                 <DataGridTextColumn Header="Перейменування"  Binding="{Binding Value}" Width="300"/>
             </DataGrid.Columns>
         </DataGrid>
-        <Button Content="Видалити" Command="{Binding RemoveRenameCommand}" HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Top" Width="90" Height="25" Grid.Row="1"/>
-        <Button Content="Змінити" Command="{Binding ChangeRenameCommand}" HorizontalAlignment="Right" Margin="0,0,110,0" VerticalAlignment="Top" Width="90" Height="25" Grid.Row="1"/>
+        <Button Content="Видалити" Command="{Binding RemoveRenameCommand}" CommandParameter="{Binding ElementName=MainDataGrid, Path=SelectedItem}" HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Top" Width="90" Height="25" Grid.Row="1"/>
+        <Button Content="Змінити" Command="{Binding ChangeRenameCommand}" CommandParameter="{Binding ElementName=MainDataGrid, Path=SelectedItem}" HorizontalAlignment="Right" Margin="0,0,110,0" VerticalAlignment="Top" Width="90" Height="25" Grid.Row="1"/>
         
         
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">

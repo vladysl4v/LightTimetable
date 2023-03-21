@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:LightTimetable.ViewModels"
         xmlns:settings="clr-namespace:LightTimetable.Properties"
+        xmlns:gif="https://github.com/XamlAnimatedGif/XamlAnimatedGif"
         mc:Ignorable="d" 
         x:Name="TimetableWindow" Title="Timetable" MinHeight="91" MinWidth="400"
         SizeToContent="WidthAndHeight" ResizeMode="NoResize" Topmost="True"
@@ -17,6 +18,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="25"/>
                 <ColumnDefinition Width="90"/>
+                <ColumnDefinition Width="25"/>
                 <ColumnDefinition Width="1*"/>
                 <ColumnDefinition Width="25"/>
                 <ColumnDefinition Width="25"/>
@@ -24,9 +26,11 @@
                 <ColumnDefinition Width="25"/>
             </Grid.ColumnDefinitions>
             <!-- CURRENT DAY OF WEEK LABEL -->
-            <Label Content="{Binding Date, Converter={StaticResource DayOfWeek2Title}}" HorizontalContentAlignment="Center" Grid.ColumnSpan="7"/>
+            <Label Content="{Binding Date, Converter={StaticResource DayOfWeek2Title}}" HorizontalContentAlignment="Center" Grid.ColumnSpan="8"/>
             <!-- BACK TO TODAY BUTTON -->
             <Button Content="⌂" Command="{Binding ResetDateCommand}" Grid.Column="0"/>
+            <!-- APPLICATION STATUS -->
+            <Image gif:AnimationBehavior.SourceUri="{Binding AppStatus, Converter={StaticResource AppStatus2Image}}" Grid.Column="2"/>
             <!-- CURRENT DATE DATEPICKER -->
             <DatePicker SelectedDate="{Binding Date}" CalendarStyle="{StaticResource CalendarWithHighlightedDates}" Foreground="{Binding Date, Converter={StaticResource ForegroundByDate}}" Grid.Column="1" BorderThickness="0" Focusable="False">
                 <DatePicker.Resources>
@@ -37,13 +41,13 @@
                 </DatePicker.Resources>
             </DatePicker>
             <!-- EXPAND DATAGRID BUTTON -->
-            <Expander IsExpanded="{Binding IsDataGridExpanded}" Grid.Column="3" ExpandDirection="Right" Focusable="False" Width="23" Height="23"/>
+            <Expander IsExpanded="{Binding IsDataGridExpanded}" Grid.Column="4" ExpandDirection="Right" Focusable="False" Width="23" Height="23"/>
             <!-- PREVIOUS DAY BUTTON -->
-            <Button Content="←" Command="{Binding ChangeDateCommand}" CommandParameter="-1" Grid.Column="4"/>
+            <Button Content="←" Command="{Binding ChangeDateCommand}" CommandParameter="-1" Grid.Column="5"/>
             <!-- NEXT DAY BUTTON -->
-            <Button Content="→" Command="{Binding ChangeDateCommand}" CommandParameter="+1" Grid.Column="5"/>
+            <Button Content="→" Command="{Binding ChangeDateCommand}" CommandParameter="+1" Grid.Column="6"/>
             <!-- HIDE WINDOW BUTTON -->
-            <Button Content="✕" Command="{Binding HideWindowCommand}" CommandParameter="{Binding ElementName=TimetableWindow}" Grid.Column="6"/>
+            <Button Content="✕" Command="{Binding HideWindowCommand}" CommandParameter="{Binding ElementName=TimetableWindow}" Grid.Column="7"/>
         </Grid>
         <!-- DUMMY THAT ALLOWS TO BIND THE VISIBILITY OF A DATAGRID COLUMN -->
         <FrameworkElement x:Name="DummyElement" Visibility="Collapsed"/>

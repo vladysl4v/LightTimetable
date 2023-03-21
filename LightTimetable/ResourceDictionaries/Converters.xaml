@@ -8,6 +8,7 @@
     <converters:AnythingToVisibilityConverter x:Key="Anything2Visibility" />
     <converters:AnythingToIconSourceConverter x:Key="Anything2IconSource" />
     <converters:HighlightCalendarConverter x:Key="HighlightCalendar" />
+    <converters:TimetableStatusToImageConverter x:Key="AppStatus2Image" />
     <converters:RadioBoolToIntConverter x:Key="RadioBool2Int"/>
 
 </ResourceDictionary>

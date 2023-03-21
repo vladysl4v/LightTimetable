@@ -13,18 +13,22 @@ namespace LightTimetable.Models
 {
     public class DataProvider
     {
-        private readonly ElectricityProvider _electricity;
+        private ElectricityProvider _electricity;
         private static string _serializedData;
+
+        public static event EventHandler DataInitialized;
 
         public DataProvider()
         {
-            _electricity = new ElectricityProvider();
+            ElectricityProvider.ElectricityInitialized += (_, _) => ElectricityReady();
         }
 
         #region Properties
 
         private Dictionary<DateTime, List<DataItem>> _scheduleTable;
         private DateTime[] _availableDates;
+
+        public static bool IsDataInitialized { get; set; }
 
         public Dictionary<DateTime, List<DataItem>> ScheduleDictionary
         {
@@ -60,13 +64,17 @@ namespace LightTimetable.Models
             {
                 _serializedData = string.Empty;
             }
-
-            _serializedData = stringOutput;
+            else
+            {
+                _serializedData = stringOutput;
+            }
+            IsDataInitialized = true;
+            OnDataInitialized();
         }
 
         private Dictionary<DateTime, List<DataItem>> GetData()
         {
-            if (_serializedData == string.Empty)
+            if (_serializedData is "" or null)
             {
                 return new Dictionary<DateTime, List<DataItem>>();
             }
@@ -96,6 +104,20 @@ namespace LightTimetable.Models
                 }
             }
             return Data;
+        }
+
+        private static void OnDataInitialized()
+        {
+            if (IsDataInitialized && ElectricityProvider.IsElectricityInitialized)
+            {
+                DataInitialized.Invoke(null, EventArgs.Empty);
+            }
+        }
+
+        private void ElectricityReady()
+        {
+            _electricity = new ElectricityProvider();
+            OnDataInitialized();
         }
 
         #endregion

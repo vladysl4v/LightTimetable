@@ -94,8 +94,6 @@ namespace LightTimetable.SettingsPages.ViewModels
 
             get => new JValue(_currStudyGroup);
             set => SetProperty(ref _currStudyGroup, value.ToString());
-            
-            
         }
 
         #endregion
@@ -162,6 +160,7 @@ namespace LightTimetable.SettingsPages.ViewModels
             var data = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, dynamic>>>(request)["d"];
 
             StudyGroupsSource = data["studyGroups"];
+            IsAnythingChanged = false;
         }
 
         #endregion

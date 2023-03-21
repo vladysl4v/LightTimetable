@@ -22,7 +22,7 @@ namespace LightTimetable.ViewModels
         }
 
         // Notifies listeners that a property value has changed.
-        protected void OnPropertyChanged(string propertyName)
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
