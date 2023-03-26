@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Windows;
 using System.Collections.Generic;
-using System.Diagnostics;
 
 using LightTimetable.Models;
 using LightTimetable.Tools;
@@ -19,7 +18,7 @@ namespace LightTimetable.ViewModels
 
         public TimetableViewModel()
         {
-            AppStatus = TimetableStatus.Loading;
+            TtStatus = TimetableStatus.Loading;
             // Commands
             HideWindowCommand = new RelayCommand(HideWindow);
             ChangeDateCommand = new RelayCommand(ChangeDate);
@@ -38,19 +37,19 @@ namespace LightTimetable.ViewModels
                 return;
             }
             _dateControl = new DateControl(_dataProvider.AvailableDates);
-            AppStatus = TimetableStatus.Default;
+            TtStatus = TimetableStatus.Default;
         }
 
         #region Properties
 
         private bool _isDataGridExpanded;
         private DataItem? _selectedDataItem;
-        private TimetableStatus _appStatus;
+        private TimetableStatus _ttStatus;
 
-        public TimetableStatus AppStatus
+        public TimetableStatus TtStatus
         {
-            get => _appStatus;
-            set => SetProperty(ref _appStatus, value);
+            get => _ttStatus;
+            set => SetProperty(ref _ttStatus, value);
         }
         
         public List<DataItem> CurrentSchedule
@@ -168,11 +167,11 @@ namespace LightTimetable.ViewModels
         {
             if (SelectedDataItem == null)
                 return;
-            string newItemName = new InputBox("Перейменування", $"Введіть нову назву для \"{SelectedDataItem.Discipline.Value}\":", SelectedDataItem.Discipline.Key).GetText();
-            if (string.IsNullOrWhiteSpace(newItemName) || newItemName == SelectedDataItem.Discipline.Key) 
+            string newItemName = new InputBox("Перейменування", $"Введіть нову назву для \"{SelectedDataItem.Discipline.Original}\":", SelectedDataItem.Discipline.Modified).GetText();
+            if (string.IsNullOrWhiteSpace(newItemName) || newItemName == SelectedDataItem.Discipline.Modified) 
                 return;
-            Default.AppendToRenames(SelectedDataItem.Discipline.Value, newItemName);
-            SelectedDataItem.Discipline.Key = newItemName;
+            Default.AppendToRenames(SelectedDataItem.Discipline.Original, newItemName);
+            SelectedDataItem.Discipline.Modified = newItemName;
             UpdateDataGrid(SelectedDataItem.Discipline);
         }
 
@@ -188,12 +187,12 @@ namespace LightTimetable.ViewModels
 
         private void LateDataInitializing(object? s, EventArgs e)
         {
-            AppStatus = TimetableStatus.Default;
+            TtStatus = TimetableStatus.Default;
             _dateControl = new DateControl(_dataProvider.AvailableDates);
             ReloadData();
             OnDateChanged();
         }
-        public void UpdateDataGrid(MutablePair<string, string> renamePair = null)
+        public void UpdateDataGrid(DisciplinePair renamePair = null)
         {
             // temporary condition to update data grid cells
             if (renamePair != null)
@@ -203,11 +202,11 @@ namespace LightTimetable.ViewModels
             Date = temp;
         }
 
-        private void UpdateRenames(MutablePair<string, string> renamePair)
+        private void UpdateRenames(DisciplinePair renamePair)
         {
-            foreach (var item in from dateItems in _dataProvider.ScheduleDictionary.Values from item in dateItems where item.Discipline.Value == renamePair.Value select item)
+            foreach (var item in from dateItems in _dataProvider.ScheduleDictionary.Values from item in dateItems where item.Discipline.Original == renamePair.Original select item)
             {
-                item.Discipline.Key = renamePair.Key;
+                item.Discipline.Modified = renamePair.Modified;
             }
         }
 

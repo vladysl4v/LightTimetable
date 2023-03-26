@@ -16,12 +16,6 @@ namespace LightTimetable.SettingsPages.ViewModels
             ChangeRenameCommand = new RelayCommand(ChangeRename);
             RemoveRenameCommand = new RelayCommand(RemoveRename);
         }
-        public override void Save()
-        {
-            Default.Renames = _renamesList.ToDictionary(x => x.Key, x => x.Value);
-            Default.Save();
-            IsAnythingChanged = false;
-        }
 
         #region Properties
 
@@ -71,6 +65,17 @@ namespace LightTimetable.SettingsPages.ViewModels
 
             IsAnythingChanged = true;
             OnPropertyChanged(nameof(RenamesList));
+        }
+
+        #endregion
+
+        #region Methods
+
+        public override void Save()
+        {
+            Default.Renames = _renamesList.ToDictionary(x => x.Key, x => x.Value);
+            Default.Save();
+            IsAnythingChanged = false;
         }
 
         #endregion

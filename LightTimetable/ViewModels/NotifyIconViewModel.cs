@@ -15,7 +15,6 @@ namespace LightTimetable.ViewModels
     public class NotifyIconViewModel
     {
         private SettingsView? _settingsWindow;
-        private bool _isWindowInitialized;
 
         public NotifyIconViewModel()
         {
@@ -30,13 +29,6 @@ namespace LightTimetable.ViewModels
             CloseApplicationCommand = new RelayCommand(_ => CloseApplication());
 
             InitializeNotifyIcon();
-        }
-
-        private void InitializeNotifyIcon()
-        {
-            Application.Current.MainWindow = new TimetableView();
-            DataProvider.InitializeDataAsync();
-            ElectricityProvider.InitializeBlackoutsAsync();
         }
 
         #region Commands
@@ -87,13 +79,28 @@ namespace LightTimetable.ViewModels
             if (_settingsWindow != null) 
                 return;
             _settingsWindow = new SettingsView();
-            _settingsWindow.Closed += (s, e) => _settingsWindow = null;
+            _settingsWindow.Closed += (_, _) =>
+            {
+                _settingsWindow = null;
+                RefreshData();
+            };
             _settingsWindow.Show();
         }
 
         private void CloseApplication()
         {
             Application.Current.Shutdown();
+        }
+
+        #endregion
+
+        #region Methods
+
+        private void InitializeNotifyIcon()
+        {
+            Application.Current.MainWindow = new TimetableView();
+            DataProvider.InitializeDataAsync();
+            ElectricityProvider.InitializeBlackoutsAsync();
         }
 
         #endregion

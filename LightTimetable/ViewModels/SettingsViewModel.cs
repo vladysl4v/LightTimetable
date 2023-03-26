@@ -8,14 +8,6 @@ namespace LightTimetable.ViewModels
 {
     class SettingsViewModel : ViewModelBase
     {
-        private PageViewModelBase _currentView;
-
-        public PageViewModelBase CurrentView
-        {
-            get => _currentView;
-            set => SetProperty(ref _currentView, value);
-        }
-
         public SettingsViewModel()
         {
             // Commands
@@ -27,7 +19,19 @@ namespace LightTimetable.ViewModels
             CurrentView = new ApplicationPageViewModel();
         }
 
-        // Categories commands
+        #region Properties
+
+        private PageViewModelBase _currentView;
+        public PageViewModelBase CurrentView
+        {
+            get => _currentView;
+            set => SetProperty(ref _currentView, value);
+        }
+
+        #endregion
+
+        #region Commands
+
         public RelayCommand ApplicationCategoryCommand { get; }
         public RelayCommand ScheduleCategoryCommand { get; }
         public RelayCommand RenamingCategoryCommand { get; }
@@ -35,5 +39,7 @@ namespace LightTimetable.ViewModels
         private void SetApplicationCategory() => CurrentView = new ApplicationPageViewModel();
         private void SetScheduleCategory() => CurrentView = new SchedulePageViewModel();
         private void SetRenamingCategory() => CurrentView = new RenamingPageViewModel();
+
+        #endregion
     }
 }

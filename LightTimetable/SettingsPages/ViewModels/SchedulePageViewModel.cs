@@ -18,19 +18,6 @@ namespace LightTimetable.SettingsPages.ViewModels
             IsAnythingChanged = false;
         }
 
-        public override void Save()
-        {
-            Default.Faculty = _currFaculty;
-            Default.EducationForm = _currEducForm;
-            Default.Course = _currCourse;
-            Default.StudyGroup = _currStudyGroup;
-            Default.ShowBlackouts = ShowBlackouts;
-            Default.ShowPossibleBlackouts = ShowPossibleBlackouts;
-            Default.DTEKGroup = BlackoutsGroup;
-            Default.Save();
-            IsAnythingChanged = false;
-        }
-
         #region Properties
 
         private string _currFaculty = Default.Faculty;
@@ -129,6 +116,19 @@ namespace LightTimetable.SettingsPages.ViewModels
         #endregion
 
         #region Methods
+
+        public override void Save()
+        {
+            Default.Faculty = _currFaculty;
+            Default.EducationForm = _currEducForm;
+            Default.Course = _currCourse;
+            Default.StudyGroup = _currStudyGroup;
+            Default.ShowBlackouts = ShowBlackouts;
+            Default.ShowPossibleBlackouts = ShowPossibleBlackouts;
+            Default.DTEKGroup = BlackoutsGroup;
+            Default.Save();
+            IsAnythingChanged = false;
+        }
 
         private async void CollectOptions()
         {

@@ -8,24 +8,6 @@ namespace LightTimetable.SettingsPages.ViewModels
 {
     public class ApplicationPageViewModel : PageViewModelBase
     {
-        public override void Save()
-        {
-            Default.OpenWindowMode = OpenWindowMode;
-            Default.MiddleMouseClick = MiddleMouseClick;
-
-            if (Default.Autostart != StartAutomatically)
-            {
-                switch (StartAutomatically)
-                {
-                    case 0: RemoveFromAutostart(); break;
-                    case 1: AddAppToAutostart(); break;
-                }
-            }
-            Default.Autostart = StartAutomatically;
-            Default.Save();
-            IsAnythingChanged = false;
-        }
-
         #region Properties
 
         private int _startAutomatically = Default.Autostart;
@@ -63,6 +45,24 @@ namespace LightTimetable.SettingsPages.ViewModels
         {
             RegistryKey rk = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
             rk.DeleteValue("LightTimetable", false);
+        }
+
+        public override void Save()
+        {
+            Default.OpenWindowMode = OpenWindowMode;
+            Default.MiddleMouseClick = MiddleMouseClick;
+
+            if (Default.Autostart != StartAutomatically)
+            {
+                switch (StartAutomatically)
+                {
+                    case 0: RemoveFromAutostart(); break;
+                    case 1: AddAppToAutostart(); break;
+                }
+            }
+            Default.Autostart = StartAutomatically;
+            Default.Save();
+            IsAnythingChanged = false;
         }
 
         #endregion

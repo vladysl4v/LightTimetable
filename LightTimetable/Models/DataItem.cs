@@ -16,7 +16,7 @@ namespace LightTimetable.Models
         public uint Id { get; }
         public ElecticityStatus? Electricity { get; }
         public TimeInterval StudyTime { get; }
-        public MutablePair<string, string> Discipline { get; set; }
+        public DisciplinePair Discipline { get; set; }
         public string StudyType { get; }
         public string Cabinet { get; }
         public string Employee { get; }
@@ -67,20 +67,20 @@ namespace LightTimetable.Models
         {
             string encodeDate = date[0..2];
             string encodeStudyTime = StudyTime.ToString()[0..5].Replace(":", "");
-            string encodeDiscipline = Convert.ToString(Discipline.Key.Length);
+            string encodeDiscipline = Convert.ToString(Discipline.Modified.Length);
             string encodeStudyType = Convert.ToString(StudyType.Length);
             return uint.Parse(encodeDate + encodeStudyTime + encodeDiscipline + encodeStudyType);
         }
 
-        private MutablePair<string, string> RenameDiscipline(string discipline)
+        private DisciplinePair RenameDiscipline(string discipline)
         {
-            if (Properties.Settings.Default.Renames.TryGetValue(discipline, out string rename))
+            if (Default.Renames.TryGetValue(discipline, out string rename))
             {
-                return new MutablePair<string, string>(rename, discipline);
+                return new DisciplinePair(rename, discipline);
             }
             else
             {
-                return new MutablePair<string, string>(discipline, discipline);
+                return new DisciplinePair(discipline, discipline);
             }
         }
 
@@ -96,7 +96,7 @@ namespace LightTimetable.Models
 
         protected string GetNote()
         {
-            return Properties.Settings.Default.Notes.TryGetValue(Id, out string note) ? note : string.Empty;
+            return Default.Notes.TryGetValue(Id, out string note) ? note : string.Empty;
         }
     }
 }

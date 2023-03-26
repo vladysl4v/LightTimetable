@@ -10,9 +10,15 @@ namespace LightTimetable.Tools.Converters
             if (value is not TimetableStatus thisValue)
                 return false;
 
+            var param = (string)parameter; 
+
             if (thisValue == TimetableStatus.Loading)
             {
-                return "../Assets/Loading.gif";
+                switch (param)
+                {
+                    case "Icon":    return "../Assets/Loading.png";
+                    case "ToolTip": return "Дані розкладу завантажуються";
+                }
             }
 
             return false;
