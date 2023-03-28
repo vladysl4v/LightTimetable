@@ -13,12 +13,14 @@ namespace LightTimetable.ViewModels
 {
     public class TimetableViewModel : ViewModelBase
     {
+        private readonly List<DataItem> _emptyList = new(0);
         private readonly DataProvider _dataProvider;
         private DateControl? _dateControl;
 
         public TimetableViewModel()
         {
             TtStatus = TimetableStatus.Loading;
+
             // Commands
             HideWindowCommand = new RelayCommand(HideWindow);
             ChangeDateCommand = new RelayCommand(ChangeDate);
@@ -36,6 +38,7 @@ namespace LightTimetable.ViewModels
                 DataProvider.DataInitialized += LateDataInitializing;
                 return;
             }
+
             _dateControl = new DateControl(_dataProvider.AvailableDates);
             TtStatus = TimetableStatus.Default;
         }
@@ -57,9 +60,13 @@ namespace LightTimetable.ViewModels
             get
             {
                 if (Date == DateTime.MinValue)
-                    return new List<DataItem>();
+                    return _emptyList;
 
-                return _dataProvider.ScheduleDictionary.TryGetValue(Date, out List<DataItem> correctDataItems) ? correctDataItems : new List<DataItem>();
+                if (!_dataProvider.ScheduleDictionary.TryGetValue(Date, out List<DataItem> correctDataItems))
+                    return GetRiggedSchedule();
+
+                TtStatus = TimetableStatus.Default;
+                return correctDataItems;
             }
         }
 
@@ -89,7 +96,7 @@ namespace LightTimetable.ViewModels
 
         public DateTime[] AvailableDates
         {
-            get => _dataProvider?.AvailableDates;
+            get => _dataProvider?.AvailableDates ?? Array.Empty<DateTime>();
         }
         #endregion
 
@@ -133,7 +140,7 @@ namespace LightTimetable.ViewModels
             if (SelectedDataItem == null)
                 return;
             string noteText = new InputBox("Нотатка", "Введіть текст нотатки:").GetText();
-            if (string.IsNullOrWhiteSpace(noteText)) 
+            if (string.IsNullOrWhiteSpace(noteText))
                 return;
             Default.AppendToNotes(SelectedDataItem.Id, noteText);
             SelectedDataItem.Note = noteText;
@@ -179,20 +186,14 @@ namespace LightTimetable.ViewModels
 
         #region Methods
 
-        private void OnDateChanged()
+        public void ReloadData()
         {
-            OnPropertyChanged(nameof(Date));
-            OnPropertyChanged(nameof(CurrentSchedule));
+            _dataProvider.ReloadData();
+            OnPropertyChanged(nameof(AvailableDates));
+            _dateControl.UpdateDates(_dataProvider.AvailableDates);
         }
 
-        private void LateDataInitializing(object? s, EventArgs e)
-        {
-            TtStatus = TimetableStatus.Default;
-            _dateControl = new DateControl(_dataProvider.AvailableDates);
-            ReloadData();
-            OnDateChanged();
-        }
-        public void UpdateDataGrid(DisciplinePair renamePair = null)
+        public void UpdateDataGrid(DisciplinePair? renamePair = null)
         {
             // temporary condition to update data grid cells
             if (renamePair != null)
@@ -202,19 +203,37 @@ namespace LightTimetable.ViewModels
             Date = temp;
         }
 
+        private List<DataItem> GetRiggedSchedule()
+        {
+            if (!Default.ShowRiggedSchedule)
+                return _emptyList;
+            var result = _dataProvider.GetRiggedSchedule(Date, out bool showWarning);
+
+            TtStatus = showWarning ? TimetableStatus.Warning : TimetableStatus.Default;
+
+            return result;
+        }
+
+        private void OnDateChanged()
+        {
+            OnPropertyChanged(nameof(Date));
+            OnPropertyChanged(nameof(CurrentSchedule));
+        }
+
+        private void LateDataInitializing()
+        {
+            TtStatus = TimetableStatus.Default;
+            _dateControl = new DateControl(_dataProvider.AvailableDates);
+            ReloadData();
+            OnDateChanged();
+        }
+
         private void UpdateRenames(DisciplinePair renamePair)
         {
             foreach (var item in from dateItems in _dataProvider.ScheduleDictionary.Values from item in dateItems where item.Discipline.Original == renamePair.Original select item)
             {
                 item.Discipline.Modified = renamePair.Modified;
             }
-        }
-
-        public void ReloadData()
-        {
-            _dataProvider.ReloadData();
-            OnPropertyChanged(nameof(AvailableDates));
-            _dateControl.UpdateDates(_dataProvider.AvailableDates);
         }
 
         #endregion

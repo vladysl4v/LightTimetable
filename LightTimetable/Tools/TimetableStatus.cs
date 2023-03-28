@@ -3,6 +3,7 @@
     public enum TimetableStatus
     {
         Default,
-        Loading
+        Loading,
+        Warning,
     }
 }

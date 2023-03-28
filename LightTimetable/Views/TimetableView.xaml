@@ -31,7 +31,7 @@
             <!-- TIMETABLE STATUS -->
             <Image Source="{Binding TtStatus, Converter={StaticResource TimetableStatus2Data}, ConverterParameter=Icon}" HorizontalAlignment="Center" Width="20" Height="20" Grid.Column="2" ToolTip="{Binding TtStatus, Converter={StaticResource TimetableStatus2Data}, ConverterParameter=ToolTip}" RenderOptions.BitmapScalingMode="HighQuality" ToolTipService.InitialShowDelay="200"/>
             <!-- CURRENT DATE DATEPICKER -->
-            <DatePicker SelectedDate="{Binding Date, IsAsync=True}" CalendarStyle="{StaticResource CalendarWithHighlightedDates}" Foreground="{Binding Date, Converter={StaticResource ForegroundByDate}}" Grid.Column="1" BorderThickness="0" Focusable="False">
+            <DatePicker SelectedDate="{Binding Date}" CalendarStyle="{StaticResource CalendarWithHighlightedDates}" Foreground="{Binding Date, Converter={StaticResource ForegroundByDate}}" Grid.Column="1" BorderThickness="0" Focusable="False">
                 <DatePicker.Resources>
                     <Style TargetType="DatePickerTextBox">
                         <Setter Property="IsReadOnly" Value="True"/>

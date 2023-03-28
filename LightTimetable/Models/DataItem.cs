@@ -36,6 +36,20 @@ namespace LightTimetable.Models
             Note = GetNote();
         }
 
+        public DataItem(DataItem clone, DateTime date)
+        {
+            StudyTime = clone.StudyTime;
+            Electricity = clone.Electricity;
+            Discipline = clone.Discipline;
+            StudyType = clone.StudyType;
+            Cabinet = clone.Cabinet;
+            Subgroup = clone.Subgroup;
+            Employee = clone.Employee;
+
+            Id = CreateIdentifier(date.ToShortDateString());
+            Note = GetNote();
+        }
+
         private ElecticityStatus? GetLightInformation(string[][] intersections)
         {
             if (!Default.ShowBlackouts)
@@ -65,11 +79,10 @@ namespace LightTimetable.Models
 
         private uint CreateIdentifier(string date)
         {
-            string encodeDate = date[0..2];
-            string encodeStudyTime = StudyTime.ToString()[0..5].Replace(":", "");
-            string encodeDiscipline = Convert.ToString(Discipline.Modified.Length);
-            string encodeStudyType = Convert.ToString(StudyType.Length);
-            return uint.Parse(encodeDate + encodeStudyTime + encodeDiscipline + encodeStudyType);
+            var hash1 = int.Parse("1" + date[0..2] + date[3..5] + date[8..10]);
+            var hash2 = Discipline.Original.Aggregate(0, (current, letter) => current + letter);
+            var hash3 = StudyType.Length * Discipline.Original.Length;
+            return (uint)(hash1 + hash2 + hash3);
         }
 
         private DisciplinePair RenameDiscipline(string discipline)

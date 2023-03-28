@@ -16,6 +16,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="110"/>
             <RowDefinition Height="110"/>
+            <RowDefinition Height="80"/>
             <RowDefinition Height="1*"/>
             <RowDefinition Height="40"/>
         </Grid.RowDefinitions>
@@ -41,7 +42,13 @@
                 </ComboBox>
             </DockPanel>
         </GroupBox>
-        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right">
+        <GroupBox Header="Передбачення розкладу" Grid.Row="2">
+            <DockPanel>
+                <Label Content="Дозволяє відображати майбутній розклад, використовуючи розклад поточних днів (Не є офіційним)"  DockPanel.Dock="Top" />
+                <CheckBox Content="Відображати передбачений розклад" Margin="5 0 0 0" IsChecked="{Binding ShowRiggedSchedule}" DockPanel.Dock="Top" Height="24"/>
+            </DockPanel>
+        </GroupBox>
+        <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right">
             <!-- APPLY CHANGES AND CLOSE BUTTON -->
             <Button Content="ОК" Command="{Binding SaveAndCloseCommand}" CommandParameter="{Binding ElementName=ScheduleControl}" Margin="0 0 10 0" BorderThickness="2" IsDefault="True" Width="90" Height="25"/>
             <!-- CANCEL AND CLOSE BUTTON -->

@@ -9,6 +9,7 @@
 <h2 align="left">Features</h1>
 
 * Integrated blackout schedule <strong>(DTEK)</strong>
+* Predicting next weeks based on past weeks
 * Adding notes for the coming lessons
 * Renaming lessons at your discretion
 * Easy selection of your study group
@@ -20,10 +21,9 @@
   <img width="586" height="336" src="https://user-images.githubusercontent.com/106306927/224055748-96cd49c9-77e5-4521-835c-3fd2700fd42b.gif">
 </p>
 <p align="center">
-  <img width="786" height="443" src="https://user-images.githubusercontent.com/106306927/224853031-a9781ab8-499a-4c64-863f-c88e0346364e.gif">
+  <img width="786" height="443" src="https://user-images.githubusercontent.com/106306927/228268960-4e8998e3-62af-44fe-a6e3-506117c286a8.gif">
 </p>
 
 <h2 align="left">SOON</h1>
 
 * Integration of the Outlook event calendar for quick navigation between online lessons
-* Predicting next weeks based on past weeks

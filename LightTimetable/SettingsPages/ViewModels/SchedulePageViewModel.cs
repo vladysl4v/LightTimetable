@@ -27,11 +27,18 @@ namespace LightTimetable.SettingsPages.ViewModels
         private string _blackoutsGroup = Default.DTEKGroup;
         private bool _showBlackouts = Default.ShowBlackouts;
         private bool _showPossibleBlackouts = Default.ShowPossibleBlackouts;
+        private bool _showRiggedSchedule = Default.ShowRiggedSchedule;
 
         public bool ShowBlackouts
         {
             get => _showBlackouts;
             set => SetProperty(ref _showBlackouts, value);
+        }
+
+        public bool ShowRiggedSchedule
+        {
+            get => _showRiggedSchedule;
+            set => SetProperty(ref _showRiggedSchedule, value);
         }
 
         public bool ShowPossibleBlackouts
@@ -126,6 +133,7 @@ namespace LightTimetable.SettingsPages.ViewModels
             Default.ShowBlackouts = ShowBlackouts;
             Default.ShowPossibleBlackouts = ShowPossibleBlackouts;
             Default.DTEKGroup = BlackoutsGroup;
+            Default.ShowRiggedSchedule = ShowRiggedSchedule;
             Default.Save();
             IsAnythingChanged = false;
         }

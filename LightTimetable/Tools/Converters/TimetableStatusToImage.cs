@@ -20,7 +20,14 @@ namespace LightTimetable.Tools.Converters
                     case "ToolTip": return "Дані розкладу завантажуються";
                 }
             }
-
+            if (thisValue == TimetableStatus.Warning)
+            {
+                switch (param)
+                {
+                    case "Icon":    return "../Assets/Warning.png";
+                    case "ToolTip": return "Відображається не справжній розклад, а згенерований на основі минулих тижнів";
+                }
+            }
             return false;
         }
 

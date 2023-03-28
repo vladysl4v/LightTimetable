@@ -166,5 +166,17 @@ namespace LightTimetable.Properties {
                 this["MiddleMouseClick"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool ShowRiggedSchedule {
+            get {
+                return ((bool)(this["ShowRiggedSchedule"]));
+            }
+            set {
+                this["ShowRiggedSchedule"] = value;
+            }
+        }
     }
 }
