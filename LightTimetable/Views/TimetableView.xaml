@@ -29,7 +29,7 @@
             <!-- BACK TO TODAY BUTTON -->
             <Button Content="⌂" Command="{Binding ResetDateCommand}" Grid.Column="0"/>
             <!-- TIMETABLE STATUS -->
-            <Image Source="{Binding TtStatus, Converter={StaticResource TimetableStatus2Data}, ConverterParameter=Icon}" HorizontalAlignment="Center" Width="20" Height="20" Grid.Column="2" ToolTip="{Binding TtStatus, Converter={StaticResource TimetableStatus2Data}, ConverterParameter=ToolTip}" RenderOptions.BitmapScalingMode="HighQuality" ToolTipService.InitialShowDelay="200"/>
+            <Image Source="{Binding TtControl.IconPath, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Width="20" Height="20" Grid.Column="2" ToolTip="{Binding TtControl.ToolTip, UpdateSourceTrigger=PropertyChanged}" RenderOptions.BitmapScalingMode="HighQuality" ToolTipService.InitialShowDelay="200"/>
             <!-- CURRENT DATE DATEPICKER -->
             <DatePicker SelectedDate="{Binding Date}" CalendarStyle="{StaticResource CalendarWithHighlightedDates}" Foreground="{Binding Date, Converter={StaticResource ForegroundByDate}}" Grid.Column="1" BorderThickness="0" Focusable="False">
                 <DatePicker.Resources>

@@ -1,32 +1,32 @@
 ﻿using System;
-using System.Text.RegularExpressions;
 
 
 namespace LightTimetable.Tools
 {
-    public class TimeInterval
+    public struct TimeInterval
     {
         public TimeOnly Start { get; set; }
         public TimeOnly End { get; set; }
 
-        private readonly Regex _hyphenSplitter = new("-");
+        private readonly string _stringTime;
 
-        public TimeInterval(string stringInterval, int timeSpan = 0)
+        public TimeInterval(string studyBegin, string studyEnd,  int timeSpan = 0)
         {
-            string[] timeInterval = _hyphenSplitter.Split(stringInterval);
-            Start = TimeOnly.Parse(timeInterval[0]).AddHours(timeSpan);
-            End = TimeOnly.Parse(timeInterval[1]).AddHours(timeSpan);
+            Start = TimeOnly.Parse(studyBegin).AddHours(timeSpan);
+            End = TimeOnly.Parse(studyEnd).AddHours(timeSpan);
+            _stringTime = GenerateString();
         }
 
-
-        public override string ToString()
+        private string GenerateString()
         {
-            string startString = Start.ToShortTimeString();
-            string endString = End.ToShortTimeString();
+            var startString = Start.ToShortTimeString();
+            var endString = End.ToShortTimeString();
             if (Start.Hour < 10) startString = "0" + startString;
             if (End.Hour < 10) endString = "0" + endString;
 
             return $"{startString}-{endString}";
         }
+
+        public override string ToString() => _stringTime;
     }
 }

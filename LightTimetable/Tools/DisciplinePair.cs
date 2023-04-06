@@ -18,10 +18,6 @@ namespace LightTimetable.Tools
             Modified = key;
             Original = value;
         }
-
-        public override string ToString()
-        {
-            return Modified;
-        }
+        public override string ToString() => Modified;
     }
 }

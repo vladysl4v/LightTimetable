@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 
 
 namespace LightTimetable.Tools
@@ -21,17 +22,17 @@ namespace LightTimetable.Tools
     {
         public static NormalDayOfWeek GetNormalDayOfWeek(this DateTime date)
         {
-            switch (date.DayOfWeek)
+            return date.DayOfWeek switch
             {
-                case DayOfWeek.Monday: return NormalDayOfWeek.Monday;
-                case DayOfWeek.Tuesday: return NormalDayOfWeek.Tuesday;
-                case DayOfWeek.Wednesday: return NormalDayOfWeek.Wednesday;
-                case DayOfWeek.Thursday: return NormalDayOfWeek.Thursday;
-                case DayOfWeek.Friday: return NormalDayOfWeek.Friday;
-                case DayOfWeek.Saturday: return NormalDayOfWeek.Saturday;
-                case DayOfWeek.Sunday: return NormalDayOfWeek.Sunday;
-            }
-            throw new NotImplementedException();
+                DayOfWeek.Monday    => NormalDayOfWeek.Monday,
+                DayOfWeek.Tuesday   => NormalDayOfWeek.Tuesday,
+                DayOfWeek.Wednesday => NormalDayOfWeek.Wednesday,
+                DayOfWeek.Thursday  => NormalDayOfWeek.Thursday,
+                DayOfWeek.Friday    => NormalDayOfWeek.Friday,
+                DayOfWeek.Saturday  => NormalDayOfWeek.Saturday,
+                DayOfWeek.Sunday    => NormalDayOfWeek.Sunday,
+                _ => throw new NotImplementedException()
+            };
         }
 
     }

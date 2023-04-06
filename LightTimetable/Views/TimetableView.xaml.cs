@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Windows;
 
 using LightTimetable.ViewModels;
@@ -16,20 +17,18 @@ namespace LightTimetable.Views
             InitializeComponent();
         }
 
-        public void ReloadData()
+        public async Task ReloadViewModelData()
         {
-            ((TimetableViewModel)this.DataContext).ReloadData();
-        }
-
-        public void RefreshTimetable()
-        {
-            ((TimetableViewModel)this.DataContext).UpdateDataGrid();
+            if (DataContext is TimetableViewModel viewModel)
+            {
+                await viewModel.ReloadData();
+            }
         }
 
         private void OnWindowSizeChanged(object sender, SizeChangedEventArgs e)
         {
-            bool isWidthChanged = Math.Abs(e.PreviousSize.Width - e.NewSize.Width) > 10;
-            bool isHeightChanged = Math.Abs(e.PreviousSize.Height - e.NewSize.Height) > 10;
+            var isWidthChanged = Math.Abs(e.PreviousSize.Width - e.NewSize.Width) > 10;
+            var isHeightChanged = Math.Abs(e.PreviousSize.Height - e.NewSize.Height) > 10;
 
             if (isHeightChanged)
                 this.Top = SystemParameters.WorkArea.Height - e.NewSize.Height;

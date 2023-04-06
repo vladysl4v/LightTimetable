@@ -10,15 +10,10 @@ namespace LightTimetable.Models
 
         public DateTime Date { get; set; }
 
-        public DateControl(DateTime[] dates)
-        {
-            _scheduleDates = dates;
-            SetCorrectDate();
-        }
-
         public void UpdateDates(DateTime[] dates)
         {
             _scheduleDates = dates;
+            SetCorrectDate();
         }
 
         public void SetCorrectDate()

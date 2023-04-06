@@ -69,9 +69,8 @@ namespace LightTimetable.ViewModels
         private async void RefreshData()
         {
             var mainWindow = Application.Current.MainWindow as TimetableView;
-            await DataProvider.InitializeDataAsync();
-            mainWindow.ReloadData();
-            mainWindow.RefreshTimetable();
+
+            await mainWindow.ReloadViewModelData();
         }
 
         private void OpenSettings()
@@ -99,8 +98,6 @@ namespace LightTimetable.ViewModels
         private void InitializeNotifyIcon()
         {
             Application.Current.MainWindow = new TimetableView();
-            DataProvider.InitializeDataAsync();
-            ElectricityProvider.InitializeBlackoutsAsync();
         }
 
         #endregion

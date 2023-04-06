@@ -23,10 +23,10 @@ namespace LightTimetable.Models
         public string Subgroup { get; }
         public string Note { get; set; }
 
-        public DataItem(Dictionary<string, string> item, string[][] electricity)
+        public DataItem(Dictionary<string, string> item)
         {
-            StudyTime = new TimeInterval(item["study_time"]);
-            Electricity = GetLightInformation(electricity);
+            StudyTime = new TimeInterval(item["study_time_begin"], item["study_time_end"]);
+            Electricity = ElectricityPlugin.GetLightInformation(StudyTime, Convert.ToDateTime(item["full_date"]));
             Discipline = RenameDiscipline(item["discipline"]);
             StudyType = item["study_type"];
             Cabinet = item["cabinet"];
@@ -48,33 +48,6 @@ namespace LightTimetable.Models
 
             Id = CreateIdentifier(date.ToShortDateString());
             Note = GetNote();
-        }
-
-        private ElecticityStatus? GetLightInformation(string[][] intersections)
-        {
-            if (!Default.ShowBlackouts)
-                return null;
-
-            var isDefinitelyBlackout = false;
-
-            StringBuilder result = new StringBuilder();
-            result.Append("Ймовірні відключення:");
-            if (intersections[1].Any())
-            {
-                int startHour = int.Parse(intersections[1].First()) - 1;
-                result.Append($"\n{startHour}:00-{intersections[1].Last()}:00 - електроенергії не буде");
-                isDefinitelyBlackout = true;
-            }
-            else if (intersections[0].Any() && Default.ShowPossibleBlackouts)
-            {
-                int startHour = int.Parse(intersections[0].First()) - 1;
-                result.Append($"\n{startHour}:00-{intersections[0].Last()}:00 - можливе відключення");
-            }
-
-            if (!isDefinitelyBlackout && !Default.ShowPossibleBlackouts)
-                return null;
-
-            return new ElecticityStatus(result.ToString(), isDefinitelyBlackout);
         }
 
         private uint CreateIdentifier(string date)
@@ -99,7 +72,7 @@ namespace LightTimetable.Models
 
         private string ShortenFullName(string employee)
         {
-            if (employee == string.Empty || employee == null)
+            if (string.IsNullOrEmpty(employee))
                 return employee;
 
             string[] EmplSplitted = employee.Split();
