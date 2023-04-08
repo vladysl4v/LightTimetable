@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 
 
-namespace LightTimetable.Tools
+namespace LightTimetable.Models.Utilities
 {
     public class DisciplinePair
     {

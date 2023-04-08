@@ -1,4 +1,4 @@
-﻿namespace LightTimetable.Models.Electricity
+﻿namespace LightTimetable.Models.Utilities
 {
     public struct ElecticityStatus
     {
@@ -8,7 +8,7 @@
         public ElecticityStatus(string text, bool definitelyBlackout)
         {
             ToolTipText = text;
-            ImagePath = definitelyBlackout ? "/Assets/NoElectricity.png" : "/Assets/MaybeElectricity.png";
+            ImagePath = definitelyBlackout ? "/Assets/DataGrid/NoElectricity.png" : "/Assets/DataGrid/MaybeElectricity.png";
         }
     }
 }

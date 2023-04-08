@@ -1,7 +1,7 @@
 ﻿using System;
 
 
-namespace LightTimetable.Tools
+namespace LightTimetable.Models.Utilities
 {
     public struct TimeInterval
     {
@@ -10,7 +10,7 @@ namespace LightTimetable.Tools
 
         private readonly string _stringTime;
 
-        public TimeInterval(string studyBegin, string studyEnd,  int timeSpan = 0)
+        public TimeInterval(string studyBegin, string studyEnd, int timeSpan = 0)
         {
             Start = TimeOnly.Parse(studyBegin).AddHours(timeSpan);
             End = TimeOnly.Parse(studyEnd).AddHours(timeSpan);

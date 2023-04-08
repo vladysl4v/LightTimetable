@@ -1,11 +1,8 @@
 ﻿using System.Windows;
 
-using LightTimetable.Models;
 using LightTimetable.Tools;
-using LightTimetable.Models.Electricity;
 using LightTimetable.Views;
-
-using static LightTimetable.Properties.Settings;
+using LightTimetable.Properties;
 
 namespace LightTimetable.ViewModels
 {
@@ -42,19 +39,19 @@ namespace LightTimetable.ViewModels
 
         private void SingleClick()
         {
-            if (Default.OpenWindowMode == 0)
+            if (Settings.Default.OpenWindowMode == 0)
                 ShowTimetable();
         }
 
         private void DoubleClick()
         {
-            if (Default.OpenWindowMode == 1)
+            if (Settings.Default.OpenWindowMode == 1)
                 ShowTimetable();
         }
 
         private void MiddleClick()
         {
-            switch (Default.MiddleMouseClick)
+            switch (Settings.Default.MiddleMouseClick)
             {
                 case 1: RefreshData(); break;
                 case 2: OpenSettings(); break;

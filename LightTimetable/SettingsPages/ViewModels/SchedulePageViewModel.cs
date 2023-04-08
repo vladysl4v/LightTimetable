@@ -1,16 +1,17 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-using System.Net.Http;
 using System.Collections.Generic;
 
-using static LightTimetable.Properties.Settings;
+using LightTimetable.Tools;
+using LightTimetable.Properties;
 
 
 namespace LightTimetable.SettingsPages.ViewModels
 {
     public class SchedulePageViewModel : PageViewModelBase
     {
+        public SchedulePageViewModel(bool disableInitializing = false) { }
         public SchedulePageViewModel()
         {
             CollectOptions();
@@ -20,14 +21,14 @@ namespace LightTimetable.SettingsPages.ViewModels
 
         #region Properties
 
-        private string _currFaculty = Default.Faculty;
-        private string _currEducForm = Default.EducationForm;
-        private string _currCourse = Default.Course;
-        private string _currStudyGroup = Default.StudyGroup;
-        private string _blackoutsGroup = Default.DTEKGroup;
-        private bool _showBlackouts = Default.ShowBlackouts;
-        private bool _showPossibleBlackouts = Default.ShowPossibleBlackouts;
-        private bool _showRiggedSchedule = Default.ShowRiggedSchedule;
+        private string _currFaculty = Settings.Default.Faculty;
+        private string _currEducForm = Settings.Default.EducationForm;
+        private string _currCourse = Settings.Default.Course;
+        private string _currStudyGroup = Settings.Default.StudyGroup;
+        private string _blackoutsGroup = Settings.Default.DTEKGroup;
+        private bool _showBlackouts = Settings.Default.ShowBlackouts;
+        private bool _showPossibleBlackouts = Settings.Default.ShowPossibleBlackouts;
+        private bool _showRiggedSchedule = Settings.Default.ShowRiggedSchedule;
 
         public bool ShowBlackouts
         {
@@ -126,48 +127,61 @@ namespace LightTimetable.SettingsPages.ViewModels
 
         public override void Save()
         {
-            Default.Faculty = _currFaculty;
-            Default.EducationForm = _currEducForm;
-            Default.Course = _currCourse;
-            Default.StudyGroup = _currStudyGroup;
-            Default.ShowBlackouts = ShowBlackouts;
-            Default.ShowPossibleBlackouts = ShowPossibleBlackouts;
-            Default.DTEKGroup = BlackoutsGroup;
-            Default.ShowRiggedSchedule = ShowRiggedSchedule;
-            Default.Save();
+            Settings.Default.Faculty = _currFaculty;
+            Settings.Default.EducationForm = _currEducForm;
+            Settings.Default.Course = _currCourse;
+            Settings.Default.StudyGroup = _currStudyGroup;
+            Settings.Default.ShowBlackouts = ShowBlackouts;
+            Settings.Default.ShowPossibleBlackouts = ShowPossibleBlackouts;
+            Settings.Default.DTEKGroup = BlackoutsGroup;
+            Settings.Default.ShowRiggedSchedule = ShowRiggedSchedule;
+            Settings.Default.Save();
             IsAnythingChanged = false;
         }
 
         private async void CollectOptions()
         {
-            using HttpClient httpClient = new HttpClient();
+            var url = "https://vnz.osvita.net/BetaSchedule.asmx/GetStudentScheduleFiltersData?&aVuzID=11784";
+            var request = await HttpRequestService.LoadStringAsync(url);
 
-            string url = "https://vnz.osvita.net/BetaSchedule.asmx/GetStudentScheduleFiltersData?&aVuzID=11784";
-            string request = await httpClient.GetStringAsync(url);
+            if (!request.IsSuccessful)
+            {
+                FacultiesSource = new JArray();
+                EducFormsSource = new JArray();
+                CoursesSource = new JArray();
+            }
+            else
+            {
+                var data = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, dynamic>>>(request.Response)["d"];
 
-            var data = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, dynamic>>>(request)["d"];
+                FacultiesSource = data["faculties"];
+                EducFormsSource = data["educForms"];
+                CoursesSource = data["courses"];
+            }
 
-            FacultiesSource = data["faculties"];
-            EducFormsSource = data["educForms"];
-            CoursesSource = data["courses"];
             IsAnythingChanged = false;
         }
 
         private void TryRefreshStudyGroups()
         {
-            if (Default.Faculty != null && Default.Course != null && Default.EducationForm != null)
+            if (_currFaculty != "" && _currCourse != "" && _currEducForm != "")
                 CollectGroups();
         }
         private async void CollectGroups()
         {
-            using HttpClient httpClient = new HttpClient();
+            var url = $"https://vnz.osvita.net/BetaSchedule.asmx/GetStudyGroups?&aVuzID=11784&aFacultyID=\"{_currFaculty}\"&aEducationForm=\"{_currEducForm}\"&aCourse=\"{_currCourse}\"&aGiveStudyTimes=false";
+            var request = await HttpRequestService.LoadStringAsync(url, attemps: 1);
 
-            string url = $"https://vnz.osvita.net/BetaSchedule.asmx/GetStudyGroups?&aVuzID=11784&aFacultyID=\"{Default.Faculty}\"&aEducationForm=\"{Default.EducationForm}\"&aCourse=\"{Default.Course}\"&aGiveStudyTimes=false";
-            string request = await httpClient.GetStringAsync(url);
+            if (!request.IsSuccessful)
+            {
+                StudyGroupsSource = new JArray();
+            }
+            else
+            {
+                var data = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, dynamic>>>(request.Response)["d"];
+                StudyGroupsSource = data["studyGroups"];
+            }
 
-            var data = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, dynamic>>>(request)["d"];
-
-            StudyGroupsSource = data["studyGroups"];
             IsAnythingChanged = false;
         }
 

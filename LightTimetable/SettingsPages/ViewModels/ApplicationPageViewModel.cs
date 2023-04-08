@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Windows;
+using System.Security;
 using Microsoft.Win32;
 
-using static LightTimetable.Properties.Settings;
+using LightTimetable.Properties;
 
 
 namespace LightTimetable.SettingsPages.ViewModels
@@ -10,9 +12,9 @@ namespace LightTimetable.SettingsPages.ViewModels
     {
         #region Properties
 
-        private int _startAutomatically = Default.Autostart;
-        private int _openWindowMode = Default.OpenWindowMode;
-        private int _middleMouseClick = Default.MiddleMouseClick;
+        private int _startAutomatically = Settings.Default.Autostart;
+        private int _openWindowMode = Settings.Default.OpenWindowMode;
+        private int _middleMouseClick = Settings.Default.MiddleMouseClick;
         public int StartAutomatically
         {
             get => _startAutomatically;
@@ -37,22 +39,46 @@ namespace LightTimetable.SettingsPages.ViewModels
 
         private void AddAppToAutostart()
         {
-            RegistryKey rk = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
-            rk.SetValue("LightTimetable", AppDomain.CurrentDomain.BaseDirectory + "LightTimetable.exe");
+            try
+            {
+                var registry = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+                registry?.SetValue("LightTimetable", AppDomain.CurrentDomain.BaseDirectory + "LightTimetable.exe");
+            }
+            catch (Exception e)
+            {
+                if (e is UnauthorizedAccessException or SecurityException)
+                {
+                    MessageBox.Show("Виникла помилка: Користувач не має дозволів, необхідних для зміни розділів реєстру.",
+                        "LightTimetable", MessageBoxButton.OK, MessageBoxImage.Error);
+                    StartAutomatically = 0;
+                }
+            }
         }
 
         private void RemoveFromAutostart()
         {
-            RegistryKey rk = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
-            rk.DeleteValue("LightTimetable", false);
+            try
+            {
+                var registry = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+                registry?.DeleteValue("LightTimetable", false);
+            }
+            catch (Exception e)
+            {
+                if (e is UnauthorizedAccessException or SecurityException)
+                {
+                    MessageBox.Show("Виникла помилка: Користувач не має дозволів, необхідних для зміни розділів реєстру.",
+                        "LightTimetable", MessageBoxButton.OK, MessageBoxImage.Error);
+                    StartAutomatically = 1;
+                }
+            }
         }
 
         public override void Save()
         {
-            Default.OpenWindowMode = OpenWindowMode;
-            Default.MiddleMouseClick = MiddleMouseClick;
+            Settings.Default.OpenWindowMode = OpenWindowMode;
+            Settings.Default.MiddleMouseClick = MiddleMouseClick;
 
-            if (Default.Autostart != StartAutomatically)
+            if (Settings.Default.Autostart != StartAutomatically)
             {
                 switch (StartAutomatically)
                 {
@@ -60,8 +86,8 @@ namespace LightTimetable.SettingsPages.ViewModels
                     case 1: AddAppToAutostart(); break;
                 }
             }
-            Default.Autostart = StartAutomatically;
-            Default.Save();
+            Settings.Default.Autostart = StartAutomatically;
+            Settings.Default.Save();
             IsAnythingChanged = false;
         }
 

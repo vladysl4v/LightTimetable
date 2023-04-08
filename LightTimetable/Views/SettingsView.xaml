@@ -24,19 +24,19 @@
         <StackPanel Margin="12 12 12 0" Grid.Column="0" Grid.Row="0">
             <RadioButton Style="{StaticResource RadioButtonLikeButtonStyle}" IsChecked="True" Command="{Binding ApplicationCategoryCommand}" Height="40" HorizontalContentAlignment="Left" BorderBrush="{x:Null}" Background="White"> 
                 <StackPanel Orientation="Horizontal" Margin="5 0 0 0">
-                    <Image Source="../Assets/SettingsCategory.ico" RenderOptions.BitmapScalingMode="HighQuality" Height="32" Width="32"/>
+                    <Image Source="../Assets/Settings/SettingsCategory.ico" RenderOptions.BitmapScalingMode="HighQuality" Height="32" Width="32"/>
                     <TextBlock Margin="10,0,0,0" VerticalAlignment="Center">Застосунок</TextBlock>
                 </StackPanel>
             </RadioButton>
             <RadioButton Style="{StaticResource RadioButtonLikeButtonStyle}" Command="{Binding ScheduleCategoryCommand}" Height="40" HorizontalContentAlignment="Left" BorderBrush="{x:Null}" Background="White">
                 <StackPanel Orientation="Horizontal" Margin="5 0 0 0">
-                    <Image Source="../Assets/TimetableCategory.ico" RenderOptions.BitmapScalingMode="HighQuality" Height="32" Width="32"/>
+                    <Image Source="../Assets/Settings/TimetableCategory.ico" RenderOptions.BitmapScalingMode="HighQuality" Height="32" Width="32"/>
                     <TextBlock Margin="10,0,0,0" VerticalAlignment="Center">Розклад</TextBlock>
                 </StackPanel>
             </RadioButton>
             <RadioButton Style="{StaticResource RadioButtonLikeButtonStyle}" Command="{Binding RenamingCategoryCommand}" Height="40" HorizontalContentAlignment="Left" BorderBrush="{x:Null}" Background="White">
                 <StackPanel Orientation="Horizontal" Margin="5 0 0 0">
-                    <Image Source="../Assets/RenamingCategory.ico" RenderOptions.BitmapScalingMode="HighQuality" Height="32" Width="32"/>
+                    <Image Source="../Assets/Settings/RenamingCategory.ico" RenderOptions.BitmapScalingMode="HighQuality" Height="32" Width="32"/>
                     <TextBlock Margin="10,0,0,0" VerticalAlignment="Center">Перейменування</TextBlock>
                 </StackPanel>
             </RadioButton>

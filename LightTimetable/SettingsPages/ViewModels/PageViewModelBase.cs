@@ -12,7 +12,7 @@ namespace LightTimetable.SettingsPages.ViewModels
     {
         protected PageViewModelBase()
         {
-            SaveSettingsCommand = new RelayCommand(_ => SaveSettings());
+            SaveSettingsCommand = new RelayCommand(_ => Save());
             SaveAndCloseCommand = new RelayCommand(SaveAndCloseSettings);
             CloseSettingsCommand = new RelayCommand(CloseSettings);
         }
@@ -50,11 +50,6 @@ namespace LightTimetable.SettingsPages.ViewModels
         public RelayCommand SaveSettingsCommand { get; }
         public RelayCommand SaveAndCloseCommand { get; }
         public RelayCommand CloseSettingsCommand { get; }
-
-        private void SaveSettings()
-        {
-            Save();
-        }
 
         private void SaveAndCloseSettings(object control)
         {

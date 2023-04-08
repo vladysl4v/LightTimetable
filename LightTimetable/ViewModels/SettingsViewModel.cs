@@ -1,7 +1,5 @@
-﻿using System.Windows;
-
+﻿using LightTimetable.Tools;
 using LightTimetable.SettingsPages.ViewModels;
-using LightTimetable.Tools;
 
 
 namespace LightTimetable.ViewModels
@@ -37,7 +35,7 @@ namespace LightTimetable.ViewModels
         public RelayCommand RenamingCategoryCommand { get; }
 
         private void SetApplicationCategory() => CurrentView = new ApplicationPageViewModel();
-        private void SetScheduleCategory() => CurrentView = new SchedulePageViewModel();
+        private void SetScheduleCategory() => CurrentView = new SchedulePageViewModel(true);
         private void SetRenamingCategory() => CurrentView = new RenamingPageViewModel();
 
         #endregion

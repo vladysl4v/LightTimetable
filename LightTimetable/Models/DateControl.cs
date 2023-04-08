@@ -6,21 +6,22 @@ namespace LightTimetable.Models
 {
     public class DateControl
     {
-        private DateTime[] _scheduleDates;
+        private readonly DateTime[] _scheduleDates;
 
-        public DateTime Date { get; set; }
-
-        public void UpdateDates(DateTime[] dates)
+        public DateControl(DateTime[] dates)
         {
             _scheduleDates = dates;
             SetCorrectDate();
         }
 
+        public DateTime Date { get; set; }
+
         public void SetCorrectDate()
         {
             if (!_scheduleDates.Any())
             {
-                Date = DateTime.Today;
+                Date = DateTime.MinValue;
+                return;
             }
             var currentDate = DateTime.Today;
             if (DateTime.Now.Hour > 18)
@@ -37,10 +38,13 @@ namespace LightTimetable.Models
             // If we keep going through the empty content list
             if (!_scheduleDates.Contains(Date))
             {
-                Date = Date.AddDays(amount);
+                if (!(Date == DateTime.MinValue && amount == -1))
+                {
+                    Date = Date.AddDays(amount);
+                }
                 return;
             }
-            int nextIndex = Array.IndexOf(_scheduleDates, Date) + amount;
+            var nextIndex = Array.IndexOf(_scheduleDates, Date) + amount;
             // If we hit the borders, just keep moving into the void
             if (nextIndex >= _scheduleDates.Length || nextIndex < 0)
                 Date = Date.AddDays(amount);

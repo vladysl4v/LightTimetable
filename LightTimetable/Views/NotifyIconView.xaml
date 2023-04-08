@@ -8,7 +8,7 @@
     
     <ContextMenu x:Shared="false" x:Key="SysTrayMenu">
         <MenuItem Header="Показати" Command="{Binding ShowTimetableCommand}" />
-        <MenuItem Header="Обновити" Command="{Binding RefreshDataCommand}"/>
+        <MenuItem Header="Оновити" Command="{Binding RefreshDataCommand}"/>
         <Separator />
         <MenuItem Header="Налаштування" Command="{Binding OpenSettingsCommand}" />
         <Separator />

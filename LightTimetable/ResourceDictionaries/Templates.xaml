@@ -3,7 +3,7 @@
                     xmlns:vm="clr-namespace:LightTimetable.SettingsPages.ViewModels"
                     xmlns:view="clr-namespace:LightTimetable.SettingsPages.Views">
 
-    <!-- DISCIPLINE COLUMN WITH TIPS AND SUBGROUPS -->
+    <!-- DISCIPLINE COLUMN WITH NOTES AND SUBGROUPS -->
     <DataTemplate x:Key="DisciplineWithToolTipsCellTemplate">
         <Grid>
             <Grid.ColumnDefinitions>
@@ -11,7 +11,6 @@
                 <ColumnDefinition Width="24"/>
             </Grid.ColumnDefinitions>
             <TextBlock Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding Discipline}"/>
-            <!-- TIPS -->
             <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
                 <Image VerticalAlignment="Center" Visibility="{Binding Note, Converter={StaticResource Anything2Visibility}}" Height="12" Width="12" Source="{Binding Note, Converter={StaticResource Anything2IconSource}, ConverterParameter=Note}" RenderOptions.BitmapScalingMode="HighQuality" ToolTipService.InitialShowDelay="200">
                     <Image.ToolTip>

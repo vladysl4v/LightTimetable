@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 using LightTimetable.Tools;
-using static LightTimetable.Properties.Settings;
+using LightTimetable.Properties;
 
 
 namespace LightTimetable.SettingsPages.ViewModels
@@ -19,7 +19,7 @@ namespace LightTimetable.SettingsPages.ViewModels
 
         #region Properties
 
-        private List<KeyValuePair<string, string>> _renamesList = Default.Renames.ToList();
+        private List<KeyValuePair<string, string>> _renamesList = Settings.Default.Renames.ToList();
 
         public ObservableCollection<KeyValuePair<string, string>> RenamesList
         {
@@ -73,8 +73,8 @@ namespace LightTimetable.SettingsPages.ViewModels
 
         public override void Save()
         {
-            Default.Renames = _renamesList.ToDictionary(x => x.Key, x => x.Value);
-            Default.Save();
+            Settings.Default.Renames = _renamesList.ToDictionary(x => x.Key, x => x.Value);
+            Settings.Default.Save();
             IsAnythingChanged = false;
         }
 

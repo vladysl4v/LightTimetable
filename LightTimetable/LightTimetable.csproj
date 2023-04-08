@@ -14,18 +14,18 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Assets\AutoStart.png" />
+    <Resource Include="Assets\Settings\AutoStart.png" />
     <Resource Include="Assets\LightTimetable-Logo.ico" />
-    <Resource Include="Assets\Loading.png" />
-    <Resource Include="Assets\MaybeElectricity.png" />
-    <Resource Include="Assets\NoElectricity.png" />
-    <Resource Include="Assets\Notes.png" />
-    <Resource Include="Assets\RenamingCategory.ico" />
-    <Resource Include="Assets\SettingsCategory.ico" />
-    <Resource Include="Assets\StartManually.png" />
-    <Resource Include="Assets\Subgroup.png" />
-    <Resource Include="Assets\TimetableCategory.ico" />
-    <Resource Include="Assets\Warning.png" />
+    <Resource Include="Assets\Status\Loading.png" />
+    <Resource Include="Assets\DataGrid\MaybeElectricity.png" />
+    <Resource Include="Assets\DataGrid\NoElectricity.png" />
+    <Resource Include="Assets\DataGrid\Notes.png" />
+    <Resource Include="Assets\Settings\RenamingCategory.ico" />
+    <Resource Include="Assets\Settings\SettingsCategory.ico" />
+    <Resource Include="Assets\Settings\StartManually.png" />
+    <Resource Include="Assets\DataGrid\Subgroup.png" />
+    <Resource Include="Assets\Settings\TimetableCategory.ico" />
+    <Resource Include="Assets\Status\Warning.png" />
   </ItemGroup>
 
   <ItemGroup>

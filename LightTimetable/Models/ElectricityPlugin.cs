@@ -1,65 +1,64 @@
 ﻿using Newtonsoft.Json;
 
 using System;
+using System.Text;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using System.Text;
 using System.Text.RegularExpressions;
 
 using LightTimetable.Tools;
-using static LightTimetable.Properties.Settings;
-
+using LightTimetable.Properties;
+using LightTimetable.Models.Utilities;
 
 using ElectricityDictionary =
     System.Collections.Generic.Dictionary<string,
         System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>>>;
 
 
-namespace LightTimetable.Models.Electricity
+namespace LightTimetable.Models
 {
     public static class ElectricityPlugin
     {
         private static ElectricityDictionary _blackoutsData;
 
-        public static ElecticityStatus? GetLightInformation(TimeInterval studyTime, DateTime date)
+        public static ElecticityStatus? GetLightInformation(TimeInterval studyTime, NormalDayOfWeek dayOfWeek)
         {
-            var intersections = FindIntersections(studyTime, date);
+            var intersections = FindIntersections(studyTime, dayOfWeek);
 
-            if (!Default.ShowBlackouts || (!intersections[1].Any() && !intersections[0].Any()))
+            if (!Settings.Default.ShowBlackouts || !intersections[1].Any() && !intersections[0].Any())
                 return null;
 
             var isDefinitelyBlackout = false;
 
             var result = new StringBuilder();
-            result.Append("Ймовірні відключення:");
+            result.Append("Відключення світла:");
             if (intersections[1].Any())
             {
                 int startHour = int.Parse(intersections[1].First()) - 1;
                 result.Append($"\n{startHour}:00-{intersections[1].Last()}:00 - електроенергії не буде");
                 isDefinitelyBlackout = true;
             }
-            if (intersections[0].Any() && Default.ShowPossibleBlackouts)
+            if (intersections[0].Any() && Settings.Default.ShowPossibleBlackouts)
             {
                 int startHour = int.Parse(intersections[0].First()) - 1;
                 result.Append($"\n{startHour}:00-{intersections[0].Last()}:00 - можливе відключення");
             }
 
-            if (!isDefinitelyBlackout && !Default.ShowPossibleBlackouts)
+            if (!isDefinitelyBlackout && !Settings.Default.ShowPossibleBlackouts)
                 return null;
 
             return new ElecticityStatus(result.ToString(), isDefinitelyBlackout);
         }
 
-        private static string[][] FindIntersections(TimeInterval studyTime, DateTime date)
+        private static string[][] FindIntersections(TimeInterval studyTime, NormalDayOfWeek dayOfWeek)
         {
-            if (!Default.ShowBlackouts)
+            if (!Settings.Default.ShowBlackouts)
                 return Array.Empty<string[]>();
 
-            var dayOfWeek = (int)date.GetNormalDayOfWeek() + 1;
+            var intDayOfWeek = (int)dayOfWeek + 1;
 
-            var currBlackouts = _blackoutsData[dayOfWeek.ToString()];
+            var currBlackouts = _blackoutsData[intDayOfWeek.ToString()];
 
             string[] blackoutTimes = currBlackouts["no"].Concat(currBlackouts["maybe"]).ToArray();
 
@@ -78,12 +77,19 @@ namespace LightTimetable.Models.Electricity
             return new[] { maybeLightHours, noLightHours };
         }
 
+        #region Data initialization
+
         public static async Task InitializeBlackoutsAsync()
         {
-            using HttpClient httpClient = new HttpClient();
+            var request = await HttpRequestService.LoadStringAsync("https://www.dtek-kem.com.ua/ua/shutdowns");
 
-            string request = await httpClient.GetStringAsync("https://www.dtek-kem.com.ua/ua/shutdowns");
-            var serializedData = Regex.Match(request, "\"data\":{.*").Value[7..^1];
+            if (!request.IsSuccessful)
+            {
+                _blackoutsData = ConvertToCollection("");
+                return;
+            }
+
+            var serializedData = Regex.Match(request.Response, "\"data\":{.*").Value[7..^1];
 
             _blackoutsData = ConvertToCollection(serializedData);
         }
@@ -93,14 +99,16 @@ namespace LightTimetable.Models.Electricity
             ElectricityDictionary tempDictionary = new();
             if (serializedData is "" or null)
             {
-                return new ElectricityDictionary();
+                return tempDictionary;
             }
-            var currGroup = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, Dictionary<string, string>>>>(serializedData)[Default.DTEKGroup];
+            var currGroup = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, Dictionary<string, string>>>>(serializedData)[Settings.Default.DTEKGroup];
             foreach (var group in currGroup)
             {
                 tempDictionary.Add(group.Key, group.Value.GroupBy(r => r.Value).ToDictionary(t => t.Key, t => t.Select(r => r.Key).ToList()));
             }
             return tempDictionary;
         }
+
+        #endregion
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Data;
 
+
 namespace LightTimetable.Tools.Converters
 {
     public class AnythingToIconSourceConverter : IValueConverter
@@ -12,8 +13,8 @@ namespace LightTimetable.Tools.Converters
 
             return (string)parameter switch
             {
-                "Note"     => "/Assets/Notes.png",
-                "Subgroup" => "/Assets/Subgroup.png",
+                "Note"     => "/Assets/DataGrid/Notes.png",
+                "Subgroup" => "/Assets/DataGrid/Subgroup.png",
                          _ => string.Empty
             };
         }

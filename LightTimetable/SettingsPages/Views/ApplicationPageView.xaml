@@ -29,7 +29,7 @@
                     <Grid>
                         <Border BorderThickness="1" BorderBrush="Gray" Height="40" ></Border>
                         <StackPanel Orientation="Horizontal" Margin="5 0 0 0">
-                            <Image Source="/Assets/StartManually.png" RenderOptions.BitmapScalingMode="HighQuality" Height="32" Width="32"/>
+                            <Image Source="/Assets/Settings/StartManually.png" RenderOptions.BitmapScalingMode="HighQuality" Height="32" Width="32"/>
                             <TextBlock Margin="10,0,0,0" Width="110" VerticalAlignment="Center" TextWrapping="Wrap">Запускати вручну</TextBlock>
                         </StackPanel>
                     </Grid>
@@ -38,7 +38,7 @@
                     <Grid>
                         <Border BorderThickness="1" BorderBrush="Gray" Height="40" ></Border>
                         <StackPanel Orientation="Horizontal" Margin="5 0 0 0">
-                            <Image Source="/Assets/AutoStart.png" RenderOptions.BitmapScalingMode="HighQuality" Height="32" Width="32"/>
+                            <Image Source="/Assets/Settings/AutoStart.png" RenderOptions.BitmapScalingMode="HighQuality" Height="32" Width="32"/>
                             <TextBlock Margin="10,0,0,0" Width="110" VerticalAlignment="Center" TextWrapping="Wrap">Запускати автоматично</TextBlock>
                         </StackPanel>
                     </Grid>
@@ -60,7 +60,7 @@
 
                 <Label Content="При середньому кліку миши:" Margin="0 40 0 0" Grid.Column="0"></Label>
                 <RadioButton Grid.Column="1" IsChecked="{Binding MiddleMouseClick, Converter={StaticResource RadioBool2Int}, ConverterParameter=0}" Margin="0 50 0 0" GroupName="MiddleClick">Нічого не робити</RadioButton>
-                <RadioButton Grid.Column="2" IsChecked="{Binding MiddleMouseClick, Converter={StaticResource RadioBool2Int}, ConverterParameter=1}" Margin="0 50 0 0" GroupName="MiddleClick">Обновити</RadioButton>
+                <RadioButton Grid.Column="2" IsChecked="{Binding MiddleMouseClick, Converter={StaticResource RadioBool2Int}, ConverterParameter=1}" Margin="0 50 0 0" GroupName="MiddleClick">Оновити</RadioButton>
                 <RadioButton Grid.Column="3" IsChecked="{Binding MiddleMouseClick, Converter={StaticResource RadioBool2Int}, ConverterParameter=2}" Margin="0 50 0 0" GroupName="MiddleClick">Відкрити налаштування</RadioButton>
             </Grid>
         </GroupBox>

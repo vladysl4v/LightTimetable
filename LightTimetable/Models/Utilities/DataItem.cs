@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Linq;
-using System.Text;
 using System.Collections.Generic;
 
 using LightTimetable.Tools;
-using LightTimetable.Models.Electricity;
-
-using static LightTimetable.Properties.Settings;
+using LightTimetable.Properties;
 
 
-namespace LightTimetable.Models
+namespace LightTimetable.Models.Utilities
 {
     public class DataItem
     {
@@ -26,7 +23,7 @@ namespace LightTimetable.Models
         public DataItem(Dictionary<string, string> item)
         {
             StudyTime = new TimeInterval(item["study_time_begin"], item["study_time_end"]);
-            Electricity = ElectricityPlugin.GetLightInformation(StudyTime, Convert.ToDateTime(item["full_date"]));
+            Electricity = ElectricityPlugin.GetLightInformation(StudyTime, Convert.ToDateTime(item["full_date"]).GetNormalDayOfWeek());
             Discipline = RenameDiscipline(item["discipline"]);
             StudyType = item["study_type"];
             Cabinet = item["cabinet"];
@@ -60,7 +57,7 @@ namespace LightTimetable.Models
 
         private DisciplinePair RenameDiscipline(string discipline)
         {
-            if (Default.Renames.TryGetValue(discipline, out string rename))
+            if (Settings.Default.Renames.TryGetValue(discipline, out string rename))
             {
                 return new DisciplinePair(rename, discipline);
             }
@@ -82,7 +79,7 @@ namespace LightTimetable.Models
 
         protected string GetNote()
         {
-            return Default.Notes.TryGetValue(Id, out string note) ? note : string.Empty;
+            return Settings.Default.Notes.TryGetValue(Id, out string note) ? note : string.Empty;
         }
     }
 }

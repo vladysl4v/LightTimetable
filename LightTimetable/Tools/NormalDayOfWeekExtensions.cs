@@ -1,28 +1,16 @@
 ﻿using System;
-using System.Threading;
 
 
 namespace LightTimetable.Tools
 {
-    /// <summary>
-    /// DayOfWeek which counts days starting from Monday
-    /// </summary>
-    public enum NormalDayOfWeek
-    {
-        Monday,
-        Tuesday,
-        Wednesday,
-        Thursday,
-        Friday,
-        Saturday,
-        Sunday
-    }
 
-    public static class DateTimeExtensions
+    public static class NormalDayOfWeekExtensions
     {
-        public static NormalDayOfWeek GetNormalDayOfWeek(this DateTime date)
+        public static NormalDayOfWeek GetNormalDayOfWeek(this DateTime date) => date.DayOfWeek.Normalize();
+
+        public static NormalDayOfWeek Normalize(this DayOfWeek dayOfWeek)
         {
-            return date.DayOfWeek switch
+            return dayOfWeek switch
             {
                 DayOfWeek.Monday    => NormalDayOfWeek.Monday,
                 DayOfWeek.Tuesday   => NormalDayOfWeek.Tuesday,
