@@ -16,6 +16,7 @@
   <ItemGroup>
     <Resource Include="Assets\Settings\AutoStart.png" />
     <Resource Include="Assets\LightTimetable-Logo.ico" />
+    <Resource Include="Assets\Settings\Window.png" />
     <Resource Include="Assets\Status\Loading.png" />
     <Resource Include="Assets\DataGrid\MaybeElectricity.png" />
     <Resource Include="Assets\DataGrid\NoElectricity.png" />

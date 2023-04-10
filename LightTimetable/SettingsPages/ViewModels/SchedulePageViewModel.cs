@@ -4,6 +4,7 @@ using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 
 using LightTimetable.Tools;
+using LightTimetable.Views;
 using LightTimetable.Properties;
 
 
@@ -127,6 +128,11 @@ namespace LightTimetable.SettingsPages.ViewModels
 
         public override void Save()
         {
+            if (IsAnythingChanged)
+            {
+                SettingsView.IsRequiredReload = true;
+            }
+
             Settings.Default.Faculty = _currFaculty;
             Settings.Default.EducationForm = _currEducForm;
             Settings.Default.Course = _currCourse;

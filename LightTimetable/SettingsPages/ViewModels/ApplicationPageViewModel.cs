@@ -3,6 +3,7 @@ using System.Windows;
 using System.Security;
 using Microsoft.Win32;
 
+using LightTimetable.Views;
 using LightTimetable.Properties;
 
 
@@ -15,6 +16,7 @@ namespace LightTimetable.SettingsPages.ViewModels
         private int _startAutomatically = Settings.Default.Autostart;
         private int _openWindowMode = Settings.Default.OpenWindowMode;
         private int _middleMouseClick = Settings.Default.MiddleMouseClick;
+        private int _windowPosition = Settings.Default.WindowPosition;
         public int StartAutomatically
         {
             get => _startAutomatically;
@@ -31,6 +33,12 @@ namespace LightTimetable.SettingsPages.ViewModels
         {
             get => _middleMouseClick;
             set => SetProperty(ref _middleMouseClick, value);
+        }
+
+        public int WindowPosition
+        {
+            get => _windowPosition;
+            set => SetProperty(ref _windowPosition, value);
         }
 
         #endregion
@@ -75,8 +83,10 @@ namespace LightTimetable.SettingsPages.ViewModels
 
         public override void Save()
         {
-            Settings.Default.OpenWindowMode = OpenWindowMode;
-            Settings.Default.MiddleMouseClick = MiddleMouseClick;
+            if (Settings.Default.WindowPosition != WindowPosition)
+            {
+                SettingsView.IsRequiredResize = true;
+            }
 
             if (Settings.Default.Autostart != StartAutomatically)
             {
@@ -86,6 +96,10 @@ namespace LightTimetable.SettingsPages.ViewModels
                     case 1: AddAppToAutostart(); break;
                 }
             }
+
+            Settings.Default.OpenWindowMode = OpenWindowMode;
+            Settings.Default.MiddleMouseClick = MiddleMouseClick;
+            Settings.Default.WindowPosition = WindowPosition;
             Settings.Default.Autostart = StartAutomatically;
             Settings.Default.Save();
             IsAnythingChanged = false;

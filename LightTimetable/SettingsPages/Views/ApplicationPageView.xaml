@@ -15,6 +15,7 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="100"/>
+            <RowDefinition Height="150"/>
             <RowDefinition Height="100"/>
             <RowDefinition Height="1*"/>
             <RowDefinition Height="40"/>
@@ -43,9 +44,46 @@
                         </StackPanel>
                     </Grid>
                 </RadioButton>
+
             </Grid>
         </GroupBox>
-        <GroupBox Header="Значок системного трею" Grid.Row="1">
+        <GroupBox Header="Позиція на екрані" Grid.Row="1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="1*"/>
+                </Grid.RowDefinitions>
+                <RadioButton x:Name="TopLeftCorner" VerticalAlignment="Bottom" IsChecked="{Binding WindowPosition, Converter={StaticResource RadioBool2Int}, ConverterParameter=0}" HorizontalAlignment="Right" Style="{StaticResource RadioButtonLikeButtonStyle}" Height="40" Width="80" HorizontalContentAlignment="Left" BorderBrush="{x:Null}" Background="White">
+                    <Grid>
+                        <Border BorderThickness="1" BorderBrush="Gray" Height="40"/>
+                        <Image  Visibility="{Binding ElementName=TopLeftCorner, Path=IsChecked, Converter={StaticResource Boolean2Visibility}}" Source="/Assets/Settings/Window.png" Margin="5" VerticalAlignment="Top" HorizontalAlignment="Left" RenderOptions.BitmapScalingMode="HighQuality" Height="30" Width="40"/>
+                    </Grid>
+                </RadioButton>
+                <RadioButton x:Name="BottomLeftCorner" Grid.Column="0" Grid.Row="1" VerticalAlignment="Top" IsChecked="{Binding WindowPosition, Converter={StaticResource RadioBool2Int}, ConverterParameter=2}" HorizontalAlignment="Right" Style="{StaticResource RadioButtonLikeButtonStyle}" Height="40" Width="80" HorizontalContentAlignment="Left" BorderBrush="{x:Null}" Background="White">
+                    <Grid>
+                        <Border BorderThickness="1" BorderBrush="Gray" Height="40" ></Border>
+                        <Image  Visibility="{Binding ElementName=BottomLeftCorner, Path=IsChecked, Converter={StaticResource Boolean2Visibility}}" Source="/Assets/Settings/Window.png" Margin="5" VerticalAlignment="Bottom" HorizontalAlignment="Left" RenderOptions.BitmapScalingMode="HighQuality" Height="30" Width="40"/>
+                    </Grid>
+                </RadioButton>
+                <RadioButton x:Name="BottomRightCorner" Grid.Column="1" Grid.Row="1" VerticalAlignment="Top" IsChecked="{Binding WindowPosition, Converter={StaticResource RadioBool2Int}, ConverterParameter=3}" HorizontalAlignment="Left" Style="{StaticResource RadioButtonLikeButtonStyle}" Height="40" Width="80" HorizontalContentAlignment="Left" BorderBrush="{x:Null}" Background="White">
+                    <Grid>
+                        <Border BorderThickness="1" BorderBrush="Gray" Height="40" ></Border>
+                        <Image  Visibility="{Binding ElementName=BottomRightCorner, Path=IsChecked, Converter={StaticResource Boolean2Visibility}}" Source="/Assets/Settings/Window.png" Margin="5" VerticalAlignment="Bottom" HorizontalAlignment="Right" RenderOptions.BitmapScalingMode="HighQuality" Height="30" Width="40"/>
+                    </Grid>
+                </RadioButton>
+                <RadioButton x:Name="TopRightCorner" Grid.Column="1" Grid.Row="0" VerticalAlignment="Bottom" IsChecked="{Binding WindowPosition, Converter={StaticResource RadioBool2Int}, ConverterParameter=1}" HorizontalAlignment="Left" Style="{StaticResource RadioButtonLikeButtonStyle}" Height="40" Width="80" HorizontalContentAlignment="Left" BorderBrush="{x:Null}" Background="White">
+                    <Grid>
+                        <Border BorderThickness="1" BorderBrush="Gray" Height="40" ></Border>
+                        <Image Visibility="{Binding ElementName=TopRightCorner, Path=IsChecked, Converter={StaticResource Boolean2Visibility}}" Source="/Assets/Settings/Window.png" Margin="5" VerticalAlignment="Top" HorizontalAlignment="Right" RenderOptions.BitmapScalingMode="HighQuality" Height="30" Width="40"/>
+                    </Grid>
+                </RadioButton>
+            </Grid>
+        </GroupBox>
+        <GroupBox Header="Значок системного трею" Grid.Row="2">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="205"/>
@@ -64,7 +102,7 @@
                 <RadioButton Grid.Column="3" IsChecked="{Binding MiddleMouseClick, Converter={StaticResource RadioBool2Int}, ConverterParameter=2}" Margin="0 50 0 0" GroupName="MiddleClick">Відкрити налаштування</RadioButton>
             </Grid>
         </GroupBox>
-        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right">
+        <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right">
             <!-- APPLY CHANGES AND CLOSE BUTTON -->
             <Button Content="ОК" Command="{Binding SaveAndCloseCommand}" CommandParameter="{Binding ElementName=ApplicationControl}" Margin="0 0 10 0" BorderThickness="2" IsDefault="True" Width="90" Height="25"/>
             <!-- CANCEL AND CLOSE BUTTON -->

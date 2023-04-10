@@ -81,6 +81,12 @@ namespace LightTimetable.Models
 
         public static async Task InitializeBlackoutsAsync()
         {
+            if (!Settings.Default.ShowBlackouts || Settings.Default.DTEKGroup == "0")
+            {
+                _blackoutsData = ConvertToCollection("");
+                return;
+            }
+
             var request = await HttpRequestService.LoadStringAsync("https://www.dtek-kem.com.ua/ua/shutdowns");
 
             if (!request.IsSuccessful)
@@ -97,12 +103,20 @@ namespace LightTimetable.Models
         private static ElectricityDictionary ConvertToCollection(string serializedData)
         {
             ElectricityDictionary tempDictionary = new();
+
             if (serializedData is "" or null)
             {
                 return tempDictionary;
             }
-            var currGroup = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, Dictionary<string, string>>>>(serializedData)[Settings.Default.DTEKGroup];
-            foreach (var group in currGroup)
+
+            var currGroup = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, Dictionary<string, string>>>>(serializedData);
+
+            if (currGroup == null || !currGroup.TryGetValue(Settings.Default.DTEKGroup, out var userElectricity))
+            {
+                return tempDictionary;
+            }
+
+            foreach (var group in userElectricity)
             {
                 tempDictionary.Add(group.Key, group.Value.GroupBy(r => r.Value).ToDictionary(t => t.Key, t => t.Select(r => r.Key).ToList()));
             }

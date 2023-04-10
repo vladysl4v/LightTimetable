@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using System.Runtime.CompilerServices;
 
 using LightTimetable.Tools;
+using LightTimetable.Views;
 
 
 namespace LightTimetable.SettingsPages.ViewModels
@@ -12,7 +13,7 @@ namespace LightTimetable.SettingsPages.ViewModels
     {
         protected PageViewModelBase()
         {
-            SaveSettingsCommand = new RelayCommand(_ => Save());
+            SaveSettingsCommand = new RelayCommand(_ => SaveSettings());
             SaveAndCloseCommand = new RelayCommand(SaveAndCloseSettings);
             CloseSettingsCommand = new RelayCommand(CloseSettings);
         }
@@ -51,18 +52,28 @@ namespace LightTimetable.SettingsPages.ViewModels
         public RelayCommand SaveAndCloseCommand { get; }
         public RelayCommand CloseSettingsCommand { get; }
 
+        private void SaveSettings()
+        {
+            Save();
+            SettingsView.OnSettingsSaved();
+        }
+
         private void SaveAndCloseSettings(object control)
         {
             if (control is not UserControl and not Window) return;
-            if (control is Window thisWindow)
+
+            Save();
+            SettingsView.OnSettingsSaved();
+
+            switch (control)
             {
-                Save();
-                thisWindow.Close();
-            }
-            if (control is UserControl thisPage)
-            {
-                Save();
-                Window.GetWindow(thisPage).Close();
+                case Window window:
+                    window.Close(); 
+                    break;
+
+                case UserControl userControl:
+                    Window.GetWindow(userControl)?.Close(); 
+                    break;
             }
         }
 
@@ -73,6 +84,7 @@ namespace LightTimetable.SettingsPages.ViewModels
             if (!IsAnythingChanged)
             {
                 Window.GetWindow(thisPage).Close();
+                return;
             }
             var msgResult = MessageBox.Show("Ви внесли не збережені зміни. Все одно закрити налаштування?", "Налаштування",
                 MessageBoxButton.YesNo);

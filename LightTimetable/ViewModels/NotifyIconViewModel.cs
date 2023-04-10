@@ -15,6 +15,16 @@ namespace LightTimetable.ViewModels
 
         public NotifyIconViewModel()
         {
+            Application.Current.MainWindow = new TimetableView();
+
+            SettingsView.SettingsSaved += () =>
+            {
+                if (SettingsView.IsRequiredResize)
+                    InvokeWindowResize();
+                if (SettingsView.IsRequiredReload)
+                    RefreshData();
+            };
+
             // Commands
             SingleClickCommand = new RelayCommand(_ => SingleClick());
             DoubleClickCommand = new RelayCommand(_ => DoubleClick());
@@ -24,8 +34,6 @@ namespace LightTimetable.ViewModels
             RefreshDataCommand = new RelayCommand(_ => RefreshData());
             OpenSettingsCommand = new RelayCommand(_ => OpenSettings());
             CloseApplicationCommand = new RelayCommand(_ => CloseApplication());
-
-            InitializeNotifyIcon();
         }
 
         #region Commands
@@ -60,14 +68,21 @@ namespace LightTimetable.ViewModels
 
         private void ShowTimetable()
         {
-            Application.Current.MainWindow.Show();
+            Application.Current.MainWindow?.Show();
         }
 
         private async void RefreshData()
         {
             var mainWindow = Application.Current.MainWindow as TimetableView;
 
-            await mainWindow.ReloadViewModelData();
+            await mainWindow?.ReloadViewModelData();
+        }
+
+        private void InvokeWindowResize()
+        {
+            var mainWindow = Application.Current.MainWindow as TimetableView;
+            
+            mainWindow?.InvokeWindowResize();
         }
 
         private void OpenSettings()
@@ -75,11 +90,7 @@ namespace LightTimetable.ViewModels
             if (_settingsWindow != null) 
                 return;
             _settingsWindow = new SettingsView();
-            _settingsWindow.Closed += (_, _) =>
-            {
-                _settingsWindow = null;
-                RefreshData();
-            };
+            _settingsWindow.Closed += (_, _) => _settingsWindow = null;
             _settingsWindow.Show();
         }
 
@@ -90,13 +101,5 @@ namespace LightTimetable.ViewModels
 
         #endregion
 
-        #region Methods
-
-        private void InitializeNotifyIcon()
-        {
-            Application.Current.MainWindow = new TimetableView();
-        }
-
-        #endregion
     }
 }

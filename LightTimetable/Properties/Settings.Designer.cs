@@ -178,5 +178,17 @@ namespace LightTimetable.Properties {
                 this["ShowRiggedSchedule"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("3")]
+        public int WindowPosition {
+            get {
+                return ((int)(this["WindowPosition"]));
+            }
+            set {
+                this["WindowPosition"] = value;
+            }
+        }
     }
 }
