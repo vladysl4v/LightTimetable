@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         x:Name="InitialSettingsWindow"
         Title="LightTimetable | Початкове налаштування"
-        Height="450" 
+        Height="400" 
         Width="400"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen"
@@ -16,34 +16,35 @@
     <Window.DataContext>
         <vm:SchedulePageViewModel/>
     </Window.DataContext>
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="100"/>
-            <RowDefinition Height="50"/>
-            <RowDefinition Height="1*"/>
-        </Grid.RowDefinitions>
-
-        <StackPanel Grid.Row="0">
+    <StackPanel>
+        <StackPanel>
             <Label Content="Ласкаво просимо до програми LightTimetable!" HorizontalContentAlignment="Center" FontSize="16" FontWeight="Bold"/>
             <Label Content="Для коректної роботи обов'язково виконайте початкове" HorizontalContentAlignment="Center" FontSize="13"/>
             <Label Content="налаштування програми або використання буде неможливо." HorizontalContentAlignment="Center" FontSize="13"/>
         </StackPanel>
 
-        <Border Grid.Row="1" BorderBrush="Gray" BorderThickness="2" HorizontalAlignment="Stretch">
+        <Border BorderBrush="Gray" BorderThickness="2" HorizontalAlignment="Stretch">
             <StackPanel>
                 <Label Content="На даний момент програма підтримує лише факультети" HorizontalContentAlignment="Center" Margin="0 -2 0 0" FontSize="14"/>
                 <Label Content="університету КРОК" HorizontalContentAlignment="Center" Margin="0 -10 0 0" FontSize="14" />
             </StackPanel>
         </Border>
-        <StackPanel Grid.Row="2">
-            <Label Content="Оберіть ваш факультет, форму навчання та курс, після цього ви " HorizontalContentAlignment="Center" HorizontalAlignment="Center"/>
-            <Label Content="зможете обрати вашу групу" HorizontalContentAlignment="Center" HorizontalAlignment="Center"/>
-            <ComboBox SelectedValue="{Binding CurrentFaculty}" ItemsSource="{Binding FacultiesSource}" HorizontalAlignment="Center" Width="350" Height="22" DisplayMemberPath="Value" SelectedValuePath="Key"/>
-            <ComboBox SelectedValue="{Binding CurrentEducForm}" ItemsSource="{Binding EducFormsSource}" Margin="15 10 0 0" HorizontalAlignment="Left" Width="165" Height="22" DisplayMemberPath="Value" SelectedValuePath="Key"/>
-            <ComboBox SelectedValue="{Binding CurrentCourse}" ItemsSource="{Binding CoursesSource}" Margin="0 -22 15 0" HorizontalAlignment="Right" Width="165" Height="22" DisplayMemberPath="Value" SelectedValuePath="Key"/>
-            <ComboBox SelectedValue="{Binding CurrentStudyGroup}" ItemsSource="{Binding StudyGroupsSource}" Margin="0 10 0 0" HorizontalAlignment="Center" Width="350" Height="22" DisplayMemberPath="Value" SelectedValuePath="Key"/>
-            <Label Content="Більше конфігурацій ви знайдете в налаштуваннях програми" Margin="0 20 0 0" HorizontalContentAlignment="Center" HorizontalAlignment="Center"/>
-            <Button Content="Зберегти та розпочати роботу" Command="{Binding SaveAndCloseCommand}" CommandParameter="{Binding ElementName=InitialSettingsWindow}" Margin="0 20 0 0" BorderThickness="2" IsDefault="True" Width="300" Height="40"/>
-        </StackPanel>
-    </Grid>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="45"/>
+                <RowDefinition Height="28"/>
+                <RowDefinition Height="28"/>
+                <RowDefinition Height="28"/>
+                <RowDefinition Height="30"/>
+            </Grid.RowDefinitions>
+            <Label Grid.Row="0" Content="Оберіть ваш факультет, форму навчання та курс, після цього ви " HorizontalContentAlignment="Center" HorizontalAlignment="Center"/>
+            <Label Grid.Row="0" Content="зможете обрати вашу групу" HorizontalContentAlignment="Center" Margin="0 20 0 0" HorizontalAlignment="Center"/>
+            <ComboBox Grid.Row="1" SelectedValue="{Binding CurrentFaculty}" ItemsSource="{Binding FacultiesSource}" Margin="25 0 0 0" HorizontalAlignment="Left" Width="335" Height="22" DisplayMemberPath="Value" SelectedValuePath="Key"/>
+            <ComboBox Grid.Row="2" SelectedValue="{Binding CurrentEducForm}" ItemsSource="{Binding EducFormsSource}" Margin="25 0 0 0" HorizontalAlignment="Left" Width="165" Height="22" DisplayMemberPath="Value" SelectedValuePath="Key"/>
+            <ComboBox Grid.Row="2" SelectedValue="{Binding CurrentCourse}" ItemsSource="{Binding CoursesSource}" Margin="0 0 24 0" HorizontalAlignment="Right" Width="165" Height="22" DisplayMemberPath="Value" SelectedValuePath="Key"/>
+            <ComboBox Grid.Row="3" SelectedValue="{Binding CurrentStudyGroup}" ItemsSource="{Binding StudyGroupsSource}" Margin="25 0 0 0" HorizontalAlignment="Left" Width="335" Height="22" DisplayMemberPath="Value" SelectedValuePath="Key"/>
+            <Label Grid.Row="4" Content="Більше конфігурацій ви знайдете в налаштуваннях програми" HorizontalContentAlignment="Center" HorizontalAlignment="Center"/>
+        </Grid>
+        <Button Content="Зберегти та розпочати роботу" Command="{Binding SaveAndCloseCommand}" CommandParameter="{Binding ElementName=InitialSettingsWindow}" Margin="0 10 0 0" BorderThickness="2" IsDefault="True" Width="300" Height="40"/>
+    </StackPanel>
 </Window>

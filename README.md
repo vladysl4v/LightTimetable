@@ -21,7 +21,7 @@
   <img width="586" height="336" src="https://user-images.githubusercontent.com/106306927/224055748-96cd49c9-77e5-4521-835c-3fd2700fd42b.gif">
 </p>
 <p align="center">
-  <img width="786" height="443" src="https://user-images.githubusercontent.com/106306927/228268960-4e8998e3-62af-44fe-a6e3-506117c286a8.gif">
+  <img width="786" height="443" src="https://user-images.githubusercontent.com/106306927/231003208-7bec9866-1763-43ff-9a0f-d487c4d09869.gif">
 </p>
 
 <h2 align="left">SOON</h1>
