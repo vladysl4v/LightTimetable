@@ -49,7 +49,7 @@ namespace LightTimetable.Models.Utilities
 
         private uint CreateIdentifier(string date)
         {
-            var hash1 = int.Parse("1" + date[0..2] + date[3..5] + date[8..10]);
+            var hash1 = int.Parse(date[8..10] + date[3..5] + date[0..2]);
             var hash2 = Discipline.Original.Aggregate(0, (current, letter) => current + letter);
             var hash3 = StudyType.Length * Discipline.Original.Length;
             return (uint)(hash1 + hash2 + hash3);

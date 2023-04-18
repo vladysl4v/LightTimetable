@@ -101,7 +101,23 @@ namespace LightTimetable.Models
                 }
             }
 
+            CheckForObsoleteNotes(result);
+
             return result;
+        }
+
+        private void CheckForObsoleteNotes(Dictionary<DateTime, List<DataItem>> schedule)
+        {
+            if (schedule.Any())
+                return;
+
+            var oldestId = schedule.First().Value.First().Id;
+
+            foreach (var obsoleteId in Properties.Settings.Default.Notes.Where(a => a.Key < oldestId))
+            {
+                Properties.Settings.Default.Notes.Remove(obsoleteId.Key);
+            }
+            Properties.Settings.Default.Save();
         }
 
         #endregion
