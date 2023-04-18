@@ -1,4 +1,5 @@
-﻿<p align="center">
+﻿<p align="right">Translate to <a href="https://github.com/vladysl4v/LightTimetable/blob/master/README_UA.md">🟦🟨 UA</a></p>
+<p align="center">
   <img width="527" height="112" src="https://user-images.githubusercontent.com/106306927/224047830-130024f0-92c7-42dd-bb77-a4711f3be0b6.png">
 </p>
 <h1 align="center">LightTimetable</h1>
