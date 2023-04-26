@@ -190,5 +190,17 @@ namespace LightTimetable.Properties {
                 this["WindowPosition"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool ShowTeamsEvents {
+            get {
+                return ((bool)(this["ShowTeamsEvents"]));
+            }
+            set {
+                this["ShowTeamsEvents"] = value;
+            }
+        }
     }
 }

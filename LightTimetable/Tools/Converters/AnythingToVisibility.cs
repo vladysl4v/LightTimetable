@@ -17,7 +17,7 @@ namespace LightTimetable.Tools.Converters
                 return Visibility.Collapsed;
             }
 
-            if (value == null || (string)value == string.Empty)
+            if (value == null || value as string == string.Empty)
                 return Visibility.Collapsed;
 
             return Visibility.Visible;

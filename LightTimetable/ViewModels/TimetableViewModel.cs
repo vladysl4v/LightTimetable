@@ -2,11 +2,15 @@
 using System.Windows;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 using LightTimetable.Tools;
 using LightTimetable.Models;
 using LightTimetable.Properties;
 using LightTimetable.Models.Utilities;
+using LightTimetable.Tools.UtilityWindows;
+
 
 namespace LightTimetable.ViewModels
 {
@@ -17,13 +21,14 @@ namespace LightTimetable.ViewModels
 
         public TimetableViewModel()
         {
-            Task.Run(ReloadData).ConfigureAwait(false);
+            Task.Run(ReloadDataAsync).ConfigureAwait(false);
 
             // Commands
             HideWindowCommand = new RelayCommand(HideWindow);
             ChangeDateCommand = new RelayCommand(ChangeDate);
             ResetDateCommand = new RelayCommand(_ => ResetDate());
 
+            OpenInTeamsCommand = new RelayCommand(_ => OpenInTeams());
             AddNoteCommand = new RelayCommand(_ => AddNote());
             ChangeNoteCommand = new RelayCommand(_ => ChangeNote());
             DeleteNoteCommand = new RelayCommand(_ => DeleteNote());
@@ -103,7 +108,7 @@ namespace LightTimetable.ViewModels
 
         #region Methods
 
-        public async Task ReloadData()
+        public async Task ReloadDataAsync()
         {
             TtStatus = TimetableStatus.LoadingData;
 
@@ -169,17 +174,41 @@ namespace LightTimetable.ViewModels
         #endregion
 
         #region Context menu
-
+        public RelayCommand OpenInTeamsCommand { get; }
         public RelayCommand AddNoteCommand { get; }
         public RelayCommand ChangeNoteCommand { get; }
         public RelayCommand DeleteNoteCommand { get; }
         public RelayCommand RenameItemCommand { get; }
 
+        private void OpenInTeams()
+        {
+            if (SelectedDataItem == null || SelectedDataItem.OutlookEvents == null)
+                return;
+
+            if (SelectedDataItem.OutlookEvents.Count == 1)
+            {
+                var message =
+                    $"Ви впевнені, що хочете зайти на нараду \"{SelectedDataItem.OutlookEvents.First().Title}\"\nВона буде відкрита в Microsoft Teams.";
+                var mbResult = MessageBox.Show(message, SelectedDataItem.Discipline.Modified, MessageBoxButton.YesNo);
+                if (mbResult == MessageBoxResult.Yes)
+                {
+                    return;
+                }
+
+            }
+            else
+            {
+                var eventPickerWindow =
+                    new EventPicker(SelectedDataItem.Discipline.Modified, SelectedDataItem.OutlookEvents);
+                eventPickerWindow.Show();
+            }
+        }
+
         private void AddNote()
         {
             if (SelectedDataItem == null)
                 return;
-            string noteText = new InputBox("Нотатка", "Введіть текст нотатки:").GetText();
+            string noteText = InputBox.Show("Нотатка", "Введіть текст нотатки:");
             if (string.IsNullOrWhiteSpace(noteText))
                 return;
 
@@ -194,7 +223,7 @@ namespace LightTimetable.ViewModels
         {
             if (SelectedDataItem == null)
                 return;
-            string noteText = new InputBox("Нотатка", "Введіть новий текст нотатки:", SelectedDataItem.Note).GetText();
+            string noteText = InputBox.Show("Нотатка", "Введіть новий текст нотатки:", SelectedDataItem.Note);
             if (string.IsNullOrWhiteSpace(noteText) || noteText == SelectedDataItem.Note) 
                 return;
 
@@ -223,7 +252,7 @@ namespace LightTimetable.ViewModels
         {
             if (SelectedDataItem == null)
                 return;
-            string newItemName = new InputBox("Перейменування", $"Введіть нову назву для \"{SelectedDataItem.Discipline.Original}\":", SelectedDataItem.Discipline.Modified).GetText();
+            string newItemName = InputBox.Show("Перейменування", $"Введіть нову назву для \"{SelectedDataItem.Discipline.Original}\":", SelectedDataItem.Discipline.Modified);
             if (string.IsNullOrWhiteSpace(newItemName) || newItemName == SelectedDataItem.Discipline.Modified) 
                 return;
 

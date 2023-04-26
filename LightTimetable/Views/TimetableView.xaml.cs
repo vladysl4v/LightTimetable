@@ -24,7 +24,7 @@ namespace LightTimetable.Views
         {
             if (DataContext is TimetableViewModel viewModel)
             {
-                await viewModel.ReloadData();
+                await viewModel.ReloadDataAsync();
             }
         }
 

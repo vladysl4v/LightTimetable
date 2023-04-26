@@ -16,13 +16,13 @@ using ElectricityDictionary =
         System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>>>;
 
 
-namespace LightTimetable.Models
+namespace LightTimetable.Models.Services
 {
     public static class ElectricityPlugin
     {
-        private static ElectricityDictionary _blackoutsData;
+        private static ElectricityDictionary? _blackoutsData;
 
-        public static ElecticityStatus? GetLightInformation(TimeInterval studyTime, NormalDayOfWeek dayOfWeek)
+        public static ElectricityStatus? GetLightInformation(TimeInterval studyTime, NormalDayOfWeek dayOfWeek)
         {
             var intersections = FindIntersections(studyTime, dayOfWeek);
 
@@ -48,12 +48,12 @@ namespace LightTimetable.Models
             if (!isDefinitelyBlackout && !Settings.Default.ShowPossibleBlackouts)
                 return null;
 
-            return new ElecticityStatus(result.ToString(), isDefinitelyBlackout);
+            return new ElectricityStatus(result.ToString(), isDefinitelyBlackout);
         }
 
         private static string[][] FindIntersections(TimeInterval studyTime, NormalDayOfWeek dayOfWeek)
         {
-            if (!Settings.Default.ShowBlackouts)
+            if (!Settings.Default.ShowBlackouts || _blackoutsData == null)
                 return Array.Empty<string[]>();
 
             var intDayOfWeek = (int)dayOfWeek + 1;
@@ -83,7 +83,7 @@ namespace LightTimetable.Models
         {
             if (!Settings.Default.ShowBlackouts || Settings.Default.DTEKGroup == "0")
             {
-                _blackoutsData = ConvertToCollection("");
+                _blackoutsData = null;
                 return;
             }
 
@@ -91,29 +91,34 @@ namespace LightTimetable.Models
 
             if (!request.IsSuccessful)
             {
-                _blackoutsData = ConvertToCollection("");
+                _blackoutsData = null;
                 return;
             }
 
-            var serializedData = Regex.Match(request.Response, "\"data\":{.*").Value[7..^1];
-
-            _blackoutsData = ConvertToCollection(serializedData);
+            try
+            {
+                var serializedData = Regex.Match(request.Response, "\"data\":{.*").Value[7..^1];
+                _blackoutsData = ConvertToCollection(serializedData);
+            }
+            catch
+            {
+                _blackoutsData = null;
+            }
         }
 
-        private static ElectricityDictionary ConvertToCollection(string serializedData)
+        private static ElectricityDictionary? ConvertToCollection(string serializedData)
         {
-            ElectricityDictionary tempDictionary = new();
-
             if (serializedData is "" or null)
             {
-                return tempDictionary;
+                return null;
             }
+            ElectricityDictionary tempDictionary = new();
 
             var currGroup = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, Dictionary<string, string>>>>(serializedData);
 
             if (currGroup == null || !currGroup.TryGetValue(Settings.Default.DTEKGroup, out var userElectricity))
             {
-                return tempDictionary;
+                return null;
             }
 
             foreach (var group in userElectricity)

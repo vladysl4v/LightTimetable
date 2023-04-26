@@ -11,7 +11,7 @@ using RiggedScheduleDictionary =
         System.Collections.Generic.List<LightTimetable.Models.Utilities.DataItem>>>;
 
 
-namespace LightTimetable.Models
+namespace LightTimetable.Models.Services
 {
     public class RiggedSchedule
     {

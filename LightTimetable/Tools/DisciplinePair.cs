@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 
 
-namespace LightTimetable.Models.Utilities
+namespace LightTimetable.Tools
 {
     public class DisciplinePair
     {
@@ -13,10 +13,10 @@ namespace LightTimetable.Models.Utilities
             Modified = keyValuePair.Key;
             Original = keyValuePair.Value;
         }
-        public DisciplinePair(string key, string value)
+        public DisciplinePair(string modifiedName, string originalName)
         {
-            Modified = key;
-            Original = value;
+            Modified = modifiedName;
+            Original = originalName;
         }
         public override string ToString() => Modified;
     }

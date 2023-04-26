@@ -4,14 +4,14 @@ using System.Collections.Generic;
 
 using LightTimetable.Tools;
 using LightTimetable.Properties;
-
+using LightTimetable.Models.Services;
 
 namespace LightTimetable.Models.Utilities
 {
     public class DataItem
     {
         public uint Id { get; }
-        public ElecticityStatus? Electricity { get; }
+        public ElectricityStatus? Electricity { get; }
         public TimeInterval StudyTime { get; }
         public DisciplinePair Discipline { get; set; }
         public string StudyType { get; }
@@ -19,11 +19,13 @@ namespace LightTimetable.Models.Utilities
         public string Employee { get; }
         public string Subgroup { get; }
         public string Note { get; set; }
+        public List<OutlookEvent>? OutlookEvents { get; set; }
 
-        public DataItem(Dictionary<string, string> item)
+        public DataItem(Dictionary<string, string>? item)
         {
-            StudyTime = new TimeInterval(item["study_time_begin"], item["study_time_end"]);
-            Electricity = ElectricityPlugin.GetLightInformation(StudyTime, Convert.ToDateTime(item["full_date"]).GetNormalDayOfWeek());
+            var date = Convert.ToDateTime(item["full_date"]);
+
+            StudyTime = new TimeInterval(TimeOnly.Parse(item["study_time_begin"]), TimeOnly.Parse(item["study_time_end"]));
             Discipline = RenameDiscipline(item["discipline"]);
             StudyType = item["study_type"];
             Cabinet = item["cabinet"];
@@ -31,6 +33,8 @@ namespace LightTimetable.Models.Utilities
             Employee = ShortenFullName(item["employee"]);
             Id = CreateIdentifier(item["full_date"]);
             Note = GetNote();
+            Electricity = ElectricityPlugin.GetLightInformation(StudyTime, date.GetNormalDayOfWeek());
+            OutlookEvents = TeamsEventsPlugin.GetSuitableEvents(date, StudyTime);
         }
 
         public DataItem(DataItem clone, DateTime date)

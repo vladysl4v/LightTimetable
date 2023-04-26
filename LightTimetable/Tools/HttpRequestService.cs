@@ -1,4 +1,5 @@
 ﻿using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
 
@@ -39,5 +40,19 @@ namespace LightTimetable.Tools
             return (IsSuccessful:outputRequestSuccessness, Response:outputStringResult);
         }
 
+        public static async Task<(bool IsSuccessful, string Response)> GetUsingAuthenticationAsync(string url, string authHeader)
+        {
+            using var httpClient = new HttpClient();
+            using var requestMessage = new HttpRequestMessage(HttpMethod.Get, url);
+            requestMessage.Headers.Authorization =
+                new AuthenticationHeaderValue("Bearer", authHeader);
+
+            var httpResponse = await httpClient.SendAsync(requestMessage);
+
+            var outputRequestSuccessness = httpResponse.IsSuccessStatusCode;
+            var outputStringResult = await httpResponse.Content.ReadAsStringAsync();
+
+            return (IsSuccessful: outputRequestSuccessness, Response: outputStringResult);
+        }
     }
 }

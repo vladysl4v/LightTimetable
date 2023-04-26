@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 
 using LightTimetable.Tools;
 using LightTimetable.Properties;
+using LightTimetable.Tools.UtilityWindows;
 
 
 namespace LightTimetable.SettingsPages.ViewModels
@@ -42,7 +43,7 @@ namespace LightTimetable.SettingsPages.ViewModels
 
             var thisItem = (KeyValuePair<string, string>)selectedItem;
 
-            string newItemName = new InputBox("Перейменування", $"Введіть нову назву для \"{thisItem.Key}\":", thisItem.Value).GetText();
+            string newItemName = InputBox.Show("Перейменування", $"Введіть нову назву для \"{thisItem.Key}\":", thisItem.Value);
             if (string.IsNullOrWhiteSpace(newItemName))
                 return;
             var item = _renamesList.First(x => x.Key == thisItem.Key);
