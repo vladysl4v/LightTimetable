@@ -1,10 +1,8 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 using Microsoft.Identity.Client;
 
 using System;
 using System.Linq;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
@@ -16,8 +14,16 @@ namespace LightTimetable.Models.Services
 {
     public static class TeamsEventsPlugin
     {
-
         private static Dictionary<DateOnly, List<OutlookEvent>>? _eventsData;
+        private static readonly IPublicClientApplication ClientApp;
+
+        private const string AppId = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx";
+
+        static TeamsEventsPlugin()
+        {
+            ClientApp = PublicClientApplicationBuilder.Create(AppId).Build();
+            TokenCacheHelper.EnableSerialization(ClientApp.UserTokenCache);
+        }
 
         public static List<OutlookEvent>? GetSuitableEvents(DateTime date, TimeInterval timeInterval)
         {
@@ -31,7 +37,9 @@ namespace LightTimetable.Models.Services
             }
             foreach (var anEvent in dateEvents)
             {
-                if (anEvent.Time.Start < timeInterval.Start || anEvent.Time.Start > timeInterval.End)
+                if (anEvent.Time.Start < timeInterval.Start ||
+                    anEvent.Time.Start > timeInterval.End ||
+                    anEvent.Url == null)
                 {
                     continue;
                 }
@@ -44,12 +52,6 @@ namespace LightTimetable.Models.Services
 
         public static async Task InitializeTeamsCalendarAsync(DateTime start, DateTime end)
         {
-            if (false)
-            {
-                _eventsData = null;
-                return;
-            }
-
             var authResult = await RequestAuthenticationToken();
 
             var outputList = new List<OutlookEvent>();
@@ -58,8 +60,10 @@ namespace LightTimetable.Models.Services
             var endString = end.ToString("yyyy-MM-ddTHH:mm:ss");
 
             var url = $"https://graph.microsoft.com/v1.0/users/{authResult.Account.Username}" +
-                      $"/calendar/calendarView?startDateTime={startString}" +
-                      $"&endDateTime={endString}&$filter=isCancelled eq false";
+                      $"/calendar/calendarView?" +
+                      $"startDateTime={startString}&" +
+                      $"endDateTime={endString}&" +
+                      $"$filter=isCancelled eq false";
 
             for (var i = 0; i < 50; i++)
             {
@@ -83,24 +87,23 @@ namespace LightTimetable.Models.Services
             }
             var outputDictionary = outputList.GroupBy(x => x.Date).ToDictionary(g => g.Key, g => g.ToList());
 
-            Debug.Print(JsonConvert.SerializeObject(outputDictionary));
-
             _eventsData = outputDictionary;
         }
 
         private static async Task<AuthenticationResult> RequestAuthenticationToken()
         {
             string[] scopes = { "Calendars.Read.Shared" };
-            var app = PublicClientApplicationBuilder.Create("xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx").Build();
-            var accounts = await app.GetAccountsAsync();
+
+            var accounts = await ClientApp.GetAccountsAsync();
+
             AuthenticationResult result;
             try
             {
-                result = await app.AcquireTokenSilent(scopes, accounts.FirstOrDefault()).ExecuteAsync();
+                result = await ClientApp.AcquireTokenSilent(scopes, accounts.FirstOrDefault()).ExecuteAsync();
             }
             catch (MsalUiRequiredException)
             {
-                result = await app.AcquireTokenInteractive(scopes).ExecuteAsync();
+                result = await ClientApp.AcquireTokenInteractive(scopes).ExecuteAsync();
             }
 
             return result;

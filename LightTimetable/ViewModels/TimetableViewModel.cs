@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Linq;
 using System.Windows;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Runtime.InteropServices;
 
 using LightTimetable.Tools;
 using LightTimetable.Models;
@@ -137,6 +138,25 @@ namespace LightTimetable.ViewModels
             Date = temp;
         }
 
+        private void OpenLinkInBrowser(string url)
+        {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                url = url.Replace("&", "^&");
+                Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                Process.Start("xdg-open", url);
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                Process.Start("open", url);
+            }
+
+            MessageBox.Show("LightTimetable", "ваша операційна система не підтримується", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+
         private void OnDateChanged()
         {
             OnPropertyChanged(nameof(Date));
@@ -187,14 +207,14 @@ namespace LightTimetable.ViewModels
 
             if (SelectedDataItem.OutlookEvents.Count == 1)
             {
+                var outlookEvent = SelectedDataItem.OutlookEvents.First();
                 var message =
-                    $"Ви впевнені, що хочете зайти на нараду \"{SelectedDataItem.OutlookEvents.First().Title}\"\nВона буде відкрита в Microsoft Teams.";
+                    $"Ви впевнені, що хочете зайти на нараду \"{outlookEvent.Title.Trim()}\"?\nВона буде відкрита в Microsoft Teams.";
                 var mbResult = MessageBox.Show(message, SelectedDataItem.Discipline.Modified, MessageBoxButton.YesNo);
                 if (mbResult == MessageBoxResult.Yes)
                 {
-                    return;
+                    OpenLinkInBrowser(outlookEvent.Url);
                 }
-
             }
             else
             {

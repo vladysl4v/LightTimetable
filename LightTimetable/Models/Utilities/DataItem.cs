@@ -33,8 +33,16 @@ namespace LightTimetable.Models.Utilities
             Employee = ShortenFullName(item["employee"]);
             Id = CreateIdentifier(item["full_date"]);
             Note = GetNote();
-            Electricity = ElectricityPlugin.GetLightInformation(StudyTime, date.GetNormalDayOfWeek());
-            OutlookEvents = TeamsEventsPlugin.GetSuitableEvents(date, StudyTime);
+
+            if (Settings.Default.ShowBlackouts)
+            {
+                Electricity = ElectricityPlugin.GetLightInformation(StudyTime, date.GetNormalDayOfWeek());
+            }
+
+            if (Settings.Default.ShowTeamsEvents)
+            {
+                OutlookEvents = TeamsEventsPlugin.GetSuitableEvents(date, StudyTime);
+            }
         }
 
         public DataItem(DataItem clone, DateTime date)

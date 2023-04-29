@@ -15,8 +15,9 @@
 
 <h2 align="left">Features</h1>
 
-* Integrated blackout schedule <strong>(DTEK)</strong>
-* Predicting next weeks based on past weeks
+* Microsoft Teams event calendar integration
+* Blackout schedule integration <strong>(Kyiv only)</strong>
+* Predicting next weeks schedule based on past
 * Adding notes for the coming lessons
 * Renaming lessons at your discretion
 * Easy selection of your study group
@@ -30,7 +31,3 @@
 <p align="center">
   <img width="786" height="443" src="https://user-images.githubusercontent.com/106306927/231003208-7bec9866-1763-43ff-9a0f-d487c4d09869.gif">
 </p>
-
-<h2 align="left">SOON</h1>
-
-* Integration of the Outlook event calendar for quick navigation between online lessons

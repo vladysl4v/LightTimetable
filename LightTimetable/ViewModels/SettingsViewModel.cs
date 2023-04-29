@@ -12,6 +12,7 @@ namespace LightTimetable.ViewModels
             ApplicationCategoryCommand = new RelayCommand(_ => SetApplicationCategory());
             ScheduleCategoryCommand = new RelayCommand(_ => SetScheduleCategory());
             RenamingCategoryCommand = new RelayCommand(_ => SetRenamingCategory());
+            IntegrationsCategoryCommand = new RelayCommand(_ => SetIntegrationsCategory());
 
             // Startup page
             CurrentView = new ApplicationPageViewModel();
@@ -33,11 +34,12 @@ namespace LightTimetable.ViewModels
         public RelayCommand ApplicationCategoryCommand { get; }
         public RelayCommand ScheduleCategoryCommand { get; }
         public RelayCommand RenamingCategoryCommand { get; }
+        public RelayCommand IntegrationsCategoryCommand { get; }
 
         private void SetApplicationCategory() => CurrentView = new ApplicationPageViewModel();
         private void SetScheduleCategory() => CurrentView = new SchedulePageViewModel(true);
         private void SetRenamingCategory() => CurrentView = new RenamingPageViewModel();
-
+        private void SetIntegrationsCategory() => CurrentView = new IntegrationsPageViewModel();
         #endregion
     }
 }

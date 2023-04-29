@@ -17,7 +17,7 @@ namespace LightTimetable.Models
         private RiggedSchedule? _riggedSchedule;
         private BaseScheduleSource? _scheduleSource;
 
-        public DateTime[] AvailableDates => _scheduleSource!.AvailableDates;
+        public DateTime[] AvailableDates => _scheduleSource?.AvailableDates ?? Array.Empty<DateTime>();
 
         public List<DataItem> GetCurrentSchedule(DateTime date, out bool isRigged)
         {
