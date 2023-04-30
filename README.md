@@ -29,5 +29,5 @@
   <img width="586" height="336" src="https://user-images.githubusercontent.com/106306927/224055748-96cd49c9-77e5-4521-835c-3fd2700fd42b.gif">
 </p>
 <p align="center">
-  <img width="786" height="443" src="https://user-images.githubusercontent.com/106306927/231003208-7bec9866-1763-43ff-9a0f-d487c4d09869.gif">
+  <img width="786" height="443" src="https://user-images.githubusercontent.com/106306927/235353354-c27236a1-3453-4d1a-8b20-806f9344ddd7.gif">
 </p>

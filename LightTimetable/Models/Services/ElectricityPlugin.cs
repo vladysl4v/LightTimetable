@@ -24,9 +24,12 @@ namespace LightTimetable.Models.Services
 
         public static ElectricityStatus? GetLightInformation(TimeInterval studyTime, NormalDayOfWeek dayOfWeek)
         {
+            if (_blackoutsData == null)
+                return null;
+
             var intersections = FindIntersections(studyTime, dayOfWeek);
 
-            if (!Settings.Default.ShowBlackouts || !intersections[1].Any() && !intersections[0].Any())
+            if (!intersections[1].Any() && !intersections[0].Any())
                 return null;
 
             var isDefinitelyBlackout = false;
@@ -53,9 +56,6 @@ namespace LightTimetable.Models.Services
 
         private static string[][] FindIntersections(TimeInterval studyTime, NormalDayOfWeek dayOfWeek)
         {
-            if (!Settings.Default.ShowBlackouts || _blackoutsData == null)
-                return Array.Empty<string[]>();
-
             var intDayOfWeek = (int)dayOfWeek + 1;
 
             var currBlackouts = _blackoutsData[intDayOfWeek.ToString()];
@@ -81,7 +81,7 @@ namespace LightTimetable.Models.Services
 
         public static async Task InitializeBlackoutsAsync()
         {
-            if (!Settings.Default.ShowBlackouts || Settings.Default.DTEKGroup == "0")
+            if (Settings.Default.DTEKGroup == "0")
             {
                 _blackoutsData = null;
                 return;

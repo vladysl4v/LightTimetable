@@ -26,33 +26,12 @@ namespace LightTimetable.SettingsPages.ViewModels
         private string _currEducForm = Settings.Default.EducationForm;
         private string _currCourse = Settings.Default.Course;
         private string _currStudyGroup = Settings.Default.StudyGroup;
-        private string _blackoutsGroup = Settings.Default.DTEKGroup;
-        private bool _showBlackouts = Settings.Default.ShowBlackouts;
-        private bool _showPossibleBlackouts = Settings.Default.ShowPossibleBlackouts;
         private bool _showRiggedSchedule = Settings.Default.ShowRiggedSchedule;
-
-        public bool ShowBlackouts
-        {
-            get => _showBlackouts;
-            set => SetProperty(ref _showBlackouts, value);
-        }
 
         public bool ShowRiggedSchedule
         {
             get => _showRiggedSchedule;
             set => SetProperty(ref _showRiggedSchedule, value);
-        }
-
-        public bool ShowPossibleBlackouts
-        {
-            get => _showPossibleBlackouts;
-            set => SetProperty(ref _showPossibleBlackouts, value);
-        }
-
-        public string BlackoutsGroup
-        {
-            get => _blackoutsGroup;
-            set => SetProperty(ref _blackoutsGroup, value);
         }
 
         public JValue CurrentFaculty
@@ -128,7 +107,8 @@ namespace LightTimetable.SettingsPages.ViewModels
 
         public override void Save()
         {
-            if (IsAnythingChanged)
+            if (Settings.Default.ShowRiggedSchedule != ShowRiggedSchedule ||
+                Settings.Default.StudyGroup != _currStudyGroup)
             {
                 SettingsView.IsRequiredReload = true;
             }
@@ -137,9 +117,6 @@ namespace LightTimetable.SettingsPages.ViewModels
             Settings.Default.EducationForm = _currEducForm;
             Settings.Default.Course = _currCourse;
             Settings.Default.StudyGroup = _currStudyGroup;
-            Settings.Default.ShowBlackouts = ShowBlackouts;
-            Settings.Default.ShowPossibleBlackouts = ShowPossibleBlackouts;
-            Settings.Default.DTEKGroup = BlackoutsGroup;
             Settings.Default.ShowRiggedSchedule = ShowRiggedSchedule;
             Settings.Default.Save();
             IsAnythingChanged = false;

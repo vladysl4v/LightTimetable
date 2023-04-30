@@ -15,7 +15,6 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="110"/>
-            <RowDefinition Height="110"/>
             <RowDefinition Height="80"/>
             <RowDefinition Height="1*"/>
             <RowDefinition Height="40"/>
@@ -30,19 +29,7 @@
                 <ComboBox DockPanel.Dock="Top" SelectedValue="{Binding CurrentStudyGroup}" ItemsSource="{Binding StudyGroupsSource}"  Margin="-415 15 0 0" HorizontalAlignment="Left" Width="285" Height="22" DisplayMemberPath="Value" SelectedValuePath="Key"/>
             </DockPanel>
         </GroupBox>
-        <GroupBox Header="Відключення світла" Grid.Row="1">
-            <DockPanel>
-                <CheckBox Content="Показувати інформацію про світло" IsChecked="{Binding ShowBlackouts}" Margin="5 20 0 0" DockPanel.Dock="Top" HorizontalAlignment="Left" Height="16" x:Name="BlackoutsCheckBox"/>
-                <CheckBox Content="Відображати МОЖЛИВІ відключення" IsChecked="{Binding ShowPossibleBlackouts}" Margin="5 10 0 0" DockPanel.Dock="Top" HorizontalAlignment="Left" Height="16"  IsEnabled="{Binding ElementName=BlackoutsCheckBox, Path=IsChecked}" />
-                <Label Content="Оберіть вашу групу відключень" Margin="0 -95 0 0" DockPanel.Dock="Right"  HorizontalAlignment="Right" Width="185" Height="25" IsEnabled="{Binding ElementName=BlackoutsCheckBox, Path=IsChecked}" />
-                <ComboBox SelectedValue="{Binding BlackoutsGroup}" Margin="0 -40 -180 0" DockPanel.Dock="Right"  HorizontalAlignment="Right" Width="175" Height="22" SelectedValuePath="Tag" IsEnabled="{Binding ElementName=BlackoutsCheckBox, Path=IsChecked}" >
-                    <ComboBoxItem Content="1 група" Tag="1"/>
-                    <ComboBoxItem Content="2 група" Tag="2"/>
-                    <ComboBoxItem Content="3 група" Tag="3"/>
-                </ComboBox>
-            </DockPanel>
-        </GroupBox>
-        <GroupBox Header="Передбачення розкладу" Grid.Row="2">
+        <GroupBox Header="Передбачення розкладу" Grid.Row="1">
             <DockPanel>
                 <Label Content="Дозволяє відображати майбутній розклад, використовуючи розклад поточних днів (Не є офіційним)"  DockPanel.Dock="Top" />
                 <CheckBox Content="Відображати передбачений розклад" Margin="5 0 0 0" IsChecked="{Binding ShowRiggedSchedule}" DockPanel.Dock="Top" Height="24"/>

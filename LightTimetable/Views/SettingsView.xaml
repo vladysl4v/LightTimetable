@@ -34,6 +34,12 @@
                     <TextBlock Margin="10,0,0,0" VerticalAlignment="Center">Розклад</TextBlock>
                 </StackPanel>
             </RadioButton>
+            <RadioButton Style="{StaticResource RadioButtonLikeButtonStyle}" Command="{Binding IntegrationsCategoryCommand}" Height="40" HorizontalContentAlignment="Left" BorderBrush="{x:Null}" Background="White">
+                <StackPanel Orientation="Horizontal" Margin="5 0 0 0">
+                    <Image Source="../Assets/Settings/IntegrationsCategory.ico" RenderOptions.BitmapScalingMode="HighQuality" Height="32" Width="32"/>
+                    <TextBlock Margin="10,0,0,0" VerticalAlignment="Center">Інтеграції</TextBlock>
+                </StackPanel>
+            </RadioButton>
             <RadioButton Style="{StaticResource RadioButtonLikeButtonStyle}" Command="{Binding RenamingCategoryCommand}" Height="40" HorizontalContentAlignment="Left" BorderBrush="{x:Null}" Background="White">
                 <StackPanel Orientation="Horizontal" Margin="5 0 0 0">
                     <Image Source="../Assets/Settings/RenamingCategory.ico" RenderOptions.BitmapScalingMode="HighQuality" Height="32" Width="32"/>

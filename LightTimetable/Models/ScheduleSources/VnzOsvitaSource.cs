@@ -16,12 +16,12 @@ namespace LightTimetable.Models.ScheduleSources
     {
         public override async Task InitializeScheduleAsync(DateTime startDate, DateTime endDate)
         {
-            var url = $"https://vnz.osvita.net/BetaSchedule.asmx/GetScheduleDataX?&a" +
-                      $"VuzID=11784&a" +
-                      $"StudyGroupID=\"{Settings.Default.StudyGroup}\"&a" +
-                      $"StartDate=\"{startDate.ToShortDateString()}\"&a" +
-                      $"EndDate=\"{endDate.ToShortDateString()}\"&a" +
-                      $"StudyTypeID=null";
+            var url = $"https://vnz.osvita.net/BetaSchedule.asmx/GetScheduleDataX?" +
+                      $"aVuzID=11784&" +
+                      $"aStudyGroupID=\"{Settings.Default.StudyGroup}\"&" +
+                      $"aStartDate=\"{startDate.ToShortDateString()}\"&" +
+                      $"aEndDate=\"{endDate.ToShortDateString()}\"&" +
+                      $"aStudyTypeID=null";
 
             var request = await HttpRequestService.LoadStringAsync(url);
 

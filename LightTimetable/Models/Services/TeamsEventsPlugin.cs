@@ -3,6 +3,7 @@ using Microsoft.Identity.Client;
 
 using System;
 using System.Linq;
+using System.Windows;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
@@ -27,6 +28,9 @@ namespace LightTimetable.Models.Services
 
         public static List<OutlookEvent>? GetSuitableEvents(DateTime date, TimeInterval timeInterval)
         {
+            if (_eventsData == null)
+                return null;
+
             var outputList = new List<OutlookEvent>();
 
             var dateOnly = DateOnly.FromDateTime(date);
@@ -53,6 +57,12 @@ namespace LightTimetable.Models.Services
         public static async Task InitializeTeamsCalendarAsync(DateTime start, DateTime end)
         {
             var authResult = await RequestAuthenticationToken();
+
+            if (authResult == null)
+            {
+                _eventsData = null;
+                return;
+            }
 
             var outputList = new List<OutlookEvent>();
 
@@ -90,24 +100,62 @@ namespace LightTimetable.Models.Services
             _eventsData = outputDictionary;
         }
 
-        private static async Task<AuthenticationResult> RequestAuthenticationToken()
+        #region Authentication
+
+        private static async Task<AuthenticationResult?> RequestAuthenticationToken()
+        {
+            return await AuthorizeSilentAsync() ?? await AuthorizeInteractiveAsync();
+        }
+
+        public static async Task<AuthenticationResult?> AuthorizeInteractiveAsync()
+        {
+            string[] scopes = { "Calendars.Read.Shared" };
+            try
+            {
+                var result = await ClientApp.AcquireTokenInteractive(scopes).ExecuteAsync();
+                return result;
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Виникла помилка під час авторизації:\n" + e.Message, "LightTimetable", MessageBoxButton.OK, MessageBoxImage.Error);
+                return null;
+            }
+
+        }
+
+        public static async Task<AuthenticationResult?> AuthorizeSilentAsync()
         {
             string[] scopes = { "Calendars.Read.Shared" };
 
             var accounts = await ClientApp.GetAccountsAsync();
 
-            AuthenticationResult result;
             try
             {
-                result = await ClientApp.AcquireTokenSilent(scopes, accounts.FirstOrDefault()).ExecuteAsync();
+                return await ClientApp.AcquireTokenSilent(scopes, accounts.FirstOrDefault()).ExecuteAsync();
             }
             catch (MsalUiRequiredException)
             {
-                result = await ClientApp.AcquireTokenInteractive(scopes).ExecuteAsync();
+                return null;
             }
 
-            return result;
         }
+
+        public static async Task<bool> SignOutAsync()
+        {
+            var accounts = await ClientApp.GetAccountsAsync();
+            try
+            {
+                await ClientApp.RemoveAsync(accounts.FirstOrDefault());
+                return true;
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Виникла помилка під час виходу:\n" + e.Message, "LightTimetable", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+        }
+
+        #endregion
 
     }
 }

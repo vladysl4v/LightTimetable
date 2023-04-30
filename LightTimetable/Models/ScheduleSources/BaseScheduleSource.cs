@@ -3,9 +3,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
+using LightTimetable.Tools;
 using LightTimetable.Properties;
 using LightTimetable.Models.Utilities;
-using LightTimetable.Tools;
 
 
 namespace LightTimetable.Models.ScheduleSources
