@@ -54,28 +54,18 @@ namespace LightTimetable.Tools
         {
             var win = (Window)s;
             var width = (e == null) ? win.Width : e.NewSize.Width;
-            var isWidthChanged = (e == null) || Math.Abs(e.PreviousSize.Width - e.NewSize.Width) > 10;
 
             win.Top = _dockTop;
-
-            if (isWidthChanged)
-            {
-                win.Left = _dockRight - width;
-            }
+            win.Left = _dockRight - width;
         }
 
         private void BottomLeftSizeChanged(object s, SizeChangedEventArgs? e)
         {
             var win = (Window)s;
             var height = (e == null) ? win.Height : e.NewSize.Height;
-            var isHeightChanged = (e == null) || Math.Abs(e.PreviousSize.Height - e.NewSize.Height) > 10;
 
             win.Left = _dockLeft;
-
-            if (isHeightChanged)
-            {
-                win.Top = _dockBottom - height;
-            }
+            win.Top = _dockBottom - height;
         }
 
         private void BottomRightSizeChanged(object s, SizeChangedEventArgs? e)
@@ -84,18 +74,9 @@ namespace LightTimetable.Tools
 
             var width = (e == null) ? win.Width : e.NewSize.Width;
             var height = (e == null) ? win.Height : e.NewSize.Height;
-            var isWidthChanged = (e == null) || Math.Abs(e.PreviousSize.Width - e.NewSize.Width) > 10;
-            var isHeightChanged = (e == null) || Math.Abs(e.PreviousSize.Height - e.NewSize.Height) > 10;
 
-            if (isHeightChanged)
-            {
-                win.Top = _dockBottom - height;
-            }
-
-            if (isWidthChanged)
-            {
-                win.Left = _dockRight - width;
-            }
+            win.Top = _dockBottom - height;
+            win.Left = _dockRight - width;
         }
 
         #region Initialization

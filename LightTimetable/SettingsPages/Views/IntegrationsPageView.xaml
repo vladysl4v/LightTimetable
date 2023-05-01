@@ -26,8 +26,9 @@
                     <ColumnDefinition Width="1*"/>
                 </Grid.ColumnDefinitions>
                 <DockPanel Grid.Column="0">
-                    <CheckBox Content="Показувати інформацію про наради у Teams" IsEnabled="{Binding IsAuthenticated}" IsChecked="{Binding ShowTeamsEvents}" Margin="5 20 0 0" DockPanel.Dock="Top" HorizontalAlignment="Left" Height="16"/>
-                    <Label Content="(Необхідна авторизація)" Margin="20 0 0 0"/>
+                    <CheckBox Content="Показувати інформацію про наради у Teams" IsEnabled="{Binding IsAuthenticated}" IsChecked="{Binding ShowTeamsEvents}" Margin="5 15 0 0" DockPanel.Dock="Top" HorizontalAlignment="Left" Height="16"/>
+                    <Label Content="(Необхідна авторизація)" Visibility="{Binding IsAuthenticated, Converter={StaticResource InvertedBoolean2Visibility}}" Margin="20 0 0 0" DockPanel.Dock="Top" VerticalAlignment="Top" Height="25"/>
+                    <CheckBox Content="Завантажувати минулі наради" IsEnabled="{Binding IsAuthenticated}" IsChecked="{Binding ShowOldEvents}" Margin="5 0 0 0" DockPanel.Dock="Top" HorizontalAlignment="Left" Height="16"/>
                 </DockPanel>
                 <DockPanel Grid.Column="1">
                     <Label Content="{Binding AuthText}" Margin="0 7 0 0" HorizontalContentAlignment="Center"  DockPanel.Dock="Top" HorizontalAlignment="Right" Width="215" Height="25"/>

@@ -3,6 +3,7 @@
                     xmlns:converters="clr-namespace:LightTimetable.Tools.Converters">
 
     <BooleanToVisibilityConverter x:Key="Boolean2Visibility" />
+    <converters:InvertedBooleanToVisibilityConverter x:Key="InvertedBoolean2Visibility"/>
     <converters:DayOfWeekToTitleConverter x:Key="DayOfWeek2Title" />
     <converters:ForegroundByDateConverter x:Key="ForegroundByDate" />
     <converters:AnythingToVisibilityConverter x:Key="Anything2Visibility" />

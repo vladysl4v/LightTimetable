@@ -16,8 +16,9 @@
                         VerticalAlignment="Center"
                         Background="#505AC9"
                         Visibility="{Binding OutlookEvents, Converter={StaticResource Anything2Visibility}}"
-                        CornerRadius="2"/>
-                <TextBlock Text="{Binding Discipline}" Margin="3 0 0 0"/>
+                        CornerRadius="2"
+                        Margin="0 0 3 0"/>
+                <TextBlock Text="{Binding Discipline}"/>
             </StackPanel>
             <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Right">
                 <Image VerticalAlignment="Center" Visibility="{Binding Note, Converter={StaticResource Anything2Visibility}}" Margin="0 0 1 0" Height="12" Width="12" Source="{Binding Note, Converter={StaticResource Anything2IconSource}, ConverterParameter=Note}" RenderOptions.BitmapScalingMode="HighQuality" ToolTipService.InitialShowDelay="200">

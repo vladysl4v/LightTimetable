@@ -40,6 +40,14 @@ namespace LightTimetable.ViewModels
 
         public TimetableStatusControl TtControl { get; } = new(TimetableStatus.Default);
 
+        private double _width = 400;
+
+        public double Width
+        {
+            get => _width;
+            set => SetProperty(ref _width, value);
+        }
+
         public List<DataItem> CurrentSchedule
         {
             get
@@ -98,7 +106,11 @@ namespace LightTimetable.ViewModels
         public bool IsDataGridExpanded
         {
             get => _isDataGridExpanded;
-            set => SetProperty(ref _isDataGridExpanded, value);
+            set
+            {
+                Width = value ? 500 : 400;
+                SetProperty(ref _isDataGridExpanded, value);
+            }
         }
 
         public DateTime[] AvailableDates

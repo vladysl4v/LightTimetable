@@ -23,6 +23,7 @@ namespace LightTimetable.SettingsPages.ViewModels
         private string _blackoutsGroup = Settings.Default.DTEKGroup;
         private bool _showBlackouts = Settings.Default.ShowBlackouts;
         private bool _showPossibleBlackouts = Settings.Default.ShowPossibleBlackouts;
+        private bool _showOldEvents = Settings.Default.ShowOldEvents;
 
         private string _authText;
         private string _authLogin;
@@ -37,6 +38,12 @@ namespace LightTimetable.SettingsPages.ViewModels
         {
             get => _isAuthenticated;
             set => SetProperty(ref _isAuthenticated, value);
+        }
+
+        public bool ShowOldEvents
+        {
+            get => _showOldEvents;
+            set => SetProperty(ref _showOldEvents, value);
         }
 
         public bool ShowTeamsEvents
@@ -106,6 +113,7 @@ namespace LightTimetable.SettingsPages.ViewModels
             Settings.Default.ShowPossibleBlackouts = ShowPossibleBlackouts;
             Settings.Default.DTEKGroup = BlackoutsGroup;
             Settings.Default.ShowTeamsEvents = ShowTeamsEvents;
+            Settings.Default.ShowOldEvents = ShowOldEvents;
             Settings.Default.Save();
             IsAnythingChanged = false;
         }

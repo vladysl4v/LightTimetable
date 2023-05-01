@@ -6,8 +6,8 @@
         xmlns:vm="clr-namespace:LightTimetable.ViewModels"
         xmlns:settings="clr-namespace:LightTimetable.Properties"
         mc:Ignorable="d" 
-        x:Name="TimetableWindow" Title="Timetable" MinHeight="91" MinWidth="400"
-        SizeToContent="WidthAndHeight" ResizeMode="NoResize" Topmost="True"
+        x:Name="TimetableWindow" Title="Timetable" MinHeight="91" Width="{Binding Width, Mode=TwoWay}"
+        SizeToContent="Height" ResizeMode="NoResize" Topmost="True"
         ShowInTaskbar="False" WindowStyle="None" SizeChanged="OnWindowSizeChanged">
     <Window.DataContext>
         <vm:TimetableViewModel/>

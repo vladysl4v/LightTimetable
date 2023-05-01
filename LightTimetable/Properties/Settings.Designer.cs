@@ -202,5 +202,17 @@ namespace LightTimetable.Properties {
                 this["ShowTeamsEvents"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool ShowOldEvents {
+            get {
+                return ((bool)(this["ShowOldEvents"]));
+            }
+            set {
+                this["ShowOldEvents"] = value;
+            }
+        }
     }
 }

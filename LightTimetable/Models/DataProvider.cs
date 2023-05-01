@@ -69,7 +69,8 @@ namespace LightTimetable.Models
 
             if (Settings.Default.ShowTeamsEvents)
             {
-                await TeamsEventsPlugin.InitializeTeamsCalendarAsync(startDate, endDate);
+                var teamsStartDate = Settings.Default.ShowOldEvents ? startDate : DateTime.Today;
+                await TeamsEventsPlugin.InitializeTeamsCalendarAsync(teamsStartDate, endDate);
             }
 
             _scheduleSource ??= new VnzOsvitaSource();

@@ -79,6 +79,12 @@ namespace LightTimetable.Models.Services
             {
                 var request = await HttpRequestService.GetUsingAuthenticationAsync(url, authResult.AccessToken);
 
+                if (!request.IsSuccessful)
+                {
+                    _eventsData = null;
+                    return;
+                }
+
                 var currGroup = JObject.Parse(request.Response);
 
                 if (currGroup["value"] == null || !currGroup["value"].Any())
