@@ -12,9 +12,9 @@ using LightTimetable.Models.Utilities;
 
 namespace LightTimetable.Models.ScheduleSources
 {
-    public class VnzOsvitaSource : BaseScheduleSource
+    public class VnzOsvitaSource : IScheduleSource
     {
-        public override async Task InitializeScheduleAsync(DateTime startDate, DateTime endDate)
+        public async Task<Dictionary<DateTime, List<DataItem>>?> LoadDataAsync(DateTime startDate, DateTime endDate)
         {
             var url = $"https://vnz.osvita.net/BetaSchedule.asmx/GetScheduleDataX?" +
                       $"aVuzID=11784&" +
@@ -25,16 +25,14 @@ namespace LightTimetable.Models.ScheduleSources
 
             var request = await HttpRequestService.LoadStringAsync(url);
 
-            ScheduleDictionary = request.IsSuccessful ? DeserializeData(request.Response) : null;
-
-            FinishInitialization();
+            return DeserializeData(request);
         }
 
-        private Dictionary<DateTime, List<DataItem>> DeserializeData(string serializedData)
+        private Dictionary<DateTime, List<DataItem>>? DeserializeData(string serializedData)
         {
-            if (serializedData == "" || serializedData.Length < 15)
+            if (serializedData == string.Empty || serializedData.Length < 15)
             {
-                return new Dictionary<DateTime, List<DataItem>>();
+                return null;
             }
 
             var rawDataItems =
@@ -49,7 +47,18 @@ namespace LightTimetable.Models.ScheduleSources
 
                 foreach (var lesson in group)
                 {
-                    result[Convert.ToDateTime(group.Key)].Add(new DataItem(lesson));
+                    var dataItem = new DataItem
+                    (
+                        Convert.ToDateTime(lesson["full_date"]),
+                        new TimeInterval(TimeOnly.Parse(lesson["study_time_begin"]), TimeOnly.Parse(lesson["study_time_end"])),
+                        lesson["discipline"],
+                        lesson["study_type"],
+                        lesson["employee"],
+                        lesson["cabinet"],
+                        lesson["study_subgroup"]
+                    );
+
+                    result[Convert.ToDateTime(group.Key)].Add(dataItem);
                 }
             }
 

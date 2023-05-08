@@ -14,20 +14,22 @@ namespace LightTimetable.Models
 {
     public class DataProvider
     {
+        private readonly ScheduleLoader _scheduleLoader = new();
         private RiggedSchedule? _riggedSchedule;
-        private BaseScheduleSource? _scheduleSource;
 
-        public DateTime[] AvailableDates => _scheduleSource?.AvailableDates ?? Array.Empty<DateTime>();
+        private readonly List<DataItem> _emptyList = new(0);
+
+        public DateTime[] AvailableDates { get; private set; } = Array.Empty<DateTime>();
 
         public List<DataItem> GetCurrentSchedule(DateTime date, out bool isRigged)
         {
             isRigged = false;
 
-            if (_scheduleSource!.ScheduleDictionary != null && _scheduleSource!.ScheduleDictionary.TryGetValue(date, out List<DataItem> correctDataItems)) 
+            if (_scheduleLoader.ScheduleDictionary != null && _scheduleLoader.ScheduleDictionary.TryGetValue(date, out List<DataItem> correctDataItems)) 
                 return correctDataItems;
 
             if (_riggedSchedule == null)
-                return new List<DataItem>();
+                return _emptyList;
 
             var suitableSchedule = _riggedSchedule.GetRiggedSchedule(date);
             isRigged = suitableSchedule.Any();
@@ -38,22 +40,21 @@ namespace LightTimetable.Models
 
         public void UpdateRenames(DisciplinePair renamePair)
         {
-            _scheduleSource!.UpdateRenames(renamePair);
+            _scheduleLoader.UpdateRenames(renamePair);
         }
 
         public async Task<bool> RefreshDataAsync()
         {
             await LoadScheduleAsync();
 
-            if (_scheduleSource!.ScheduleDictionary == null)
+            if (_scheduleLoader.ScheduleDictionary == null)
                 return false;
 
             if (Settings.Default.ShowRiggedSchedule)
-                _riggedSchedule = new RiggedSchedule(_scheduleSource.ScheduleDictionary);
+                _riggedSchedule = new RiggedSchedule(_scheduleLoader.ScheduleDictionary);
 
             return true;
         }
-
 
         private async Task LoadScheduleAsync()
         {
@@ -73,9 +74,9 @@ namespace LightTimetable.Models
                 await TeamsEventsPlugin.InitializeTeamsCalendarAsync(teamsStartDate, endDate);
             }
 
-            _scheduleSource ??= new VnzOsvitaSource();
+            await _scheduleLoader.InitializeScheduleAsync(startDate, endDate, new VnzOsvitaSource());
 
-            await _scheduleSource.InitializeScheduleAsync(startDate, endDate);
+            AvailableDates = _scheduleLoader.ScheduleDictionary?.Keys.ToArray() ?? Array.Empty<DateTime>();
         }
 
     }

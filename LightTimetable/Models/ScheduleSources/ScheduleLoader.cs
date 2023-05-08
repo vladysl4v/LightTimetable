@@ -10,29 +10,15 @@ using LightTimetable.Models.Utilities;
 
 namespace LightTimetable.Models.ScheduleSources
 {
-    public abstract class BaseScheduleSource
+    public class ScheduleLoader
     {
         public Dictionary<DateTime, List<DataItem>>? ScheduleDictionary { get; protected set; }
-        public DateTime[] AvailableDates { get; private set; } = Array.Empty<DateTime>();
+        public DateTime[]? AvailableDates { get; protected set; }
 
-        public abstract Task InitializeScheduleAsync(DateTime startDate, DateTime endDate);
-
-        public void UpdateRenames(DisciplinePair renamePair)
+        public async Task InitializeScheduleAsync(DateTime startDate, DateTime endDate, IScheduleSource scheduleSource)
         {
-            if (ScheduleDictionary == null)
-                return;
+            ScheduleDictionary = await scheduleSource.LoadDataAsync(startDate, endDate);
 
-            foreach (var item in from dateItems in ScheduleDictionary.Values
-                     from item in dateItems
-                     where item.Discipline.Original == renamePair.Original
-                     select item)
-            {
-                item.Discipline.Modified = renamePair.Modified;
-            }
-        }
-
-        protected void FinishInitialization()
-        {
             if (ScheduleDictionary == null || !ScheduleDictionary.Any())
                 return;
 
@@ -47,6 +33,20 @@ namespace LightTimetable.Models.ScheduleSources
                 Settings.Default.Notes.Remove(obsoleteId.Key);
             }
             Settings.Default.Save();
+        }
+
+        public void UpdateRenames(DisciplinePair renamePair)
+        {
+            if (ScheduleDictionary == null)
+                return;
+
+            foreach (var item in from dateItems in ScheduleDictionary.Values
+                     from item in dateItems
+                     where item.Discipline.Original == renamePair.Original
+                     select item)
+            {
+                item.Discipline.Modified = renamePair.Modified;
+            }
         }
     }
 }
