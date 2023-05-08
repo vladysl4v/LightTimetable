@@ -11,7 +11,7 @@ namespace LightTimetable.Models.Utilities
     public class DataItem
     {
         public uint Id { get; }
-        public ElectricityStatus? Electricity { get; }
+        public DateTime Date { get; }
         public TimeInterval StudyTime { get; }
         public DisciplinePair Discipline { get; set; }
         public string StudyType { get; }
@@ -19,19 +19,20 @@ namespace LightTimetable.Models.Utilities
         public string Employee { get; }
         public string Subgroup { get; }
         public string Note { get; set; }
+        public ElectricityStatus? Electricity { get; }
         public List<OutlookEvent>? OutlookEvents { get; set; }
 
-        public DataItem(Dictionary<string, string>? item)
+        public DataItem(DateTime date, TimeInterval studyTime, string discipline, string studyType, string employee,
+            string cabinet, string subgroup = "")
         {
-            var date = Convert.ToDateTime(item["full_date"]);
-
-            StudyTime = new TimeInterval(TimeOnly.Parse(item["study_time_begin"]), TimeOnly.Parse(item["study_time_end"]));
-            Discipline = RenameDiscipline(item["discipline"]);
-            StudyType = item["study_type"];
-            Cabinet = item["cabinet"];
-            Subgroup = item["study_subgroup"];
-            Employee = ShortenFullName(item["employee"]);
-            Id = CreateIdentifier(item["full_date"]);
+            Date = date;
+            StudyTime = studyTime;
+            Discipline = RenameDiscipline(discipline);
+            StudyType = studyType;
+            Subgroup = subgroup;
+            Cabinet = cabinet;
+            Employee = ShortenFullName(employee);
+            Id = CreateIdentifier();
             Note = GetNote();
 
             if (Settings.Default.ShowBlackouts)
@@ -45,8 +46,9 @@ namespace LightTimetable.Models.Utilities
             }
         }
 
-        public DataItem(DataItem clone, DateTime date)
+        public DataItem(DataItem clone)
         {
+            Date = clone.Date;
             StudyTime = clone.StudyTime;
             Electricity = clone.Electricity;
             Discipline = clone.Discipline;
@@ -55,13 +57,14 @@ namespace LightTimetable.Models.Utilities
             Subgroup = clone.Subgroup;
             Employee = clone.Employee;
 
-            Id = CreateIdentifier(date.ToShortDateString());
+            Id = CreateIdentifier();
             Note = GetNote();
         }
 
-        private uint CreateIdentifier(string date)
+        private uint CreateIdentifier()
         {
-            var hash1 = int.Parse(date[8..10] + date[3..5] + date[0..2]);
+            var stringDate = Date.ToShortDateString();
+            var hash1 = int.Parse(stringDate[8..10] + stringDate[3..5] + stringDate[0..2]);
             var hash2 = Discipline.Original.Aggregate(0, (current, letter) => current + letter);
             var hash3 = StudyType.Length * Discipline.Original.Length;
             return (uint)(hash1 + hash2 + hash3);

@@ -20,13 +20,13 @@
                         Margin="0 0 3 0"/>
                 <TextBlock Text="{Binding Discipline}"/>
             </StackPanel>
-            <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Right">
+            <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 0 3 0">
                 <Image VerticalAlignment="Center" Visibility="{Binding Note, Converter={StaticResource Anything2Visibility}}" Margin="0 0 1 0" Height="12" Width="12" Source="{Binding Note, Converter={StaticResource Anything2IconSource}, ConverterParameter=Note}" RenderOptions.BitmapScalingMode="HighQuality" ToolTipService.InitialShowDelay="200">
                     <Image.ToolTip>
                         <ToolTip Content="{Binding Note}"/>
                     </Image.ToolTip>
                 </Image>
-                <Image VerticalAlignment="Center" Visibility="{Binding Subgroup, Converter={StaticResource Anything2Visibility}}" Margin="0 0 3 0" Height="12" Width="12" Source="{Binding Subgroup, Converter={StaticResource Anything2IconSource}, ConverterParameter=Subgroup}" RenderOptions.BitmapScalingMode="HighQuality" ToolTipService.InitialShowDelay="200">
+                <Image VerticalAlignment="Center" Visibility="{Binding Subgroup, Converter={StaticResource Anything2Visibility}}" Margin="0 0 1 0" Height="12" Width="12" Source="{Binding Subgroup, Converter={StaticResource Anything2IconSource}, ConverterParameter=Subgroup}" RenderOptions.BitmapScalingMode="HighQuality" ToolTipService.InitialShowDelay="200">
                     <Image.ToolTip>
                         <ToolTip Content="{Binding Subgroup}"/>
                     </Image.ToolTip>

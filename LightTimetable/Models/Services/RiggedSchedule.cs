@@ -16,10 +16,11 @@ namespace LightTimetable.Models.Services
     public class RiggedSchedule
     {
         private readonly RiggedScheduleDictionary _riggedSchedule;
-        private readonly GregorianCalendar _calendar = new();
+        private readonly GregorianCalendar _calendar;
 
         public RiggedSchedule(Dictionary<DateTime, List<DataItem>> scheduleDictionary)
         {
+            _calendar = new GregorianCalendar();
             _riggedSchedule = InitializeRiggedSchedule(scheduleDictionary);
         }
 
@@ -37,7 +38,7 @@ namespace LightTimetable.Models.Services
 
             var result = new List<DataItem>();
 
-            suitableList.ForEach(x => result.Add(new DataItem(x, date)));
+            suitableList.ForEach(x => result.Add(new DataItem(x)));
 
             return result;
         }

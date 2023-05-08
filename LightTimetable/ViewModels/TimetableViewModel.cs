@@ -165,8 +165,6 @@ namespace LightTimetable.ViewModels
             {
                 Process.Start("open", url);
             }
-
-            MessageBox.Show("LightTimetable", "ваша операційна система не підтримується", MessageBoxButton.OK, MessageBoxImage.Error);
         }
 
         private void OnDateChanged()
@@ -229,10 +227,12 @@ namespace LightTimetable.ViewModels
                 }
             }
             else
-            {
-                var eventPickerWindow =
-                    new EventPicker(SelectedDataItem.Discipline.Modified, SelectedDataItem.OutlookEvents);
-                eventPickerWindow.Show();
+            { 
+                var selectedEvent = EventPicker.Show(SelectedDataItem.Discipline.Modified, SelectedDataItem.OutlookEvents);
+                if (selectedEvent != null)
+                {
+                    OpenLinkInBrowser(selectedEvent.Url);
+                }
             }
         }
 

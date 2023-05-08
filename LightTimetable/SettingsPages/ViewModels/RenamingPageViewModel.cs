@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 using LightTimetable.Tools;
+using LightTimetable.Views;
 using LightTimetable.Properties;
 using LightTimetable.Tools.UtilityWindows;
 
@@ -76,6 +77,10 @@ namespace LightTimetable.SettingsPages.ViewModels
         {
             Settings.Default.Renames = _renamesList.ToDictionary(x => x.Key, x => x.Value);
             Settings.Default.Save();
+            if (IsAnythingChanged)
+            {
+                SettingsView.IsRequiredReload = true;
+            }
             IsAnythingChanged = false;
         }
 

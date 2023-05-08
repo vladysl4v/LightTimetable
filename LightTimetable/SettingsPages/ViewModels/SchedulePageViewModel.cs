@@ -127,7 +127,7 @@ namespace LightTimetable.SettingsPages.ViewModels
             var url = "https://vnz.osvita.net/BetaSchedule.asmx/GetStudentScheduleFiltersData?&aVuzID=11784";
             var request = await HttpRequestService.LoadStringAsync(url);
 
-            if (!request.IsSuccessful)
+            if (request == string.Empty)
             {
                 FacultiesSource = new JArray();
                 EducFormsSource = new JArray();
@@ -135,7 +135,7 @@ namespace LightTimetable.SettingsPages.ViewModels
             }
             else
             {
-                var data = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, dynamic>>>(request.Response)["d"];
+                var data = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, dynamic>>>(request)["d"];
 
                 FacultiesSource = data["faculties"];
                 EducFormsSource = data["educForms"];
@@ -155,13 +155,13 @@ namespace LightTimetable.SettingsPages.ViewModels
             var url = $"https://vnz.osvita.net/BetaSchedule.asmx/GetStudyGroups?&aVuzID=11784&aFacultyID=\"{_currFaculty}\"&aEducationForm=\"{_currEducForm}\"&aCourse=\"{_currCourse}\"&aGiveStudyTimes=false";
             var request = await HttpRequestService.LoadStringAsync(url, attemps: 1);
 
-            if (!request.IsSuccessful)
+            if (request == string.Empty)
             {
                 StudyGroupsSource = new JArray();
             }
             else
             {
-                var data = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, dynamic>>>(request.Response)["d"];
+                var data = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, dynamic>>>(request)["d"];
                 StudyGroupsSource = data["studyGroups"];
             }
 

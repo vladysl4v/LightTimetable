@@ -75,17 +75,17 @@ namespace LightTimetable.Models.Services
                       $"endDateTime={endString}&" +
                       $"$filter=isCancelled eq false";
 
-            for (var i = 0; i < 50; i++)
+            for (var i = 0; i < 35; i++)
             {
                 var request = await HttpRequestService.GetUsingAuthenticationAsync(url, authResult.AccessToken);
 
-                if (!request.IsSuccessful)
+                if (request == string.Empty)
                 {
                     _eventsData = null;
                     return;
                 }
 
-                var currGroup = JObject.Parse(request.Response);
+                var currGroup = JObject.Parse(request);
 
                 if (currGroup["value"] == null || !currGroup["value"].Any())
                 {

@@ -89,7 +89,7 @@ namespace LightTimetable.Models.Services
 
             var request = await HttpRequestService.LoadStringAsync("https://www.dtek-kem.com.ua/ua/shutdowns");
 
-            if (!request.IsSuccessful)
+            if (request == string.Empty)
             {
                 _blackoutsData = null;
                 return;
@@ -97,7 +97,7 @@ namespace LightTimetable.Models.Services
 
             try
             {
-                var serializedData = Regex.Match(request.Response, "\"data\":{.*").Value[7..^1];
+                var serializedData = Regex.Match(request, "\"data\":{.*").Value[7..^1];
                 _blackoutsData = ConvertToCollection(serializedData);
             }
             catch
