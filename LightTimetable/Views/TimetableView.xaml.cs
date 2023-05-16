@@ -1,42 +1,43 @@
-﻿using System.Windows;
+﻿using System.Diagnostics;
+using System.Windows;
 using System.Threading.Tasks;
 
 using LightTimetable.Tools;
 using LightTimetable.ViewModels;
-
+using LightTimetable.Properties;
 
 namespace LightTimetable.Views
 {
-    /// <summary>
-    /// Interaction logic for TimetableView.xaml
-    /// </summary>
     public partial class TimetableView : Window
     {
-        private WindowPositionControl _positionController;
+        private SizeChangedEventHandler _sizeChanged;
         public TimetableView()
         {
             InitializeComponent();
-
-            _positionController = new WindowPositionControl();
+            _sizeChanged = PositionCalculator.Calculate((WindowPosition)Settings.Default.WindowPosition);
         }
+
+        private TimetableViewModel? _viewModel => DataContext as TimetableViewModel;
 
         public async Task ReloadViewModelData()
         {
-            if (DataContext is TimetableViewModel viewModel)
-            {
-                await viewModel.ReloadDataAsync();
-            }
+            await _viewModel?.ReloadDataAsync();
         }
 
         public void InvokeWindowResize()
         {
-            _positionController = new WindowPositionControl();
-            _positionController.OnWindowSizeChanged.Invoke(this, null);
+            Width = Settings.Default.ShowBlackouts ? 425 : 400;
+            if (_viewModel != null)
+            {
+                Width += _viewModel.IsDataGridExpanded ? 100 : 0;
+            }
+            _sizeChanged = PositionCalculator.Calculate((WindowPosition)Settings.Default.WindowPosition);
+            _sizeChanged.Invoke(this, null);
         }
 
         private void OnWindowSizeChanged(object s, SizeChangedEventArgs e)
         {
-            _positionController.OnWindowSizeChanged.Invoke(s, e);
+            _sizeChanged.Invoke(s, e);
         }
     }
 }

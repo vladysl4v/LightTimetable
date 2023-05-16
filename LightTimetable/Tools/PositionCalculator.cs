@@ -7,16 +7,15 @@ using LightTimetable.Properties;
 
 namespace LightTimetable.Tools
 {
-    public class WindowPositionControl
+    public static class PositionCalculator
     {
-        private readonly Dock? _taskbarPosition;
+        private static Dock? _taskbarPosition;
+        private static double _dockTop;
+        private static double _dockLeft;
+        private static double _dockRight;
+        private static double _dockBottom;
 
-        private readonly double _dockTop;
-        private readonly double _dockLeft;
-        private readonly double _dockRight;
-        private readonly double _dockBottom;
-
-        public WindowPositionControl()
+        public static SizeChangedEventHandler Calculate(WindowPosition winPosition)
         {
             _taskbarPosition = GetCurrentTaskbarPosition();
             var taskbarSize = GetCurrentTaskbarHeight();
@@ -26,14 +25,12 @@ namespace LightTimetable.Tools
             _dockRight = (_taskbarPosition == Dock.Right) ? SystemParameters.PrimaryScreenWidth - taskbarSize : SystemParameters.PrimaryScreenWidth;
             _dockBottom = (_taskbarPosition == Dock.Bottom) ? SystemParameters.PrimaryScreenHeight - taskbarSize : SystemParameters.PrimaryScreenHeight;
 
-            OnWindowSizeChanged = GetSuitableDelegate();
+            return GetSuitableDelegate(winPosition);
         }
 
-        public SizeChangedEventHandler OnWindowSizeChanged { get; }
-
-        private SizeChangedEventHandler GetSuitableDelegate()
+        private static SizeChangedEventHandler GetSuitableDelegate(WindowPosition winPosition)
         {
-            return (WindowPosition)Settings.Default.WindowPosition switch
+            return winPosition switch
             {
                 WindowPosition.TopLeft => TopLeftSizeChanged,
                 WindowPosition.TopRight => TopRightSizeChanged,
@@ -43,14 +40,14 @@ namespace LightTimetable.Tools
             };
         }
 
-        private void TopLeftSizeChanged(object s, SizeChangedEventArgs? e)
+        private static void TopLeftSizeChanged(object s, SizeChangedEventArgs? e)
         {
             var win = (Window)s;
             win.Top = _dockTop;
             win.Left = _dockLeft;
         }
 
-        private void TopRightSizeChanged(object s, SizeChangedEventArgs? e)
+        private static void TopRightSizeChanged(object s, SizeChangedEventArgs? e)
         {
             var win = (Window)s;
             var width = (e == null) ? win.Width : e.NewSize.Width;
@@ -59,7 +56,7 @@ namespace LightTimetable.Tools
             win.Left = _dockRight - width;
         }
 
-        private void BottomLeftSizeChanged(object s, SizeChangedEventArgs? e)
+        private static void BottomLeftSizeChanged(object s, SizeChangedEventArgs? e)
         {
             var win = (Window)s;
             var height = (e == null) ? win.Height : e.NewSize.Height;
@@ -68,7 +65,7 @@ namespace LightTimetable.Tools
             win.Top = _dockBottom - height;
         }
 
-        private void BottomRightSizeChanged(object s, SizeChangedEventArgs? e)
+        private static void BottomRightSizeChanged(object s, SizeChangedEventArgs? e)
         {
             var win = (Window)s;
 
@@ -81,7 +78,7 @@ namespace LightTimetable.Tools
 
         #region Initialization
 
-        private double GetCurrentTaskbarHeight()
+        private static double GetCurrentTaskbarHeight()
         {
             return _taskbarPosition switch
             {
@@ -94,7 +91,7 @@ namespace LightTimetable.Tools
             };
         }
 
-        private Dock? GetCurrentTaskbarPosition()
+        private static Dock? GetCurrentTaskbarPosition()
         {
             if (SystemParameters.WorkArea.Left > 0)
                 return Dock.Left;
