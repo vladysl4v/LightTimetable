@@ -1,4 +1,6 @@
-﻿using System;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+
+using System;
 using System.Windows;
 using System.Security;
 using Microsoft.Win32;
@@ -9,37 +11,21 @@ using LightTimetable.Properties;
 
 namespace LightTimetable.SettingsPages.ViewModels
 {
-    public class ApplicationPageViewModel : PageViewModelBase
+    public partial class ApplicationPageViewModel : PageViewModelBase
     {
         #region Properties
 
+        [ObservableProperty]
         private int _startAutomatically = Settings.Default.Autostart;
+        
+        [ObservableProperty]
         private int _openWindowMode = Settings.Default.OpenWindowMode;
+        
+        [ObservableProperty]
         private int _middleMouseClick = Settings.Default.MiddleMouseClick;
+        
+        [ObservableProperty]
         private int _windowPosition = Settings.Default.WindowPosition;
-        public int StartAutomatically
-        {
-            get => _startAutomatically;
-            set => SetProperty(ref _startAutomatically, value);
-        }
-
-        public int OpenWindowMode
-        {
-            get => _openWindowMode;
-            set => SetProperty(ref _openWindowMode, value);
-        }
-
-        public int MiddleMouseClick
-        {
-            get => _middleMouseClick;
-            set => SetProperty(ref _middleMouseClick, value);
-        }
-
-        public int WindowPosition
-        {
-            get => _windowPosition;
-            set => SetProperty(ref _windowPosition, value);
-        }
 
         #endregion
 
@@ -102,6 +88,7 @@ namespace LightTimetable.SettingsPages.ViewModels
             Settings.Default.WindowPosition = WindowPosition;
             Settings.Default.Autostart = StartAutomatically;
             Settings.Default.Save();
+            
             IsAnythingChanged = false;
         }
 

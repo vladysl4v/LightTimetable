@@ -9,7 +9,8 @@
         ResizeMode="NoResize"
         Closing="OnWindowClosing"
         Topmost="True"
-        Width="400">
+        Width="400"
+        Icon="../../Assets/LightTimetable-Logo.ico">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="115"/>

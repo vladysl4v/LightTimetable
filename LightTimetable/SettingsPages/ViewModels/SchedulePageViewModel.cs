@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 using System.Collections.Generic;
 
@@ -10,9 +11,9 @@ using LightTimetable.Properties;
 
 namespace LightTimetable.SettingsPages.ViewModels
 {
-    public class SchedulePageViewModel : PageViewModelBase
+    public partial class SchedulePageViewModel : PageViewModelBase
     {
-        public SchedulePageViewModel(bool disableInitializing = false) { }
+        public SchedulePageViewModel(bool disableInitializing) { }
         public SchedulePageViewModel()
         {
             CollectOptions();
@@ -22,17 +23,25 @@ namespace LightTimetable.SettingsPages.ViewModels
 
         #region Properties
 
+        [ObservableProperty]
+        private bool _showRiggedSchedule = Settings.Default.ShowRiggedSchedule;
+
+        [ObservableProperty]
+        private JArray _facultiesSource;
+        
+        [ObservableProperty]
+        private JArray _educFormsSource;
+        
+        [ObservableProperty]
+        private JArray _coursesSource;
+        
+        [ObservableProperty]
+        private JArray _studyGroupsSource;
+
         private string _currFaculty = Settings.Default.Faculty;
         private string _currEducForm = Settings.Default.EducationForm;
         private string _currCourse = Settings.Default.Course;
         private string _currStudyGroup = Settings.Default.StudyGroup;
-        private bool _showRiggedSchedule = Settings.Default.ShowRiggedSchedule;
-
-        public bool ShowRiggedSchedule
-        {
-            get => _showRiggedSchedule;
-            set => SetProperty(ref _showRiggedSchedule, value);
-        }
 
         public JValue CurrentFaculty
         {
@@ -72,37 +81,7 @@ namespace LightTimetable.SettingsPages.ViewModels
         }
 
         #endregion
-
-        #region ComboBox sources
-
-        private JArray _facultiesSource;
-        private JArray _educFormsSource;
-        private JArray _coursesSource;
-        private JArray _studyGroupsSource;
-
-
-        public JArray FacultiesSource
-        {
-            get => _facultiesSource;
-            set => SetProperty(ref _facultiesSource, value);
-        }
-        public JArray EducFormsSource
-        {
-            get => _educFormsSource;
-            set => SetProperty(ref _educFormsSource, value);
-        }
-        public JArray CoursesSource
-        {
-            get => _coursesSource;
-            set => SetProperty(ref _coursesSource, value);
-        }
-        public JArray StudyGroupsSource
-        {
-            get => _studyGroupsSource;
-            set => SetProperty(ref _studyGroupsSource, value);
-        }
-        #endregion
-
+        
         #region Methods
 
         public override void Save()

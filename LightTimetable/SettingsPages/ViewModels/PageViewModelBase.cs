@@ -1,64 +1,47 @@
-﻿using System.Windows;
+﻿using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.ComponentModel;
+
+using System.Windows;
 using System.ComponentModel;
 using System.Windows.Controls;
-using System.Runtime.CompilerServices;
 
-using LightTimetable.Tools;
 using LightTimetable.Views;
 
 
 namespace LightTimetable.SettingsPages.ViewModels
 {
-    public abstract class PageViewModelBase : INotifyPropertyChanged
-    {
-        protected PageViewModelBase()
-        {
-            SaveSettingsCommand = new RelayCommand(_ => SaveSettings());
-            SaveAndCloseCommand = new RelayCommand(SaveAndCloseSettings);
-            CloseSettingsCommand = new RelayCommand(CloseSettings);
-        }
+    public abstract partial class PageViewModelBase : ObservableObject 
+    {   
+        [ObservableProperty]
+        private bool _isAnythingChanged;
 
         public abstract void Save();
 
-        protected bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string propertyName = null)
+        protected PageViewModelBase()
         {
-            if (Equals(storage, value))
-                return false;
-
-            storage = value;
-            OnPropertyChanged(propertyName);
-            IsAnythingChanged = true;
-            return true;
+            PropertyChanged += AnythingChangedEvent;
         }
 
-        #region Properties
-
-        protected bool _isAnythingChanged;
-        public bool IsAnythingChanged
+        private void AnythingChangedEvent(object? sender, PropertyChangedEventArgs args)
         {
-            get => _isAnythingChanged;
-            protected set
-            {
-                _isAnythingChanged = value;
-                OnPropertyChanged(nameof(IsAnythingChanged));
-            }
+            if (args.PropertyName == nameof(IsAnythingChanged))
+                return;
+            _isAnythingChanged = true;
+            OnPropertyChanged(nameof(IsAnythingChanged));
         }
 
-        #endregion
 
         #region Button commands
 
-        public RelayCommand SaveSettingsCommand { get; }
-        public RelayCommand SaveAndCloseCommand { get; }
-        public RelayCommand CloseSettingsCommand { get; }
-
+        [RelayCommand]
         private void SaveSettings()
         {
             Save();
             SettingsView.OnSettingsSaved();
         }
 
-        private void SaveAndCloseSettings(object control)
+        [RelayCommand]
+        private void SaveAndClose(object control)
         {
             if (control is not UserControl and not Window) return;
 
@@ -72,37 +55,25 @@ namespace LightTimetable.SettingsPages.ViewModels
                     break;
 
                 case UserControl userControl:
-                    Window.GetWindow(userControl)?.Close(); 
+                    CloseSettings(userControl); 
                     break;
             }
         }
 
-        private void CloseSettings(object control)
+        [RelayCommand]
+        private void CloseSettings(UserControl? page)
         {
-            if (control is not UserControl thisPage) return;
-
             if (!IsAnythingChanged)
             {
-                Window.GetWindow(thisPage).Close();
+                Window.GetWindow(page).Close();
                 return;
             }
             var msgResult = MessageBox.Show("Ви внесли не збережені зміни. Все одно закрити налаштування?", "Налаштування",
                 MessageBoxButton.YesNo);
             if (msgResult == MessageBoxResult.Yes)
             {
-                Window.GetWindow(thisPage).Close();
+                Window.GetWindow(page).Close();
             }
-        }
-
-        #endregion
-
-        #region INotifyPropertyChanged implementation
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        protected void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         #endregion

@@ -1,5 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net7.0-windows</TargetFramework>
@@ -7,13 +6,12 @@
     <UseWPF>true</UseWPF>
     <ApplicationIcon>Assets\LightTimetable-Logo.ico</ApplicationIcon>
   </PropertyGroup>
-
   <ItemGroup>
-	  <PackageReference Include="Hardcodet.NotifyIcon.Wpf" Version="1.1.0" />
-	  <PackageReference Include="Microsoft.Identity.Client" Version="4.53.0" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.0" />
+    <PackageReference Include="Hardcodet.NotifyIcon.Wpf" Version="1.1.0" />
+    <PackageReference Include="Microsoft.Identity.Client" Version="4.53.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
   </ItemGroup>
-
   <ItemGroup>
     <Resource Include="Assets\Settings\AutoStart.png" />
     <Resource Include="Assets\LightTimetable-Logo.ico" />
@@ -30,7 +28,6 @@
     <Resource Include="Assets\Settings\TimetableCategory.ico" />
     <Resource Include="Assets\Status\Warning.png" />
   </ItemGroup>
-
   <ItemGroup>
     <Compile Update="Properties\Settings.Designer.cs">
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
@@ -44,12 +41,10 @@
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
-
   <ItemGroup>
     <None Update="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
-
 </Project>

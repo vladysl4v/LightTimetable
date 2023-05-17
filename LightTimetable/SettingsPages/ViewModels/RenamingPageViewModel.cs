@@ -1,8 +1,9 @@
-﻿using System.Linq;
+﻿using CommunityToolkit.Mvvm.Input;
+
+using System.Linq;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-using LightTimetable.Tools;
 using LightTimetable.Views;
 using LightTimetable.Properties;
 using LightTimetable.Tools.UtilityWindows;
@@ -10,15 +11,8 @@ using LightTimetable.Tools.UtilityWindows;
 
 namespace LightTimetable.SettingsPages.ViewModels
 {
-    class RenamingPageViewModel : PageViewModelBase
+    public partial class RenamingPageViewModel : PageViewModelBase
     {
-        public RenamingPageViewModel()
-        {
-            // Commands
-            ChangeRenameCommand = new RelayCommand(ChangeRename);
-            RemoveRenameCommand = new RelayCommand(RemoveRename);
-        }
-
         #region Properties
 
         private List<KeyValuePair<string, string>> _renamesList = Settings.Default.Renames.ToList();
@@ -29,14 +23,11 @@ namespace LightTimetable.SettingsPages.ViewModels
             set => SetProperty(ref _renamesList, value.ToList());
         }
 
-
         #endregion
 
         #region Commands
 
-        public RelayCommand ChangeRenameCommand { get; }
-        public RelayCommand RemoveRenameCommand { get; }
-
+        [RelayCommand]
         private void ChangeRename(object selectedItem)
         {
             if (selectedItem == null)
@@ -50,12 +41,12 @@ namespace LightTimetable.SettingsPages.ViewModels
             var item = _renamesList.First(x => x.Key == thisItem.Key);
             _renamesList.Remove(item);
             _renamesList.Add(new KeyValuePair<string, string>(item.Key, newItemName));
-
             IsAnythingChanged = true;
             OnPropertyChanged(nameof(RenamesList));
 
         }
 
+        [RelayCommand]
         private void RemoveRename(object selectedItem)
         {
             if (selectedItem == null)
@@ -64,7 +55,6 @@ namespace LightTimetable.SettingsPages.ViewModels
             var thisItem = (KeyValuePair<string, string>)selectedItem;
             var item = _renamesList.First(x => x.Key == thisItem.Key);
             _renamesList.Remove(item);
-
             IsAnythingChanged = true;
             OnPropertyChanged(nameof(RenamesList));
         }
@@ -75,12 +65,14 @@ namespace LightTimetable.SettingsPages.ViewModels
 
         public override void Save()
         {
-            Settings.Default.Renames = _renamesList.ToDictionary(x => x.Key, x => x.Value);
-            Settings.Default.Save();
             if (IsAnythingChanged)
             {
                 SettingsView.IsRequiredReload = true;
             }
+                
+            Settings.Default.Renames = _renamesList.ToDictionary(x => x.Key, x => x.Value);
+            Settings.Default.Save();
+
             IsAnythingChanged = false;
         }
 

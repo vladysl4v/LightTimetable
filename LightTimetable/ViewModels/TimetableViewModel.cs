@@ -1,4 +1,7 @@
-﻿using System;
+﻿using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.ComponentModel;
+
+using System;
 using System.Linq;
 using System.Windows;
 using System.Diagnostics;
@@ -15,7 +18,7 @@ using LightTimetable.Tools.UtilityWindows;
 
 namespace LightTimetable.ViewModels
 {
-    public class TimetableViewModel : ViewModelBase
+    public partial class TimetableViewModel : ObservableObject
     {
         private readonly DataProvider _dataProvider = new();
         private DateControl? _dateControl;
@@ -23,30 +26,23 @@ namespace LightTimetable.ViewModels
         public TimetableViewModel()
         {
             Task.Run(ReloadDataAsync).ConfigureAwait(false);
-
-            // Commands
-            HideWindowCommand = new RelayCommand(HideWindow);
-            ChangeDateCommand = new RelayCommand(ChangeDate);
-            ResetDateCommand = new RelayCommand(_ => ResetDate());
-
-            OpenInTeamsCommand = new RelayCommand(_ => OpenInTeams());
-            AddNoteCommand = new RelayCommand(_ => AddNote());
-            ChangeNoteCommand = new RelayCommand(_ => ChangeNote());
-            DeleteNoteCommand = new RelayCommand(_ => DeleteNote());
-            RenameItemCommand = new RelayCommand(_ => RenameItem());
         }
 
         #region Properties
 
-        public TimetableStatusControl TtControl { get; } = new(TimetableStatus.Default);
+        [ObservableProperty]
+        private double _width = Settings.Default.ShowBlackouts ? 425 : 400;
 
-        private double _width = 400;
+        [ObservableProperty]
+        private DataItem? _selectedDataItem;
 
-        public double Width
-        {
-            get => _width;
-            set => SetProperty(ref _width, value);
-        }
+        [ObservableProperty]
+        private bool _isDataGridExpanded;
+
+        [ObservableProperty]
+        private TimetableStatus _scheduleStatus = TimetableStatus.Default;
+
+        public DateTime[] AvailableDates => _dataProvider.AvailableDates;
 
         public List<DataItem> CurrentSchedule
         {
@@ -59,12 +55,12 @@ namespace LightTimetable.ViewModels
 
                 if (isRigged)
                 {
-                    TtStatus = TimetableStatus.RiggedScheduleShown;
+                    ScheduleStatus = TimetableStatus.RiggedScheduleShown;
                 }
                 else
                 {
-                    if (TtStatus != TimetableStatus.DataLoadingError)
-                        TtStatus = TimetableStatus.Default;
+                    if (ScheduleStatus != TimetableStatus.DataLoadingError)
+                        ScheduleStatus = TimetableStatus.Default;
                 }
 
                 return correctSchedule;
@@ -78,60 +74,27 @@ namespace LightTimetable.ViewModels
             {
                 if (_dateControl == null)
                     return;
-                _dateControl.Date = value;
-                OnDateChanged();
+
+                SetProperty(_dateControl.Date, value, _dateControl, (u, n) => u.Date = n);
+                OnPropertyChanged(nameof(CurrentSchedule));
             }
         }
 
-        public TimetableStatus TtStatus
-        {
-            get => TtControl.Type;
-            set
-            {
-                TtControl.Type = value;
-                OnPropertyChanged(nameof(TtControl));
-            }
-        }
-
-        private DataItem? _selectedDataItem;
-
-        public DataItem? SelectedDataItem
-        {
-            get => _selectedDataItem;
-            set => SetProperty(ref _selectedDataItem, value);
-        }
-
-        private bool _isDataGridExpanded;
-
-        public bool IsDataGridExpanded
-        {
-            get => _isDataGridExpanded;
-            set
-            {
-                Width = value ? 500 : 400;
-                SetProperty(ref _isDataGridExpanded, value);
-            }
-        }
-
-        public DateTime[] AvailableDates
-        {
-            get => _dataProvider.AvailableDates;
-        }
         #endregion
 
         #region Methods
 
         public async Task ReloadDataAsync()
         {
-            TtStatus = TimetableStatus.LoadingData;
-
+            ScheduleStatus = TimetableStatus.LoadingData;
+    
             if (!await _dataProvider.RefreshDataAsync())
             {
-                TtStatus = TimetableStatus.DataLoadingError;
+                ScheduleStatus = TimetableStatus.DataLoadingError;
             }
             else
             {
-                TtStatus = TimetableStatus.Default;
+                ScheduleStatus = TimetableStatus.Default;
             }
 
             _dateControl = new DateControl(_dataProvider.AvailableDates);
@@ -148,7 +111,16 @@ namespace LightTimetable.ViewModels
             DateTime temp = Date;
             Date = DateTime.MinValue;
             Date = temp;
+
         }
+
+        partial void OnIsDataGridExpandedChanged(bool newValue)
+        {
+            var tempWidth = newValue ? 500 : 400; 
+            tempWidth += Settings.Default.ShowBlackouts ? 25 : 0;
+            Width = tempWidth;    
+        }
+        
 
         private void OpenLinkInBrowser(string url)
         {
@@ -177,39 +149,31 @@ namespace LightTimetable.ViewModels
 
         #region Commands
 
-        public RelayCommand HideWindowCommand { get; }
-        public RelayCommand ChangeDateCommand { get; }
-        public RelayCommand ResetDateCommand { get; }
-
+        [RelayCommand]
         private void ResetDate()
         {
             _dateControl?.SetCorrectDate();
             OnDateChanged();
         }
 
-        private void ChangeDate(object amount)
+        [RelayCommand]
+        private void ChangeDate(string amount)
         {
-            _dateControl?.ChangeDate(int.Parse((string)amount));
+            _dateControl?.ChangeDate(int.Parse(amount));
             OnDateChanged();
         }
 
-        private void HideWindow(object win)
+        [RelayCommand]
+        private void HideWindow(Window window)
         {
-            if (win is Window thisWindow)
-            {
-                thisWindow.Hide();
-            }
+            window.Hide();
         }
 
         #endregion
 
         #region Context menu
-        public RelayCommand OpenInTeamsCommand { get; }
-        public RelayCommand AddNoteCommand { get; }
-        public RelayCommand ChangeNoteCommand { get; }
-        public RelayCommand DeleteNoteCommand { get; }
-        public RelayCommand RenameItemCommand { get; }
 
+        [RelayCommand]
         private void OpenInTeams()
         {
             if (SelectedDataItem == null || SelectedDataItem.OutlookEvents == null)
@@ -236,6 +200,7 @@ namespace LightTimetable.ViewModels
             }
         }
 
+        [RelayCommand]
         private void AddNote()
         {
             if (SelectedDataItem == null)
@@ -251,6 +216,7 @@ namespace LightTimetable.ViewModels
             UpdateDataGrid();
         }
 
+        [RelayCommand]
         private void ChangeNote()
         {
             if (SelectedDataItem == null)
@@ -265,6 +231,8 @@ namespace LightTimetable.ViewModels
             SelectedDataItem.Note = noteText;
             UpdateDataGrid();
         }
+
+        [RelayCommand]
         private void DeleteNote()
         {
             if (SelectedDataItem == null)
@@ -280,6 +248,7 @@ namespace LightTimetable.ViewModels
             UpdateDataGrid();
         }
 
+        [RelayCommand]
         private void RenameItem()
         {
             if (SelectedDataItem == null)

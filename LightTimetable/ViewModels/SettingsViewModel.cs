@@ -1,45 +1,40 @@
-﻿using LightTimetable.Tools;
+﻿using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.ComponentModel;
+
 using LightTimetable.SettingsPages.ViewModels;
 
 
 namespace LightTimetable.ViewModels
 {
-    class SettingsViewModel : ViewModelBase
+    public partial class SettingsViewModel : ObservableObject
     {
         public SettingsViewModel()
         {
-            // Commands
-            ApplicationCategoryCommand = new RelayCommand(_ => SetApplicationCategory());
-            ScheduleCategoryCommand = new RelayCommand(_ => SetScheduleCategory());
-            RenamingCategoryCommand = new RelayCommand(_ => SetRenamingCategory());
-            IntegrationsCategoryCommand = new RelayCommand(_ => SetIntegrationsCategory());
-
             // Startup page
             CurrentView = new ApplicationPageViewModel();
         }
 
         #region Properties
 
+        [ObservableProperty]
         private PageViewModelBase _currentView;
-        public PageViewModelBase CurrentView
-        {
-            get => _currentView;
-            set => SetProperty(ref _currentView, value);
-        }
 
         #endregion
 
         #region Commands
 
-        public RelayCommand ApplicationCategoryCommand { get; }
-        public RelayCommand ScheduleCategoryCommand { get; }
-        public RelayCommand RenamingCategoryCommand { get; }
-        public RelayCommand IntegrationsCategoryCommand { get; }
+        [RelayCommand]
+        private void ApplicationCategory() => CurrentView = new ApplicationPageViewModel();
+        
+        [RelayCommand]
+        private void ScheduleCategory() => CurrentView = new SchedulePageViewModel(true);
 
-        private void SetApplicationCategory() => CurrentView = new ApplicationPageViewModel();
-        private void SetScheduleCategory() => CurrentView = new SchedulePageViewModel(true);
-        private void SetRenamingCategory() => CurrentView = new RenamingPageViewModel();
-        private void SetIntegrationsCategory() => CurrentView = new IntegrationsPageViewModel();
+        [RelayCommand]
+        private void RenamingCategory() => CurrentView = new RenamingPageViewModel();
+        
+        [RelayCommand]
+        private void IntegrationsCategory() => CurrentView = new IntegrationsPageViewModel();
+ 
         #endregion
     }
 }

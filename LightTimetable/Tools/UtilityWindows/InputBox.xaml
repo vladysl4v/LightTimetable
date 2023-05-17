@@ -9,7 +9,8 @@
         Topmost="True"
         Closing="OnWindowClosing"
         Height="155" 
-        Width="350">
+        Width="350"
+        Icon="../../Assets/LightTimetable-Logo.ico">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="45"/>

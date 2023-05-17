@@ -1,6 +1,8 @@
-﻿using System.Threading.Tasks;
+﻿using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.ComponentModel;
 
-using LightTimetable.Tools;
+using System.Threading.Tasks;
+
 using LightTimetable.Views;
 using LightTimetable.Properties;
 using LightTimetable.Models.Services;
@@ -8,75 +10,44 @@ using LightTimetable.Models.Services;
 
 namespace LightTimetable.SettingsPages.ViewModels
 {
-    public class IntegrationsPageViewModel : PageViewModelBase
+    public partial class IntegrationsPageViewModel : PageViewModelBase
     {
         public IntegrationsPageViewModel()
         {
             CheckForAuthStatus();
-
-            AuthorizeCommand = new RelayCommand(async _ => await AuthorizeAccount());
+            IsAnythingChanged = false;
         }
 
         #region Properties
 
+        public string AuthText { get; set; }
+        
+        public string AuthLogin { get; set; }
+        
+        private bool IsAuthenticated { get; set; }
+        public string AuthButtonTitle { get; set; }
+
+        [ObservableProperty]
         private bool _showTeamsEvents = Settings.Default.ShowTeamsEvents;
+        
+        [ObservableProperty]
         private string _blackoutsGroup = Settings.Default.DTEKGroup;
+        
+        [ObservableProperty]
         private bool _showBlackouts = Settings.Default.ShowBlackouts;
+        
+        [ObservableProperty]
         private bool _showPossibleBlackouts = Settings.Default.ShowPossibleBlackouts;
+        
+        [ObservableProperty]
         private bool _showOldEvents = Settings.Default.ShowOldEvents;
-
-        private string _authText;
-        private string _authLogin;
-        private string _authButtonTitle;
-        private bool _isAuthenticated;
-
-        public string AuthText => _authText;
-        public string AuthButtonTitle => _authButtonTitle;
-        public string AuthLogin => _authLogin;
-
-        public bool IsAuthenticated
-        {
-            get => _isAuthenticated;
-            set => SetProperty(ref _isAuthenticated, value);
-        }
-
-        public bool ShowOldEvents
-        {
-            get => _showOldEvents;
-            set => SetProperty(ref _showOldEvents, value);
-        }
-
-        public bool ShowTeamsEvents
-        {
-            get => _showTeamsEvents;
-            set => SetProperty(ref _showTeamsEvents, value);
-        }
-
-        public bool ShowBlackouts
-        {
-            get => _showBlackouts;
-            set => SetProperty(ref _showBlackouts, value);
-        }
-
-        public bool ShowPossibleBlackouts
-        {
-            get => _showPossibleBlackouts;
-            set => SetProperty(ref _showPossibleBlackouts, value);
-        }
-
-        public string BlackoutsGroup
-        {
-            get => _blackoutsGroup;
-            set => SetProperty(ref _blackoutsGroup, value);
-        }
 
         #endregion
 
         #region Commands
 
-        public RelayCommand AuthorizeCommand { get; }
-
-        public async Task AuthorizeAccount()
+        [RelayCommand]
+        public async Task Authorize()
         {
             if (IsAuthenticated)
             {
@@ -109,22 +80,31 @@ namespace LightTimetable.SettingsPages.ViewModels
             {
                 SettingsView.IsRequiredReload = true;
             }
+            var oldBlackoutsValue = Settings.Default.ShowBlackouts;
+
             Settings.Default.ShowBlackouts = ShowBlackouts;
             Settings.Default.ShowPossibleBlackouts = ShowPossibleBlackouts;
             Settings.Default.DTEKGroup = BlackoutsGroup;
             Settings.Default.ShowTeamsEvents = ShowTeamsEvents;
             Settings.Default.ShowOldEvents = ShowOldEvents;
+            
             Settings.Default.Save();
+
+            if (oldBlackoutsValue != ShowBlackouts)
+            {
+                SettingsView.IsRequiredResize = true;
+            }
+
             IsAnythingChanged = false;
         }
 
         private async void CheckForAuthStatus()
         {
-            var abc = await TeamsEventsPlugin.AuthorizeSilentAsync();
+            var tryAuthorize = await TeamsEventsPlugin.AuthorizeSilentAsync();
 
-            if (abc != null)
+            if (tryAuthorize != null)
             {
-                ChangeAuthStatus(true, abc.Account.Username);
+                ChangeAuthStatus(true, tryAuthorize.Account.Username);
             }
             else
             {
@@ -134,11 +114,11 @@ namespace LightTimetable.SettingsPages.ViewModels
 
         private void ChangeAuthStatus(bool isAuth, string email = "")
         {
-            _authText = isAuth
+            AuthText = isAuth
                 ? $"Ви увійшли до облікового запису"
                 : "Ви не увійшли до облікового запису";
-            _authLogin = email;
-            _authButtonTitle = isAuth
+            AuthLogin = email;
+            AuthButtonTitle = isAuth
                 ? "Вийти"
                 : "Авторизуватись";
 
@@ -147,6 +127,7 @@ namespace LightTimetable.SettingsPages.ViewModels
             OnPropertyChanged(nameof(AuthText));
             OnPropertyChanged(nameof(AuthLogin));
             OnPropertyChanged(nameof(AuthButtonTitle));
+            OnPropertyChanged(nameof(IsAuthenticated));
         }
 
         #endregion 

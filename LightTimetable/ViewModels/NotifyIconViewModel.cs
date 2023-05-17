@@ -1,15 +1,13 @@
-﻿using System.Windows;
+﻿using CommunityToolkit.Mvvm.Input;
 
-using LightTimetable.Tools;
+using System.Windows;
+
 using LightTimetable.Views;
 using LightTimetable.Properties;
 
 namespace LightTimetable.ViewModels
 {
-    /// <summary>
-    /// Provides bindable properties and commands for the NotifyIcon.
-    /// </summary>
-    public class NotifyIconViewModel
+    public partial class NotifyIconViewModel
     {
         private SettingsView? _settingsWindow;
 
@@ -24,39 +22,25 @@ namespace LightTimetable.ViewModels
                 if (SettingsView.IsRequiredReload)
                     RefreshData();
             };
-
-            // Commands
-            SingleClickCommand = new RelayCommand(_ => SingleClick());
-            DoubleClickCommand = new RelayCommand(_ => DoubleClick());
-            MiddleClickCommand = new RelayCommand(_ => MiddleClick());
-
-            ShowTimetableCommand = new RelayCommand(_ => ShowTimetable());
-            RefreshDataCommand = new RelayCommand(_ => RefreshData());
-            OpenSettingsCommand = new RelayCommand(_ => OpenSettings());
-            CloseApplicationCommand = new RelayCommand(_ => CloseApplication());
         }
 
         #region Commands
-        public RelayCommand DoubleClickCommand { get; }
-        public RelayCommand SingleClickCommand { get; }
-        public RelayCommand MiddleClickCommand { get; }
-        public RelayCommand ShowTimetableCommand { get; }
-        public RelayCommand RefreshDataCommand { get; }
-        public RelayCommand OpenSettingsCommand { get; }
-        public RelayCommand CloseApplicationCommand { get; }
 
+        [RelayCommand]
         private void SingleClick()
         {
             if (Settings.Default.OpenWindowMode == 0)
                 ShowTimetable();
         }
-
+        
+        [RelayCommand]
         private void DoubleClick()
         {
             if (Settings.Default.OpenWindowMode == 1)
                 ShowTimetable();
         }
 
+        [RelayCommand]
         private void MiddleClick()
         {
             switch (Settings.Default.MiddleMouseClick)
@@ -66,11 +50,13 @@ namespace LightTimetable.ViewModels
             }
         }
 
+        [RelayCommand]
         private void ShowTimetable()
         {
             Application.Current.MainWindow?.Show();
         }
 
+        [RelayCommand]
         private async void RefreshData()
         {
             var mainWindow = Application.Current.MainWindow as TimetableView;
@@ -78,13 +64,7 @@ namespace LightTimetable.ViewModels
             await mainWindow?.ReloadViewModelData();
         }
 
-        private void InvokeWindowResize()
-        {
-            var mainWindow = Application.Current.MainWindow as TimetableView;
-            
-            mainWindow?.InvokeWindowResize();
-        }
-
+        [RelayCommand]
         private void OpenSettings()
         {
             if (_settingsWindow != null) 
@@ -94,9 +74,18 @@ namespace LightTimetable.ViewModels
             _settingsWindow.Show();
         }
 
+        [RelayCommand]
         private void CloseApplication()
         {
             Application.Current.Shutdown();
+        }
+
+        
+        private void InvokeWindowResize()
+        {
+            var mainWindow = Application.Current.MainWindow as TimetableView;
+            
+            mainWindow?.InvokeWindowResize();
         }
 
         #endregion
