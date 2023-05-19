@@ -24,7 +24,7 @@ namespace LightTimetable.Views
 
         public void InvokeWindowResize()
         {
-            Width = Settings.Default.ShowBlackouts ? 425 : 400;
+            Width = Settings.Default.ShowOutages ? 425 : 400;
             Width += _viewModel.IsDataGridExpanded ? 100 : 0;
             _sizeChanged = PositionCalculator.Calculate((WindowPosition)Settings.Default.WindowPosition);
             _sizeChanged.Invoke(this, null);

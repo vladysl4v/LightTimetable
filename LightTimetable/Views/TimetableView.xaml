@@ -79,7 +79,7 @@
                   CanUserDeleteRows="False"
                   AutoGenerateColumns="False">
             <DataGrid.Columns>
-                <DataGridTemplateColumn Header="⚡︎"         Width="25"  CellTemplate="{StaticResource BlackoutsCellTemplate}" Visibility="{Binding Source={x:Static settings:Settings.Default},Path=ShowBlackouts, Converter={StaticResource Boolean2Visibility}}"/>
+                <DataGridTemplateColumn Header="⚡︎"         Width="25"  CellTemplate="{StaticResource BlackoutsCellTemplate}" Visibility="{Binding Source={x:Static settings:Settings.Default},Path=ShowOutages, Converter={StaticResource Boolean2Visibility}}"/>
                 <DataGridTextColumn     Header="Час"        Width="70"  Binding="{Binding StudyTime}" />
                 <DataGridTemplateColumn Header="Дисципліна" Width="200"  CellTemplate="{StaticResource DisciplineWithToolTipsCellTemplate}" />
                 <DataGridTextColumn     Header="Тип"        Width="78"  Binding="{Binding StudyType}" />

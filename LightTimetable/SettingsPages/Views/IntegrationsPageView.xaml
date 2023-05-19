@@ -37,17 +37,36 @@
                 </DockPanel>
             </Grid>
         </GroupBox>
-        <GroupBox Header="Відключення світла" Grid.Row="1">
-            <DockPanel>
-                <CheckBox Content="Показувати інформацію про світло" IsChecked="{Binding ShowBlackouts}" Margin="5 20 0 0" DockPanel.Dock="Top" HorizontalAlignment="Left" Height="16" x:Name="BlackoutsCheckBox"/>
-                <CheckBox Content="Відображати МОЖЛИВІ відключення" IsChecked="{Binding ShowPossibleBlackouts}" Margin="5 10 0 0" DockPanel.Dock="Top" HorizontalAlignment="Left" Height="16"  IsEnabled="{Binding ElementName=BlackoutsCheckBox, Path=IsChecked}" />
-                <Label Content="Оберіть вашу групу відключень" Margin="0 -95 0 0" DockPanel.Dock="Right"  HorizontalAlignment="Right" Width="185" Height="25" IsEnabled="{Binding ElementName=BlackoutsCheckBox, Path=IsChecked}" />
-                <ComboBox SelectedValue="{Binding BlackoutsGroup}" Margin="0 -40 -180 0" DockPanel.Dock="Right"  HorizontalAlignment="Right" Width="175" Height="22" SelectedValuePath="Tag" IsEnabled="{Binding ElementName=BlackoutsCheckBox, Path=IsChecked}" >
-                    <ComboBoxItem Content="1 група" Tag="1"/>
-                    <ComboBoxItem Content="2 група" Tag="2"/>
-                    <ComboBoxItem Content="3 група" Tag="3"/>
-                </ComboBox>
-            </DockPanel>
+                <GroupBox Header="Відключення світла" Grid.Row="1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+                <DockPanel Grid.Column="0">
+                    <CheckBox Content="Показувати інформацію про світло" IsEnabled="{Binding IsOutagesSetUp}" IsChecked="{Binding ShowOutages}" Margin="5 15 0 0" DockPanel.Dock="Top" HorizontalAlignment="Left" Height="16"/>
+                    <Label Content="(Необхідно вказати регіон та групу)" Visibility="{Binding IsOutagesSetUp, Converter={StaticResource InvertedBoolean2Visibility}}" Margin="20 0 0 0" DockPanel.Dock="Top" VerticalAlignment="Top" Height="25"/>
+                    <CheckBox Content="Відображати МОЖЛИВІ відключення" IsEnabled="{Binding IsOutagesSetUp}" IsChecked="{Binding ShowPossibleOutages}" Margin="5 0 0 0" DockPanel.Dock="Top" HorizontalAlignment="Left" Height="16"/>
+                </DockPanel>
+                <DockPanel Grid.Column="1">
+                    <Grid Margin="0 7 10 0" DockPanel.Dock="Top" HorizontalAlignment="Right">
+                        <ComboBox x:Name="OutagesCityComboBox" SelectedValue="{Binding OutagesCity}" Width="175" Height="22" SelectedValuePath="Tag" >
+                            <ComboBoxItem Content="Київ" Tag="kiev"/>
+                            <ComboBoxItem Content="Дніпро" Tag="dnipro"/>
+                        </ComboBox>
+                        <TextBlock Text="-- Оберіть регіон --" DataContext="{Binding ElementName=OutagesCityComboBox,Path=SelectedItem}" Style="{StaticResource ComboBoxSelectOverlay}" Width="175" Height="22"/>
+                    </Grid>
+        
+                    <Grid Margin="0 7 10 0" DockPanel.Dock="Top" HorizontalAlignment="Right">
+                         <ComboBox x:Name="OutagesGroupComboBox" SelectedValue="{Binding OutagesGroup}" Width="175" Height="22" SelectedValuePath="Tag" >
+                            <ComboBoxItem Content="1 група" Tag="1"/>
+                            <ComboBoxItem Content="2 група" Tag="2"/>
+                            <ComboBoxItem Content="3 група" Tag="3"/>
+                        </ComboBox>
+                        <TextBlock Text="-- Оберіть групу --" DataContext="{Binding ElementName=OutagesGroupComboBox,Path=SelectedItem}" Width="175" Height="22" Style="{StaticResource ComboBoxSelectOverlay}"/>
+                    </Grid>
+                </DockPanel>
+            </Grid>
         </GroupBox>
         <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right">
             <!-- APPLY CHANGES AND CLOSE BUTTON -->

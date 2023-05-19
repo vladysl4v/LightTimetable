@@ -19,13 +19,11 @@ namespace LightTimetable.Models.Utilities
 
         [JsonConstructor]
         public OutlookEvent(string subject, Dictionary<string, string> start, Dictionary<string, string> end, Dictionary<string, string> onlineMeeting)
-        {
-            const string datetimeFormat = "MM'/'dd'/'yyyy' 'HH':'mm':'ss";
-            
-            var startTime = TimeOnly.ParseExact(start["dateTime"], datetimeFormat, CultureInfo.CurrentCulture).AddHours(UtcOffset);
-            var endTime = TimeOnly.ParseExact(end["dateTime"], datetimeFormat, CultureInfo.CurrentCulture).AddHours(UtcOffset);
+        {   
+            var startTime = TimeOnly.ParseExact(start["dateTime"], "MM'/'dd'/'yyyy' 'HH':'mm':'ss").AddHours(UtcOffset);
+            var endTime = TimeOnly.ParseExact(end["dateTime"], "MM'/'dd'/'yyyy' 'HH':'mm':'ss").AddHours(UtcOffset);
 
-            Date = DateOnly.ParseExact(end["dateTime"], datetimeFormat, CultureInfo.CurrentCulture);
+            Date = DateOnly.ParseExact(end["dateTime"], "MM'/'dd'/'yyyy' 'HH':'mm':'ss");
             Time = new TimeInterval(startTime, endTime);
             Url = onlineMeeting.TryGetValue("joinUrl", out var url) ? url : null;
             Title = subject;

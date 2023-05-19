@@ -17,17 +17,20 @@
     <Setting Name="_renames" Type="System.String" Scope="User">
       <Value Profile="(Default)">{}</Value>
     </Setting>
-    <Setting Name="ShowBlackouts" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
-    </Setting>
-    <Setting Name="ShowPossibleBlackouts" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
-    </Setting>
-    <Setting Name="DTEKGroup" Type="System.String" Scope="User">
-      <Value Profile="(Default)">0</Value>
-    </Setting>
     <Setting Name="_notes" Type="System.String" Scope="User">
       <Value Profile="(Default)">{}</Value>
+    </Setting>
+    <Setting Name="ShowOutages" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="ShowPossibleOutages" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="OutagesGroup" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="OutagesCity" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
     </Setting>
     <Setting Name="Autostart" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">0</Value>

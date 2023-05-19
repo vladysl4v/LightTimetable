@@ -16,7 +16,7 @@
 <h2 align="left">Особливості</h1>
 
 * Інтеграція календаря подій Microsoft Teams
-* Інтеграція розкладу відключення <strong>(тільки Київ)</strong>
+* Інтеграція розкладу відключення світла <strong>(Київ та Дніпро)</strong>
 * Прогнозування розкладу наступних тижнів на основі попередніх
 * Додавання нотаток для майбутніх пар
 * Перейменування пар на ваш розсуд
@@ -29,5 +29,5 @@
   <img width="586" height="336" src="https://user-images.githubusercontent.com/106306927/224055748-96cd49c9-77e5-4521-835c-3fd2700fd42b.gif">
 </p>
 <p align="center">
-  <img width="786" height="443" src="https://user-images.githubusercontent.com/106306927/235353354-c27236a1-3453-4d1a-8b20-806f9344ddd7.gif">
+  <img width="786" height="443" src="https://github.com/vladysl4v/LightTimetable/assets/106306927/69dbb365-6100-497b-a09b-dd83e41351c1">
 </p>

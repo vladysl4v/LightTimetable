@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
-using LightTimetable.Tools;
 using LightTimetable.Models;
 using LightTimetable.Properties;
 using LightTimetable.Models.Utilities;
@@ -31,7 +30,7 @@ namespace LightTimetable.ViewModels
         #region Properties
 
         [ObservableProperty]
-        private double _width = Settings.Default.ShowBlackouts ? 425 : 400;
+        private double _width = Settings.Default.ShowOutages ? 425 : 400;
 
         [ObservableProperty]
         private DataItem? _selectedDataItem;
@@ -103,21 +102,18 @@ namespace LightTimetable.ViewModels
             UpdateDataGrid();
         }
 
-        public void UpdateDataGrid(DisciplinePair? renamePair = null)
+        public void UpdateDataGrid()
         {
             // temporary condition to update data grid cells
-            if (renamePair != null)
-                _dataProvider.UpdateRenames(renamePair);
             DateTime temp = Date;
             Date = DateTime.MinValue;
             Date = temp;
-
         }
 
         partial void OnIsDataGridExpandedChanged(bool newValue)
         {
             var tempWidth = newValue ? 500 : 400; 
-            tempWidth += Settings.Default.ShowBlackouts ? 25 : 0;
+            tempWidth += Settings.Default.ShowOutages ? 25 : 0;
             Width = tempWidth;    
         }
         
@@ -260,8 +256,7 @@ namespace LightTimetable.ViewModels
             Settings.Default.Renames[SelectedDataItem.Discipline.Original] = newItemName;
             Settings.Default.Save();
 
-            SelectedDataItem.Discipline.Modified = newItemName;
-            UpdateDataGrid(SelectedDataItem.Discipline);
+            UpdateDataGrid();
         }
 
         #endregion

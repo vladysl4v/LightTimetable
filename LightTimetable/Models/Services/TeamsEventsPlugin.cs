@@ -17,7 +17,7 @@ namespace LightTimetable.Models.Services
     {
         private static Dictionary<DateOnly, List<OutlookEvent>>? _eventsData;
         private static readonly IPublicClientApplication ClientApp;
-
+        
         private const string AppId = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx";
 
         static TeamsEventsPlugin()

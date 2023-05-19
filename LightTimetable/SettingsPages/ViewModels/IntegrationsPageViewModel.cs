@@ -15,6 +15,7 @@ namespace LightTimetable.SettingsPages.ViewModels
         public IntegrationsPageViewModel()
         {
             CheckForAuthStatus();
+            CheckIsOutagesSetUp();
             IsAnythingChanged = false;
         }
 
@@ -24,24 +25,49 @@ namespace LightTimetable.SettingsPages.ViewModels
         
         public string AuthLogin { get; set; }
         
-        private bool IsAuthenticated { get; set; }
+        public bool IsAuthenticated { get; set; }
+
         public string AuthButtonTitle { get; set; }
+        
+        [ObservableProperty]
+        public bool _isOutagesSetUp;
 
         [ObservableProperty]
         private bool _showTeamsEvents = Settings.Default.ShowTeamsEvents;
+
+        [ObservableProperty]
+        private bool _showOutages = Settings.Default.ShowOutages;
         
         [ObservableProperty]
-        private string _blackoutsGroup = Settings.Default.DTEKGroup;
-        
-        [ObservableProperty]
-        private bool _showBlackouts = Settings.Default.ShowBlackouts;
-        
-        [ObservableProperty]
-        private bool _showPossibleBlackouts = Settings.Default.ShowPossibleBlackouts;
+        private bool _showPossibleOutages = Settings.Default.ShowPossibleOutages;
         
         [ObservableProperty]
         private bool _showOldEvents = Settings.Default.ShowOldEvents;
 
+        private int _outagesGroup = Settings.Default.OutagesGroup;
+
+        private string _outagesCity = Settings.Default.OutagesCity;
+
+        public string OutagesCity
+        {
+            get => _outagesCity;
+            set
+            {
+                SetProperty(ref _outagesCity, value);
+                CheckIsOutagesSetUp();
+            }
+        }
+
+        public string OutagesGroup
+        {
+            get => _outagesGroup.ToString();
+            set
+            {
+                SetProperty(ref _outagesGroup, int.Parse(value));
+                CheckIsOutagesSetUp();
+            }
+        }
+        
         #endregion
 
         #region Commands
@@ -80,22 +106,28 @@ namespace LightTimetable.SettingsPages.ViewModels
             {
                 SettingsView.IsRequiredReload = true;
             }
-            var oldBlackoutsValue = Settings.Default.ShowBlackouts;
+            var oldOutagesValue = Settings.Default.ShowOutages;
 
-            Settings.Default.ShowBlackouts = ShowBlackouts;
-            Settings.Default.ShowPossibleBlackouts = ShowPossibleBlackouts;
-            Settings.Default.DTEKGroup = BlackoutsGroup;
+            Settings.Default.ShowOutages = ShowOutages;
+            Settings.Default.ShowPossibleOutages = ShowPossibleOutages;
+            Settings.Default.OutagesGroup = _outagesGroup;
+            Settings.Default.OutagesCity = _outagesCity;
             Settings.Default.ShowTeamsEvents = ShowTeamsEvents;
             Settings.Default.ShowOldEvents = ShowOldEvents;
             
             Settings.Default.Save();
 
-            if (oldBlackoutsValue != ShowBlackouts)
+            if (oldOutagesValue != ShowOutages)
             {
                 SettingsView.IsRequiredResize = true;
             }
 
             IsAnythingChanged = false;
+        }
+
+        private void CheckIsOutagesSetUp()
+        {
+            IsOutagesSetUp = _outagesGroup != 0 && _outagesCity != string.Empty;
         }
 
         private async void CheckForAuthStatus()

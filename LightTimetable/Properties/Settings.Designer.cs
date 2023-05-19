@@ -86,39 +86,51 @@ namespace LightTimetable.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool ShowBlackouts {
+        public bool ShowOutages {
             get {
-                return ((bool)(this["ShowBlackouts"]));
+                return ((bool)(this["ShowOutages"]));
             }
             set {
-                this["ShowBlackouts"] = value;
+                this["ShowOutages"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool ShowPossibleBlackouts {
+        public bool ShowPossibleOutages {
             get {
-                return ((bool)(this["ShowPossibleBlackouts"]));
+                return ((bool)(this["ShowPossibleOutages"]));
             }
             set {
-                this["ShowPossibleBlackouts"] = value;
+                this["ShowPossibleOutages"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public string DTEKGroup {
+        public int OutagesGroup {
             get {
-                return ((string)(this["DTEKGroup"]));
+                return ((int)(this["OutagesGroup"]));
             }
             set {
-                this["DTEKGroup"] = value;
+                this["OutagesGroup"] = value;
             }
         }
         
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string OutagesCity {
+            get {
+                return ((string)(this["OutagesCity"]));
+            }
+            set {
+                this["OutagesCity"] = value;
+            }
+        }
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("{}")]

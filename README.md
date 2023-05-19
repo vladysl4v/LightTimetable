@@ -16,7 +16,7 @@
 <h2 align="left">Features</h1>
 
 * Microsoft Teams event calendar integration
-* Blackout schedule integration <strong>(Kyiv only)</strong>
+* Blackout schedule integration <strong>(Kyiv and Dnipro)</strong>
 * Predicting next weeks schedule based on past
 * Adding notes for the coming lessons
 * Renaming lessons at your discretion
@@ -29,5 +29,5 @@
   <img width="586" height="336" src="https://user-images.githubusercontent.com/106306927/224055748-96cd49c9-77e5-4521-835c-3fd2700fd42b.gif">
 </p>
 <p align="center">
-  <img width="786" height="443" src="https://user-images.githubusercontent.com/106306927/235353354-c27236a1-3453-4d1a-8b20-806f9344ddd7.gif">
+  <img width="786" height="443" src="https://github.com/vladysl4v/LightTimetable/assets/106306927/69dbb365-6100-497b-a09b-dd83e41351c1">
 </p>

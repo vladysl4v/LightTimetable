@@ -38,11 +38,6 @@ namespace LightTimetable.Models
 
         }
 
-        public void UpdateRenames(DisciplinePair renamePair)
-        {
-            _scheduleLoader.UpdateRenames(renamePair);
-        }
-
         public async Task<bool> RefreshDataAsync()
         {
             await LoadScheduleAsync();
@@ -63,9 +58,9 @@ namespace LightTimetable.Models
             var startDate = startOfTheWeek.AddDays(-14);
             var endDate = startOfTheWeek.AddDays(+13);
 
-            if (Settings.Default.ShowBlackouts)
+            if (Settings.Default.ShowOutages)
             {
-                await ElectricityPlugin.InitializeBlackoutsAsync();
+                await ElectricityPlugin.InitializeOutagesAsync(Settings.Default.OutagesCity, Settings.Default.OutagesGroup, Settings.Default.ShowPossibleOutages);
             }
 
             if (Settings.Default.ShowTeamsEvents)

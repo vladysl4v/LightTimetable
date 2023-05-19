@@ -13,7 +13,7 @@ namespace LightTimetable.Models.Utilities
         public uint Id { get; }
         public DateTime Date { get; }
         public TimeInterval StudyTime { get; }
-        public DisciplinePair Discipline { get; set; }
+        public DisciplineName Discipline { get; set; }
         public string StudyType { get; }
         public string Cabinet { get; }
         public string Employee { get; }
@@ -27,7 +27,7 @@ namespace LightTimetable.Models.Utilities
         {
             Date = date;
             StudyTime = studyTime;
-            Discipline = RenameDiscipline(discipline);
+            Discipline = new DisciplineName(discipline);
             StudyType = studyType;
             Subgroup = subgroup;
             Cabinet = cabinet;
@@ -35,9 +35,9 @@ namespace LightTimetable.Models.Utilities
             Id = CreateIdentifier();
             Note = GetNote();
 
-            if (Settings.Default.ShowBlackouts)
+            if (Settings.Default.ShowOutages)
             {
-                Electricity = ElectricityPlugin.GetLightInformation(StudyTime, date.GetNormalDayOfWeek());
+                Electricity = ElectricityPlugin.GetElectricityInformation(StudyTime, date.GetNormalDayOfWeek());
             }
 
             if (Settings.Default.ShowTeamsEvents)
@@ -68,18 +68,6 @@ namespace LightTimetable.Models.Utilities
             var hash2 = Discipline.Original.Aggregate(0, (current, letter) => current + letter);
             var hash3 = StudyType.Length * Discipline.Original.Length;
             return (uint)(hash1 + hash2 + hash3);
-        }
-
-        private DisciplinePair RenameDiscipline(string discipline)
-        {
-            if (Settings.Default.Renames.TryGetValue(discipline, out string rename))
-            {
-                return new DisciplinePair(rename, discipline);
-            }
-            else
-            {
-                return new DisciplinePair(discipline, discipline);
-            }
         }
 
         private string ShortenFullName(string employee)

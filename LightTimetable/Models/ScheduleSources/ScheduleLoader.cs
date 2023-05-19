@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
-using LightTimetable.Tools;
 using LightTimetable.Properties;
 using LightTimetable.Models.Utilities;
 
@@ -33,20 +32,6 @@ namespace LightTimetable.Models.ScheduleSources
                 Settings.Default.Notes.Remove(obsoleteId.Key);
             }
             Settings.Default.Save();
-        }
-
-        public void UpdateRenames(DisciplinePair renamePair)
-        {
-            if (ScheduleDictionary == null)
-                return;
-
-            foreach (var item in from dateItems in ScheduleDictionary.Values
-                     from item in dateItems
-                     where item.Discipline.Original == renamePair.Original
-                     select item)
-            {
-                item.Discipline.Modified = renamePair.Modified;
-            }
         }
     }
 }
