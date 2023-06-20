@@ -34,7 +34,6 @@
             </StackPanel>
         </Grid>
     </DataTemplate>
-
     
     <!-- BLACKOUTS COLUMN -->
     <DataTemplate x:Key="BlackoutsCellTemplate">
@@ -45,11 +44,8 @@
         </Image>
     </DataTemplate>
 
-    <DataTemplate x:Key="ToHiddenBinding">
-        <DataGridColumnHeader Visibility="{Binding IsDataGridExpanded, Converter={StaticResource Boolean2Visibility}}"/>
-    </DataTemplate>
-
     <!-- VIEWMODEL-VIEW DEPENDENCY -->
+
     <DataTemplate DataType="{x:Type vm:SchedulePageViewModel}">
         <view:SchedulePageView />
     </DataTemplate>

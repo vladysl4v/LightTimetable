@@ -21,12 +21,28 @@
         </Grid.RowDefinitions>
         <GroupBox Header="Навчальна група" Grid.Row="0">
             <DockPanel>
-                <!-- Content="Оберіть ваш факультет, форму навчання та курс, після цього ви зможете обрати вашу групу"  -->
                 <Label DockPanel.Dock="Top" Content="Оберіть ваш факультет, форму навчання та курс, після цього ви зможете обрати вашу групу" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                <ComboBox DockPanel.Dock="Left" SelectedValue="{Binding CurrentFaculty}" ItemsSource="{Binding FacultiesSource}"  Margin="10 0 0 0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="160" Height="22" DisplayMemberPath="Value" SelectedValuePath="Key"/>
-                <ComboBox DockPanel.Dock="Left" SelectedValue="{Binding CurrentEducForm}" ItemsSource="{Binding EducFormsSource}"  Margin="5 0 0 0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" Height="22" DisplayMemberPath="Value" SelectedValuePath="Key"/>
-                <ComboBox DockPanel.Dock="Left" SelectedValue="{Binding CurrentCourse}" ItemsSource="{Binding CoursesSource}" Margin="5 0 0 0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="125" Height="22" DisplayMemberPath="Value" SelectedValuePath="Key"/>
-                <ComboBox DockPanel.Dock="Top" SelectedValue="{Binding CurrentStudyGroup}" ItemsSource="{Binding StudyGroupsSource}"  Margin="-415 15 0 0" HorizontalAlignment="Left" Width="285" Height="22" DisplayMemberPath="Value" SelectedValuePath="Key"/>
+                
+                <Grid DockPanel.Dock="Left" Margin="10 0 0 0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="160" Height="22">
+                    <ComboBox Name="FacultyComboBox" SelectedValue="{Binding CurrentFaculty}" ItemsSource="{Binding FacultiesSource}" DisplayMemberPath="Value" SelectedValuePath="Key"/>
+                    <TextBlock Text="-- Оберіть факультет --" DataContext="{Binding ElementName=FacultyComboBox,Path=SelectedItem}" Style="{StaticResource ComboBoxDefaultValue}"/> 
+                </Grid>
+
+                <Grid DockPanel.Dock="Left" Margin="5 0 0 0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" Height="22">
+                    <ComboBox Name="EducFormComboBox" SelectedValue="{Binding CurrentEducForm}" ItemsSource="{Binding EducFormsSource}" DisplayMemberPath="Value" SelectedValuePath="Key"/>
+                    <TextBlock Text="- Оберіть форму -" DataContext="{Binding ElementName=EducFormComboBox,Path=SelectedItem}" Style="{StaticResource ComboBoxDefaultValue}"/>
+                </Grid>
+                
+                <Grid DockPanel.Dock="Left" Margin="5 0 0 0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="125" Height="22">
+                    <ComboBox Name="CourseComboBox" SelectedValue="{Binding CurrentCourse}" ItemsSource="{Binding CoursesSource}" DisplayMemberPath="Value" SelectedValuePath="Key"/>
+                    <TextBlock Text="-- Оберіть курс --" DataContext="{Binding ElementName=CourseComboBox,Path=SelectedItem}" Style="{StaticResource ComboBoxDefaultValue}"/>
+                </Grid>
+                
+                <Grid DockPanel.Dock="Top" Margin="-415 15 0 0" HorizontalAlignment="Left" Width="285" Height="22">
+                    <ComboBox Name="StudyGroupComboBox" SelectedValue="{Binding CurrentStudyGroup}" ItemsSource="{Binding StudyGroupsSource}" DisplayMemberPath="Value" SelectedValuePath="Key"/>
+                    <TextBlock Text="-- Оберіть навчальну групу --" DataContext="{Binding ElementName=StudyGroupComboBox,Path=SelectedItem}" Style="{StaticResource ComboBoxDefaultValue}"/>
+                </Grid>
+            
             </DockPanel>
         </GroupBox>
         <GroupBox Header="Передбачення розкладу" Grid.Row="1">
