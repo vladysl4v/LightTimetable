@@ -14,14 +14,24 @@ using ElectricityList =
         System.Collections.Generic.List<
             System.Collections.Generic.Dictionary<string, string>>>;
 
+
 namespace LightTimetable.Models.Services
 {
-    public static class ElectricityPlugin
-    {   
-        private static ElectricityList? _electricityData;
-        private static bool _showPossibleOutages;
+    public class ElectricityService
+    {
+        private ElectricityList? _electricityData;
+        private bool _showPossibleOutages;
+        private int _groupNumber;
+        private string _city;
 
-        public static ElectricityStatus? GetElectricityInformation(TimeInterval studyTime, NormalDayOfWeek dayOfWeek)
+        public ElectricityService(string city, int groupNumber, bool showPossibleOutages)
+        {
+            _city = city;
+            _groupNumber = groupNumber;
+            _showPossibleOutages = showPossibleOutages;
+        }
+
+        public ElectricityStatus? GetElectricityInformation(TimeInterval studyTime, NormalDayOfWeek dayOfWeek)
         {
             if (_electricityData == null)
                 return null;
@@ -51,7 +61,7 @@ namespace LightTimetable.Models.Services
             return currentOutages.Any() ? new ElectricityStatus(currentOutages) : null;
         }
 
-        private static bool IsIntervalsIntersects(TimeInterval firstInterval, TimeInterval secondInterval)
+        private bool IsIntervalsIntersects(TimeInterval firstInterval, TimeInterval secondInterval)
         {
             var isStartIntersects = secondInterval.Start <= firstInterval.Start && firstInterval.Start < secondInterval.End;
             var isEndIntersects = secondInterval.Start < firstInterval.End && firstInterval.End <= secondInterval.End;
@@ -59,12 +69,9 @@ namespace LightTimetable.Models.Services
             return isStartIntersects || isEndIntersects || isInside;
         }
 
-        public static async Task InitializeOutagesAsync(string city, int groupNumber, bool showPossibleOutages)
+        public async Task InitializeOutagesAsync()
         {
-            _showPossibleOutages = showPossibleOutages;
-            _electricityData = null;
-
-            if (city == string.Empty || groupNumber == 0)
+            if (_city == string.Empty || _groupNumber == 0)
                 return;
 
             var request = await HttpRequestService.LoadStringAsync("https://kyiv.yasno.com.ua/schedule-turn-off-electricity");
@@ -74,13 +81,13 @@ namespace LightTimetable.Models.Services
 
             try 
             {
-                var serializedData = "{" + Regex.Match(request, "\"" + city + "\":{.*?}]]}").Value + "}";
+                var serializedData = "{" + Regex.Match(request, "\"" + _city + "\":{.*?}]]}").Value + "}";
                 var cityElectricityData = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, List<List<Dictionary<string, string>>>>>>(serializedData);    
-                _electricityData = cityElectricityData[city]["group_" + groupNumber];
+                _electricityData = cityElectricityData[_city]["group_" + _groupNumber];
             }
             catch
             {
-                return;
+                _electricityData = null;
             }
         }
     }

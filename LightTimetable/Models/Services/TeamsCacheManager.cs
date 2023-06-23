@@ -34,12 +34,12 @@ using System.Security.Cryptography;
 
 namespace LightTimetable.Tools
 {
-    public static class TokenCacheHelper
+    public static class TeamsCacheManager
     {
         private static readonly object FileLock = new();
         private static readonly string CacheFilePath;
 
-        static TokenCacheHelper()
+        static TeamsCacheManager()
         {
             CacheFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ".msalcache.bin3");
         }

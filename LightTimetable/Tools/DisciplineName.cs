@@ -3,7 +3,7 @@
 
 namespace LightTimetable.Tools
 {
-    public struct DisciplineName
+    public readonly struct DisciplineName
     {
         public string Original { get; }
         public string Modified => Settings.Default.Renames.TryGetValue(Original, out var modified) ? modified : Original; 

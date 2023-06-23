@@ -1,7 +1,6 @@
 ﻿using Newtonsoft.Json;
 
 using System;
-using System.Globalization;
 using System.Collections.Generic;
 
 using LightTimetable.Tools;

@@ -12,7 +12,7 @@ namespace LightTimetable.Models.ScheduleSources
     public class ScheduleLoader
     {
         public Dictionary<DateTime, List<DataItem>>? ScheduleDictionary { get; protected set; }
-        public DateTime[]? AvailableDates { get; protected set; }
+        public DateTime[] AvailableDates => ScheduleDictionary?.Keys.ToArray() ?? Array.Empty<DateTime>();
 
         public async Task InitializeScheduleAsync(DateTime startDate, DateTime endDate, IScheduleSource scheduleSource)
         {
@@ -20,9 +20,6 @@ namespace LightTimetable.Models.ScheduleSources
 
             if (ScheduleDictionary == null || !ScheduleDictionary.Any())
                 return;
-
-            // Initialize AvailableDates
-            AvailableDates = ScheduleDictionary.Keys.ToArray();
 
             // Check for obsolete notes
             var oldestId = ScheduleDictionary.First().Value.First().Id;

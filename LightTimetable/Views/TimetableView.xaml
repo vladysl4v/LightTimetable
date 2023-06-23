@@ -15,7 +15,7 @@
         Topmost="True"
         ShowInTaskbar="False" 
         WindowStyle="None"
-        SizeChanged="_sizeChanged"
+        SizeChanged="WindowSizeChanged"
         Icon="../Assets/LightTimetable-Logo.ico">
     
     <Window.DataContext>
@@ -34,13 +34,19 @@
                 <ColumnDefinition Width="25"/>
             </Grid.ColumnDefinitions>
             <!-- CURRENT DAY OF WEEK LABEL -->
-            <Label Content="{Binding Date, Converter={StaticResource DayOfWeek2Title}}" HorizontalContentAlignment="Center" Grid.ColumnSpan="8"/>
-            <!-- BACK TO TODAY BUTTON -->
+            <Label Content="{Binding Date, Converter={StaticResource DayOfWeek2Title}}" 
+                   HorizontalContentAlignment="Center" Grid.ColumnSpan="8"/>
+            <!-- RESET DATE BUTTON -->
             <Button Content="⌂" Command="{Binding ResetDateCommand}" Grid.Column="0"/>
             <!-- TIMETABLE STATUS -->
-            <Image Source="{Binding ScheduleStatus.IconPath, UpdateSourceTrigger=PropertyChanged, TargetNullValue={x:Null}}" HorizontalAlignment="Center" Width="20" Height="20" Grid.Column="2" ToolTip="{Binding ScheduleStatus.ToolTip, UpdateSourceTrigger=PropertyChanged, TargetNullValue={x:Null}}" RenderOptions.BitmapScalingMode="HighQuality" ToolTipService.InitialShowDelay="200"/>
-            <!-- CURRENT DATE DATEPICKER -->
-            <DatePicker SelectedDate="{Binding Date}" CalendarStyle="{StaticResource CalendarWithHighlightedDates}" Foreground="{Binding Date, Converter={StaticResource ForegroundByDate}}" Grid.Column="1" BorderThickness="0" Focusable="False">
+            <Image HorizontalAlignment="Center" Width="20" Height="20" Grid.Column="2" 
+                   RenderOptions.BitmapScalingMode="HighQuality" ToolTipService.InitialShowDelay="200"
+                   Source="{Binding ScheduleStatus.IconPath, UpdateSourceTrigger=PropertyChanged, TargetNullValue={x:Null}}"
+                   ToolTip="{Binding ScheduleStatus.ToolTip, UpdateSourceTrigger=PropertyChanged, TargetNullValue={x:Null}}"/>
+            <!-- CURRENT DATE -->
+            <DatePicker SelectedDate="{Binding Date}" CalendarStyle="{StaticResource CalendarWithHighlightedDates}" 
+                        Foreground="{Binding Date, Converter={StaticResource ForegroundByDate}}" Grid.Column="1"
+                        BorderThickness="0" Focusable="False">
                 <DatePicker.Resources>
                     <Style TargetType="DatePickerTextBox">
                         <Setter Property="IsReadOnly" Value="True"/>
@@ -49,13 +55,15 @@
                 </DatePicker.Resources>
             </DatePicker>
             <!-- EXPAND DATAGRID BUTTON -->
-            <Expander IsExpanded="{Binding IsDataGridExpanded}" Grid.Column="4" ExpandDirection="Right" Focusable="False" Width="23" Height="23"/>
+            <Expander IsExpanded="{Binding IsDataGridExpanded}" ExpandDirection="Right"
+                      Focusable="False" Width="23" Height="23" Grid.Column="4"/>
             <!-- PREVIOUS DAY BUTTON -->
             <Button Content="←" Command="{Binding ChangeDateCommand}" CommandParameter="-1" Grid.Column="5"/>
             <!-- NEXT DAY BUTTON -->
             <Button Content="→" Command="{Binding ChangeDateCommand}" CommandParameter="+1" Grid.Column="6"/>
             <!-- HIDE WINDOW BUTTON -->
-            <Button Content="✕" Command="{Binding HideWindowCommand}" CommandParameter="{Binding ElementName=TimetableWindow}" Grid.Column="7"/>
+            <Button Content="✕" Command="{Binding HideWindowCommand}" Grid.Column="7"
+                    CommandParameter="{Binding ElementName=TimetableWindow}"/>
         </Grid>
         <!-- DUMMY THAT ALLOWS TO BIND THE VISIBILITY OF A DATAGRID COLUMN -->
         <FrameworkElement x:Name="DummyElement" Visibility="Collapsed"/>
@@ -79,9 +87,9 @@
                   CanUserDeleteRows="False"
                   AutoGenerateColumns="False">
             <DataGrid.Columns>
-                <DataGridTemplateColumn Header="⚡︎"         Width="25"  CellTemplate="{StaticResource BlackoutsCellTemplate}" Visibility="{Binding Source={x:Static settings:Settings.Default},Path=ShowOutages, Converter={StaticResource Boolean2Visibility}}"/>
+                <DataGridTemplateColumn Header="⚡︎"          Width="25"  CellTemplate="{StaticResource BlackoutsCellTemplate}" Visibility="{Binding Source={x:Static settings:Settings.Default},Path=ShowOutages, Converter={StaticResource Boolean2Visibility}}"/>
                 <DataGridTextColumn     Header="Час"        Width="70"  Binding="{Binding StudyTime}" />
-                <DataGridTemplateColumn Header="Дисципліна" Width="200"  CellTemplate="{StaticResource DisciplineWithToolTipsCellTemplate}" />
+                <DataGridTemplateColumn Header="Дисципліна" Width="200" CellTemplate="{StaticResource DisciplineWithToolTipsCellTemplate}" />
                 <DataGridTextColumn     Header="Тип"        Width="78"  Binding="{Binding StudyType}" />
                 <DataGridTextColumn     Header="Кабінет"    Width="52"  Binding="{Binding Cabinet}" />
                 <DataGridTextColumn     Header="Викладач"   Width="100" Binding="{Binding Employee}" Visibility="{Binding DataContext.IsDataGridExpanded, Source={x:Reference DummyElement}, Converter={StaticResource Boolean2Visibility}}"/>

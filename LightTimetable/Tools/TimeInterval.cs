@@ -3,10 +3,10 @@
 
 namespace LightTimetable.Tools
 {
-    public struct TimeInterval
+    public readonly struct TimeInterval
     {
-        public TimeOnly Start { get; set; }
-        public TimeOnly End { get; set; }
+        public TimeOnly Start { get; }
+        public TimeOnly End { get; }
 
         public TimeInterval(TimeOnly intervalBegin, TimeOnly intervalEnd)
         {

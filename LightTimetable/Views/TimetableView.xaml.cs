@@ -11,6 +11,7 @@ namespace LightTimetable.Views
     {
         private SizeChangedEventHandler _sizeChanged;
         private TimetableViewModel _viewModel => (TimetableViewModel)DataContext;
+        
         public TimetableView()
         {
             _sizeChanged = PositionCalculator.Calculate((WindowPosition)Settings.Default.WindowPosition);
@@ -29,5 +30,8 @@ namespace LightTimetable.Views
             _sizeChanged = PositionCalculator.Calculate((WindowPosition)Settings.Default.WindowPosition);
             _sizeChanged.Invoke(this, null);
         }
+
+        public void WindowSizeChanged(object? s, SizeChangedEventArgs e) => _sizeChanged.Invoke(s, e);
+
     }
 }

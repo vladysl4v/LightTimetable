@@ -14,12 +14,13 @@ namespace LightTimetable.Models
 {
     public class DataProvider
     {
-        private readonly ScheduleLoader _scheduleLoader = new();
+        private readonly ScheduleLoader _scheduleLoader = new ScheduleLoader();
+        private ElectricityService? _electricityService;
+        private TeamsEventsService? _teamsService;
         private RiggedSchedule? _riggedSchedule;
 
         private readonly List<DataItem> _emptyList = new(0);
-
-        public DateTime[] AvailableDates { get; private set; } = Array.Empty<DateTime>();
+        public DateTime[] AvailableDates => _scheduleLoader.AvailableDates;
 
         public List<DataItem> GetCurrentSchedule(DateTime date, out bool isRigged)
         {
@@ -35,7 +36,6 @@ namespace LightTimetable.Models
             isRigged = suitableSchedule.Any();
 
             return suitableSchedule;
-
         }
 
         public async Task<bool> RefreshDataAsync()
@@ -58,21 +58,33 @@ namespace LightTimetable.Models
             var startDate = startOfTheWeek.AddDays(-14);
             var endDate = startOfTheWeek.AddDays(+13);
 
+            await LoadServices(startDate, endDate);
+
+            await _scheduleLoader.InitializeScheduleAsync(startDate, endDate, new VnzOsvitaSource(_electricityService, _teamsService));
+        }
+
+        private async Task LoadServices(DateTime startDate, DateTime endDate)
+        {
             if (Settings.Default.ShowOutages)
             {
-                await ElectricityPlugin.InitializeOutagesAsync(Settings.Default.OutagesCity, Settings.Default.OutagesGroup, Settings.Default.ShowPossibleOutages);
+                _electricityService = new ElectricityService(Settings.Default.OutagesCity, Settings.Default.OutagesGroup, Settings.Default.ShowPossibleOutages);
+                await _electricityService.InitializeOutagesAsync();
+            }
+            else
+            {
+                _electricityService = null;
             }
 
             if (Settings.Default.ShowTeamsEvents)
             {
+                _teamsService = new TeamsEventsService();
                 var teamsStartDate = Settings.Default.ShowOldEvents ? startDate : DateTime.Today;
-                await TeamsEventsPlugin.InitializeTeamsCalendarAsync(teamsStartDate, endDate);
+                await _teamsService.InitializeTeamsCalendarAsync(teamsStartDate, endDate);
             }
-
-            await _scheduleLoader.InitializeScheduleAsync(startDate, endDate, new VnzOsvitaSource());
-
-            AvailableDates = _scheduleLoader.ScheduleDictionary?.Keys.ToArray() ?? Array.Empty<DateTime>();
+            else
+            {
+                _teamsService = null;
+            }
         }
-
     }
 }

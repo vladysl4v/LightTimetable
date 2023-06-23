@@ -19,11 +19,12 @@ namespace LightTimetable.ViewModels
 {
     public partial class TimetableViewModel : ObservableObject
     {
-        private readonly DataProvider _dataProvider = new();
+        private readonly DataProvider _dataProvider;
         private DateControl? _dateControl;
 
         public TimetableViewModel()
         {
+            _dataProvider = new DataProvider();
             Task.Run(ReloadDataAsync).ConfigureAwait(false);
         }
 
