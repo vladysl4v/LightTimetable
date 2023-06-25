@@ -77,7 +77,7 @@ namespace LightTimetable.SettingsPages.ViewModels
         {
             if (IsAuthenticated)
             {
-                var isSuccessful = await TeamsEventsPlugin.SignOutAsync();
+                var isSuccessful = await TeamsAuthManager.SignOutAsync();
                 if (isSuccessful)
                 {
                     ChangeAuthStatus(false);
@@ -85,7 +85,7 @@ namespace LightTimetable.SettingsPages.ViewModels
                 return;
             }
 
-            var auth = await TeamsEventsPlugin.AuthorizeInteractiveAsync();
+            var auth = await TeamsAuthManager.AuthorizeInteractiveAsync();
             if (auth == null)
             {
                 ChangeAuthStatus(false);
@@ -132,7 +132,7 @@ namespace LightTimetable.SettingsPages.ViewModels
 
         private async void CheckForAuthStatus()
         {
-            var tryAuthorize = await TeamsEventsPlugin.AuthorizeSilentAsync();
+            var tryAuthorize = await TeamsAuthManager.AuthorizeSilentAsync();
 
             if (tryAuthorize != null)
             {

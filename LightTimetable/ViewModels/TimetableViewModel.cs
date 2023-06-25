@@ -180,11 +180,11 @@ namespace LightTimetable.ViewModels
             {
                 var outlookEvent = SelectedDataItem.OutlookEvents.First();
                 var message =
-                    $"Ви впевнені, що хочете зайти на нараду \"{outlookEvent.Title.Trim()}\"?\nВона буде відкрита в Microsoft Teams.";
+                    $"Ви впевнені, що хочете зайти на нараду \"{outlookEvent.Subject?.Trim()}\"?\nВона буде відкрита в Microsoft Teams.";
                 var mbResult = MessageBox.Show(message, SelectedDataItem.Discipline.Modified, MessageBoxButton.YesNo);
                 if (mbResult == MessageBoxResult.Yes)
                 {
-                    OpenLinkInBrowser(outlookEvent.Url);
+                    OpenLinkInBrowser(outlookEvent.OnlineMeeting.JoinUrl);
                 }
             }
             else
@@ -192,7 +192,7 @@ namespace LightTimetable.ViewModels
                 var selectedEvent = EventPicker.Show(SelectedDataItem.Discipline.Modified, SelectedDataItem.OutlookEvents);
                 if (selectedEvent != null)
                 {
-                    OpenLinkInBrowser(selectedEvent.Url);
+                    OpenLinkInBrowser(selectedEvent.OnlineMeeting.JoinUrl);
                 }
             }
         }

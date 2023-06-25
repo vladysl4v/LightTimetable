@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Microsoft.Graph;
+using Microsoft.Graph.Models;
 
 using System;
 using System.Linq;
@@ -6,95 +7,66 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 
 using LightTimetable.Tools;
-using LightTimetable.Models.Utilities;
 
 
 namespace LightTimetable.Models.Services
 {
     public class TeamsEventsService
     {
-        private Dictionary<DateOnly, List<OutlookEvent>>? _eventsData;
+        public static readonly int UtcOffset;
+        private Dictionary<DateOnly, List<Event>>? _eventsData;
 
-        public List<OutlookEvent>? GetSuitableEvents(DateTime date, TimeInterval timeInterval)
+        static TeamsEventsService()
         {
-            if (_eventsData == null)
-                return null;
+            UtcOffset = TimeZoneInfo.FindSystemTimeZoneById("FLE Standard Time").
+                        GetUtcOffset(DateTime.UtcNow).Hours;
+        }
 
-            var outputList = new List<OutlookEvent>();
-
-            var dateOnly = DateOnly.FromDateTime(date);
-
-            if (!_eventsData.TryGetValue(dateOnly, out var dateEvents))
+        public List<Event>? GetSuitableEvents(DateTime date, TimeInterval timeInterval)
+        {
+            if (_eventsData == null ||
+               !_eventsData.TryGetValue(DateOnly.FromDateTime(date), out var dateEvents))
             {
                 return null;
             }
 
-            foreach (var anEvent in dateEvents)
-            {
-                if (anEvent.Time.Start < timeInterval.Start ||
-                    anEvent.Time.Start > timeInterval.End ||
-                    anEvent.Url == null)
-                {
-                    continue;
-                }
+            var startDate = date.Date.Add(timeInterval.Start.AddHours(-UtcOffset).ToTimeSpan()); 
+            var endDate = date.Date.Add(timeInterval.End.AddHours(-UtcOffset).ToTimeSpan()); 
 
-                outputList.Add(anEvent);
-            }
+            var outputList = dateEvents.Where((teamsEvent) => (
+                teamsEvent.Start.ToDateTime() >= startDate &&
+                teamsEvent.Start.ToDateTime() < endDate &&
+                teamsEvent.OnlineMeeting?.JoinUrl != null)).ToList();
 
             return outputList.Any() ? outputList : null;
         }
 
         public async Task InitializeTeamsCalendarAsync(DateTime start, DateTime end)
         {
-            var authResult = await TeamsAuthManager.RequestAuthenticationToken();
+            var graphClient = new GraphServiceClient(TeamsAuthManager.GetAuthenticationProvider());
 
-            if (authResult == null)
+            if (graphClient == null)
             {
                 _eventsData = null;
                 return;
             }
 
-            var outputList = new List<OutlookEvent>();
-
-            var startString = start.ToString("yyyy-MM-ddTHH:mm:ss");
-            var endString = end.ToString("yyyy-MM-ddTHH:mm:ss");
-
-            var url = $"https://graph.microsoft.com/v1.0/users/{authResult.Account.Username}" +
-                      $"/calendar/calendarView?" +
-                      $"startDateTime={startString}&" +
-                      $"endDateTime={endString}&" +
-                      $"$filter=isCancelled eq false";
-
-            // 35 - initialization limit
-            for (var i = 0; i < 35; i++)
+            var result = await graphClient.Me.Calendar.CalendarView.GetAsync((requestConfiguration) =>
             {
-                var request = await HttpRequestService.GetUsingAuthenticationAsync(url, authResult.AccessToken);
-
-                if (request == string.Empty)
-                {
-                    _eventsData = null;
-                    return;
-                }
-
-                var currGroup = JObject.Parse(request);
-
-                if (currGroup["value"] == null || !currGroup["value"].Any())
-                {
-                    break;
-                }
-
-                outputList.AddRange(currGroup["value"].ToObject<IEnumerable<OutlookEvent>>());
-
-                if (!currGroup.TryGetValue("@odata.nextLink", out var nextLink))
-                {
-                    break;
-                }
-
-                url = nextLink.ToString();
+                requestConfiguration.QueryParameters.StartDateTime = start.ToString("yyyy-MM-ddTHH:mm:ss");
+                requestConfiguration.QueryParameters.EndDateTime = end.ToString("yyyy-MM-ddT23:59:59");
+                requestConfiguration.QueryParameters.Filter = "isCancelled eq false";
+                requestConfiguration.QueryParameters.Top = 150;
+            });
+            
+            if (result == null)
+            {
+                _eventsData = null;
+                return;   
             }
-            var outputDictionary = outputList.GroupBy(x => x.Date).ToDictionary(k => k.Key, v => v.ToList());
 
-            _eventsData = outputDictionary;
+            _eventsData = result.Value?.GroupBy(x => DateOnly.ParseExact(x.Start.DateTime, "yyyy-MM-ddTHH:mm:ss.0000000"))
+                          .ToDictionary(k => k.Key, v => v.ToList());
         }
 
     }

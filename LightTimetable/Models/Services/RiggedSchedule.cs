@@ -38,7 +38,7 @@ namespace LightTimetable.Models.Services
 
             var result = new List<DataItem>();
 
-            suitableList.ForEach(x => result.Add(new DataItem(x)));
+            suitableList.ForEach(x => result.Add(new DataItem(x, date)));
 
             return result;
         }

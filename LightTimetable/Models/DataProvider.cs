@@ -60,7 +60,8 @@ namespace LightTimetable.Models
 
             await LoadServices(startDate, endDate);
 
-            await _scheduleLoader.InitializeScheduleAsync(startDate, endDate, new VnzOsvitaSource(_electricityService, _teamsService));
+            await _scheduleLoader.InitializeScheduleAsync(startDate, endDate,
+                  new VnzOsvitaSource(_electricityService, _teamsService));
         }
 
         private async Task LoadServices(DateTime startDate, DateTime endDate)
@@ -78,8 +79,12 @@ namespace LightTimetable.Models
             if (Settings.Default.ShowTeamsEvents)
             {
                 _teamsService = new TeamsEventsService();
-                var teamsStartDate = Settings.Default.ShowOldEvents ? startDate : DateTime.Today;
-                await _teamsService.InitializeTeamsCalendarAsync(teamsStartDate, endDate);
+                
+                if (!Settings.Default.ShowOldEvents)
+                {
+                    startDate = (DateTime.Today < endDate) ? DateTime.Today : endDate;
+                }
+                await _teamsService.InitializeTeamsCalendarAsync(startDate, endDate);
             }
             else
             {

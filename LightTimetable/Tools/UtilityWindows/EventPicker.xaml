@@ -40,8 +40,8 @@
                   CanUserAddRows="False"
                   CanUserDeleteRows="False">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Час" Binding="{Binding Time}" Width="70"/>
-                <DataGridTextColumn Header="Назва наради" Binding="{Binding Title}" Width="1*" />
+                <DataGridTextColumn Header="Час" Binding="{Binding BodyPreview}" Width="70"/>
+                <DataGridTextColumn Header="Назва наради" Binding="{Binding Subject}" Width="1*" />
             </DataGrid.Columns>
         </DataGrid>
         <Button Grid.Column="0" Content="Закрити" Margin="5 0 0 0" IsCancel="True" Grid.Row="2" VerticalAlignment="Center" Width="100" Height="25" Click="Close_Click"/>

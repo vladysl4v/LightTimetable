@@ -1,33 +1,35 @@
-﻿using System;
+﻿using Microsoft.Graph.Models;
+
+using System;
 using System.Windows;
-using System.Diagnostics;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 
-using LightTimetable.Models.Utilities;
-
+using LightTimetable.Models.Services;
 
 namespace LightTimetable.Tools.UtilityWindows
 {
     public partial class EventPicker 
     {
         private bool _isOpenButtonClicked;
-        private EventPicker(string title, List<OutlookEvent> events)
+        private EventPicker(string title, List<Event> events)
         {
             InitializeComponent();
             Title = title;
             foreach (var teamsEvent in events)
             {
+                var teamsTimeStart = teamsEvent.Start.ToDateTime().AddHours(TeamsEventsService.UtcOffset).ToShortTimeString();
+                var teamsTimeEnd = teamsEvent.End.ToDateTime().AddHours(TeamsEventsService.UtcOffset).ToShortTimeString();
+                teamsEvent.BodyPreview = teamsTimeStart + "-" + teamsTimeEnd;
                 EventPickerGrid.Items.Add(teamsEvent);
             }
         }
 
-        public static OutlookEvent? Show(string title, List<OutlookEvent> events)
+        public static Event? Show(string title, List<Event> events)
         {
             var inputWindow = new EventPicker(title, events);
             inputWindow.ShowDialog();
 
-            var selectedEvent = inputWindow.EventPickerGrid.SelectedItem as OutlookEvent;
+            var selectedEvent = inputWindow.EventPickerGrid.SelectedItem as Event;
             return selectedEvent;
         }
 

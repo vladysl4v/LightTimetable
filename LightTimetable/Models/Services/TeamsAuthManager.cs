@@ -1,9 +1,12 @@
 using Microsoft.Identity.Client;
+using Microsoft.Kiota.Abstractions.Authentication;
 
 using System;
 using System.Linq;
 using System.Windows;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 using LightTimetable.Tools;
 
@@ -18,7 +21,12 @@ namespace LightTimetable.Models.Services
         static TeamsAuthManager()
         {
             ClientApp = PublicClientApplicationBuilder.Create(AppId).Build();
-            TeamsCacheManager.EnableSerialization(ClientApp.UserTokenCache);
+            TeamsCacheManager.EnableSerialization(ClientApp.UserTokenCache);  
+        }
+
+        public static BaseBearerTokenAuthenticationProvider GetAuthenticationProvider()
+        {
+            return new BaseBearerTokenAuthenticationProvider(new TeamsTokenProvider());
         }
 
         public static async Task<AuthenticationResult?> RequestAuthenticationToken()
@@ -39,7 +47,6 @@ namespace LightTimetable.Models.Services
                 MessageBox.Show("Виникла помилка під час авторизації:\n" + e.Message, "LightTimetable", MessageBoxButton.OK, MessageBoxImage.Error);
                 return null;
             }
-
         }
 
         public static async Task<AuthenticationResult?> AuthorizeSilentAsync()
@@ -71,6 +78,18 @@ namespace LightTimetable.Models.Services
                 MessageBox.Show("Виникла помилка під час виходу:\n" + e.Message, "LightTimetable", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
+        }
+
+        private class TeamsTokenProvider : IAccessTokenProvider
+        {
+            public async Task<string> GetAuthorizationTokenAsync(Uri uri, Dictionary<string, object>? authContext, CancellationToken cancellationToken)
+            {
+                var authResult = await RequestAuthenticationToken();
+
+                return authResult?.AccessToken;
+            }
+
+            public AllowedHostsValidator? AllowedHostsValidator { get; }
         }
     }
 }
