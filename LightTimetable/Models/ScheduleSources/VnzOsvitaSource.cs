@@ -33,23 +33,20 @@ namespace LightTimetable.Models.ScheduleSources
 
             var request = await HttpRequestService.LoadStringAsync(url);
 
-            return DeserializeData(request);
+            return (request != null) ? DeserializeData(request) : null;
         }
 
         private Dictionary<DateTime, List<DataItem>>? DeserializeData(string serializedData)
         {
-            if (serializedData == string.Empty || serializedData.Length < 15)
-            {
+            var rawDataItems = JsonConvert.DeserializeObject<Dictionary<string, List<Dictionary<string, string>>>>(serializedData);
+            
+            if (rawDataItems == null)
                 return null;
-            }
-
-            var rawDataItems =
-                JsonConvert.DeserializeObject<Dictionary<string, List<Dictionary<string, string>>>>(serializedData)["d"]
-                    .GroupBy(x => x["full_date"]);
+            var groupedData = rawDataItems["d"].GroupBy(x => x["full_date"]);
 
             var result = new Dictionary<DateTime, List<DataItem>>();
 
-            foreach (var group in rawDataItems)
+            foreach (var group in groupedData)
             {
                 result.Add(Convert.ToDateTime(group.Key), new List<DataItem>());
 
@@ -65,7 +62,7 @@ namespace LightTimetable.Models.ScheduleSources
                         lesson["cabinet"],
                         lesson["study_subgroup"],
                         _teamsService,
-                        _electricityService
+                        _electricityService                        
                     );
 
                     result[Convert.ToDateTime(group.Key)].Add(dataItem);

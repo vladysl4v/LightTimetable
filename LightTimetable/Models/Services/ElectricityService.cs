@@ -19,6 +19,7 @@ namespace LightTimetable.Models.Services
 {
     public class ElectricityService
     {
+        private const string _outagesUrl = "https://kyiv.yasno.com.ua/schedule-turn-off-electricity"; 
         private ElectricityList? _electricityData;
         private bool _showPossibleOutages;
         private int _groupNumber;
@@ -74,15 +75,19 @@ namespace LightTimetable.Models.Services
             if (_city == string.Empty || _groupNumber == 0)
                 return;
 
-            var request = await HttpRequestService.LoadStringAsync("https://kyiv.yasno.com.ua/schedule-turn-off-electricity");
+            var request = await HttpRequestService.LoadStringAsync(_outagesUrl);
 
-            if (request == string.Empty)
+            if (request == null)
                 return;
 
             try 
             {
                 var serializedData = "{" + Regex.Match(request, "\"" + _city + "\":{.*?}]]}").Value + "}";
-                var cityElectricityData = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, List<List<Dictionary<string, string>>>>>>(serializedData);    
+                
+                var cityElectricityData = 
+                    JsonConvert.DeserializeObject<Dictionary<string, Dictionary<
+                        string, List<List<Dictionary<string, string>>>>>>(serializedData);
+                        
                 _electricityData = cityElectricityData[_city]["group_" + _groupNumber];
             }
             catch
