@@ -16,6 +16,9 @@ namespace LightTimetable.Models.ScheduleSources
 
         public async Task InitializeScheduleAsync(DateTime startDate, DateTime endDate, IScheduleSource scheduleSource)
         {
+            if (string.IsNullOrEmpty(Settings.Default.StudyGroup))
+                return;
+
             ScheduleDictionary = await scheduleSource.LoadDataAsync(startDate, endDate);
 
             if (ScheduleDictionary == null || !ScheduleDictionary.Any())
