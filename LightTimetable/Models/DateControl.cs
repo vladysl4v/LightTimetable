@@ -7,14 +7,31 @@ namespace LightTimetable.Models
     public class DateControl
     {
         private readonly DateTime[] _scheduleDates;
+        private readonly Action? OnDateChanged;
+        private DateTime _date;
 
-        public DateControl(DateTime[] dates)
+        public DateControl()
+        {
+            _scheduleDates = Array.Empty<DateTime>();
+            _date = DateTime.MinValue;
+        }
+
+        public DateControl(DateTime[] dates, Action? onDateChanged)
         {
             _scheduleDates = dates;
+            OnDateChanged = onDateChanged;
             SetCorrectDate();
         }
 
-        public DateTime Date { get; set; }
+        public DateTime Date 
+        { 
+            get => _date; 
+            set
+            {
+                _date = value;
+                OnDateChanged?.Invoke();
+            } 
+        }
 
         public void SetCorrectDate()
         {

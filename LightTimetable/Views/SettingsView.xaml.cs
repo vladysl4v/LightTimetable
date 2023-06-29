@@ -1,5 +1,4 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 
 
 namespace LightTimetable.Views
@@ -12,18 +11,6 @@ namespace LightTimetable.Views
         public SettingsView()
         {
             InitializeComponent();
-        }
-
-        public static event Action? SettingsSaved;
-
-        public static bool IsRequiredReload { get; set; }
-        public static bool IsRequiredResize { get; set; }
-
-        public static void OnSettingsSaved()
-        {
-            SettingsSaved?.Invoke();
-            IsRequiredReload = false;
-            IsRequiredResize = false;
         }
     }
 }

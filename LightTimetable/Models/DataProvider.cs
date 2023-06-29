@@ -18,37 +18,44 @@ namespace LightTimetable.Models
         private ElectricityService? _electricityService;
         private TeamsEventsService? _teamsService;
         private RiggedSchedule? _riggedSchedule;
-
-        private readonly List<DataItem> _emptyList = new(0);
         public DateTime[] AvailableDates => _scheduleLoader.AvailableDates;
 
-        public List<DataItem> GetCurrentSchedule(DateTime date, out bool isRigged)
+        public List<DataItem> GetCurrentSchedule(DateTime date, out TimetableStatus status)
         {
-            isRigged = false;
+            status = TimetableStatus.Default;
 
-            if (_scheduleLoader.ScheduleDictionary != null && _scheduleLoader.ScheduleDictionary.TryGetValue(date, out List<DataItem> correctDataItems)) 
+            if (_scheduleLoader.ScheduleData != null &&
+               _scheduleLoader.ScheduleData.TryGetValue(date, out List<DataItem> correctDataItems)) 
+            {
                 return correctDataItems;
+            }
 
             if (_riggedSchedule == null)
-                return _emptyList;
+            {
+                return new List<DataItem>(0);
+            }
 
             var suitableSchedule = _riggedSchedule.GetRiggedSchedule(date);
-            isRigged = suitableSchedule.Any();
+            
+            if (suitableSchedule != null && suitableSchedule.Any())
+            {
+                status = TimetableStatus.RiggedScheduleShown;
+            }
 
-            return suitableSchedule;
+            return suitableSchedule ?? new List<DataItem>(0);
         }
 
-        public async Task<bool> RefreshDataAsync()
+        public async Task<TimetableStatus> RefreshDataAsync()
         {
             await LoadScheduleAsync();
 
-            if (_scheduleLoader.ScheduleDictionary == null)
-                return false;
+            if (_scheduleLoader.ScheduleData == null)
+                return TimetableStatus.DataLoadingError;
 
             if (Settings.Default.ShowRiggedSchedule)
-                _riggedSchedule = new RiggedSchedule(_scheduleLoader.ScheduleDictionary);
+                _riggedSchedule = new RiggedSchedule(_scheduleLoader.ScheduleData);
 
-            return true;
+            return TimetableStatus.Default;
         }
 
         private async Task LoadScheduleAsync()
@@ -66,14 +73,14 @@ namespace LightTimetable.Models
 
         private async Task LoadServices(DateTime startDate, DateTime endDate)
         {
+            _electricityService = null;
+            _teamsService = null;
+
             if (Settings.Default.ShowOutages)
             {
                 _electricityService = new ElectricityService(Settings.Default.OutagesCity, Settings.Default.OutagesGroup, Settings.Default.ShowPossibleOutages);
+                
                 await _electricityService.InitializeOutagesAsync();
-            }
-            else
-            {
-                _electricityService = null;
             }
 
             if (Settings.Default.ShowTeamsEvents)
@@ -84,11 +91,8 @@ namespace LightTimetable.Models
                 {
                     startDate = (DateTime.Today < endDate) ? DateTime.Today : endDate;
                 }
+                
                 await _teamsService.InitializeTeamsCalendarAsync(startDate, endDate);
-            }
-            else
-            {
-                _teamsService = null;
             }
         }
     }

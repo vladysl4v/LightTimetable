@@ -61,8 +61,10 @@ namespace LightTimetable.Models.ScheduleSources
                         lesson["employee"],
                         lesson["cabinet"],
                         lesson["study_subgroup"],
-                        _teamsService,
-                        _electricityService                        
+                        _electricityService == null ? null
+                        : _electricityService.GetElectricityInformation,
+                        _teamsService == null ? null
+                        : _teamsService.GetSuitableEvents                       
                     );
 
                     result[Convert.ToDateTime(group.Key)].Add(dataItem);

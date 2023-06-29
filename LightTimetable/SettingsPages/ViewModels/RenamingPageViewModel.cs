@@ -4,7 +4,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-using LightTimetable.Views;
+using LightTimetable.Tools;
 using LightTimetable.Properties;
 using LightTimetable.Tools.UtilityWindows;
 
@@ -67,13 +67,10 @@ namespace LightTimetable.SettingsPages.ViewModels
         {
             if (IsAnythingChanged)
             {
-                SettingsView.IsRequiredReload = true;
+                WindowMediator.UpdateRequired();
             }
                 
             Settings.Default.Renames = _renamesList.ToDictionary(x => x.Key, x => x.Value);
-            Settings.Default.Save();
-
-            IsAnythingChanged = false;
         }
 
         #endregion

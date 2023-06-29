@@ -14,13 +14,10 @@ namespace LightTimetable.Views
         
         public TimetableView()
         {
+            WindowMediator.OnRepositionRequired += InvokeWindowResize;
+
             _sizeChanged = PositionCalculator.Calculate((WindowPosition)Settings.Default.WindowPosition);
             InitializeComponent();
-        }
-
-        public async Task ReloadViewModelData()
-        {
-            await _viewModel.ReloadDataAsync();
         }
 
         public void InvokeWindowResize()
@@ -32,6 +29,5 @@ namespace LightTimetable.Views
         }
 
         public void WindowSizeChanged(object? s, SizeChangedEventArgs e) => _sizeChanged.Invoke(s, e);
-
     }
 }

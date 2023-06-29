@@ -13,8 +13,6 @@ namespace LightTimetable.Models.Utilities
         
         public ElectricityStatus(List<(TimeInterval Time, string Type)> currentOutage)
         {
-            if (currentOutage == null)
-                return;
             var textBuilder = new StringBuilder();
             
             textBuilder.Append("Відключення світла:");

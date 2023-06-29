@@ -6,7 +6,6 @@ using System.Collections.Generic;
 
 using LightTimetable.Tools;
 using LightTimetable.Properties;
-using LightTimetable.Models.Services;
 
 
 namespace LightTimetable.Models.Utilities
@@ -27,7 +26,8 @@ namespace LightTimetable.Models.Utilities
 
         public DataItem(DateTime date, TimeInterval studyTime, string discipline,
                string studyType, string employee, string cabinet, string subgroup = "",
-               TeamsEventsService? teamsPlugin = null, ElectricityService? electricityService = null)
+               Func<TimeInterval, NormalDayOfWeek, ElectricityStatus?>? electricityLoader = null,
+               Func<DateTime, TimeInterval, List<Event>?>? teamsEventsLoader = null)
         {
             Date = date;
             StudyTime = studyTime;
@@ -38,9 +38,15 @@ namespace LightTimetable.Models.Utilities
             Employee = ShortenFullName(employee);
             Id = CreateIdentifier();
             Note = GetNote();
-
-            Electricity = electricityService?.GetElectricityInformation(StudyTime, date.GetNormalDayOfWeek());
-            OutlookEvents = teamsPlugin?.GetSuitableEvents(date, StudyTime);
+            
+            if (electricityLoader != null)
+            {
+                Electricity = electricityLoader(StudyTime, date.GetNormalDayOfWeek());
+            }
+            if (teamsEventsLoader != null)
+            {
+                OutlookEvents = teamsEventsLoader(date, StudyTime);
+            }
         }
 
         public DataItem(DataItem clone, DateTime date)

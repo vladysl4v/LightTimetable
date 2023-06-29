@@ -4,9 +4,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using System.Windows;
 using System.ComponentModel;
 using System.Windows.Controls;
-
-using LightTimetable.Views;
-
+using LightTimetable.Properties;
 
 namespace LightTimetable.SettingsPages.ViewModels
 {
@@ -37,7 +35,8 @@ namespace LightTimetable.SettingsPages.ViewModels
         private void SaveSettings()
         {
             Save();
-            SettingsView.OnSettingsSaved();
+            Settings.Default.Save();
+            IsAnythingChanged = false;
         }
 
         [RelayCommand]
@@ -46,7 +45,8 @@ namespace LightTimetable.SettingsPages.ViewModels
             if (control is not UserControl and not Window) return;
 
             Save();
-            SettingsView.OnSettingsSaved();
+            Settings.Default.Save();
+            IsAnythingChanged = false;
 
             switch (control)
             {

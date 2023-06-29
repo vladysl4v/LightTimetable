@@ -5,7 +5,7 @@ using System.Windows;
 using System.Security;
 using Microsoft.Win32;
 
-using LightTimetable.Views;
+using LightTimetable.Tools;
 using LightTimetable.Properties;
 
 
@@ -69,10 +69,7 @@ namespace LightTimetable.SettingsPages.ViewModels
 
         public override void Save()
         {
-            if (Settings.Default.WindowPosition != WindowPosition)
-            {
-                SettingsView.IsRequiredResize = true;
-            }
+            bool isSettingsChanged = Settings.Default.WindowPosition != WindowPosition;
 
             if (Settings.Default.Autostart != StartAutomatically)
             {
@@ -87,9 +84,11 @@ namespace LightTimetable.SettingsPages.ViewModels
             Settings.Default.MiddleMouseClick = MiddleMouseClick;
             Settings.Default.WindowPosition = WindowPosition;
             Settings.Default.Autostart = StartAutomatically;
-            Settings.Default.Save();
-            
-            IsAnythingChanged = false;
+
+            if (isSettingsChanged)
+            {
+                WindowMediator.RepositionRequired();
+            }
         }
 
         #endregion

@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
+using LightTimetable.Tools;
 using LightTimetable.Models;
 using LightTimetable.Properties;
 using LightTimetable.Models.Utilities;
@@ -20,64 +21,50 @@ namespace LightTimetable.ViewModels
     public partial class TimetableViewModel : ObservableObject
     {
         private readonly DataProvider _dataProvider;
-        private DateControl? _dateControl;
+        private DateControl _dateControl;
 
         public TimetableViewModel()
         {
+            WindowMediator.OnUpdateRequired += UpdateDataGrid;
+            WindowMediator.OnReloadRequired += () => Task.Run(ReloadDataAsync).ConfigureAwait(false);
+
+            _dateControl = new DateControl();
             _dataProvider = new DataProvider();
+            
             Task.Run(ReloadDataAsync).ConfigureAwait(false);
         }
 
         #region Properties
 
         [ObservableProperty]
-        private double _width = Settings.Default.ShowOutages ? 425 : 400;
-
-        [ObservableProperty]
-        private DataItem? _selectedDataItem;
-
-        [ObservableProperty]
         private bool _isDataGridExpanded;
 
         [ObservableProperty]
-        private TimetableStatus _scheduleStatus = TimetableStatus.Default;
+        public DateTime[] _availableDates;
 
-        public DateTime[] AvailableDates => _dataProvider.AvailableDates;
+        [ObservableProperty]    
+        private DataItem? _selectedDataItem;
+
+        [ObservableProperty]
+        private double _width = Settings.Default.ShowOutages ? 425 : 400;
+
+        [ObservableProperty]
+        private TimetableStatus _scheduleStatus = TimetableStatus.Default;
 
         public List<DataItem> CurrentSchedule
         {
             get
             {
-                if (Date == DateTime.MinValue)
-                    return new List<DataItem>();
-
-                var correctSchedule = _dataProvider.GetCurrentSchedule(Date, out bool isRigged);
-
-                if (isRigged)
-                {
-                    ScheduleStatus = TimetableStatus.RiggedScheduleShown;
-                }
-                else
-                {
-                    if (ScheduleStatus != TimetableStatus.DataLoadingError)
-                        ScheduleStatus = TimetableStatus.Default;
-                }
-
+                var correctSchedule = _dataProvider.GetCurrentSchedule(Date, out var currentStatus);
+                ScheduleStatus = currentStatus;
                 return correctSchedule;
             }
         }
 
         public DateTime Date
         {
-            get => _dateControl?.Date ?? DateTime.MinValue;
-            set
-            {
-                if (_dateControl == null)
-                    return;
-
-                SetProperty(_dateControl.Date, value, _dateControl, (u, n) => u.Date = n);
-                OnPropertyChanged(nameof(CurrentSchedule));
-            }
+            get => _dateControl.Date;
+            set => SetProperty(_dateControl.Date, value, _dateControl, (model, date) => model.Date = date);
         }
 
         #endregion
@@ -88,18 +75,15 @@ namespace LightTimetable.ViewModels
         {
             ScheduleStatus = TimetableStatus.LoadingData;
     
-            if (!await _dataProvider.RefreshDataAsync())
-            {
-                ScheduleStatus = TimetableStatus.DataLoadingError;
-            }
-            else
-            {
-                ScheduleStatus = TimetableStatus.Default;
-            }
+            ScheduleStatus = await _dataProvider.RefreshDataAsync();
 
-            _dateControl = new DateControl(_dataProvider.AvailableDates);
+            _dateControl = new DateControl(_dataProvider.AvailableDates, () => {
+                OnPropertyChanged(nameof(Date));
+                OnPropertyChanged(nameof(CurrentSchedule));  
+            });
 
-            OnPropertyChanged(nameof(AvailableDates));
+            AvailableDates = _dataProvider.AvailableDates;
+            
             UpdateDataGrid();
         }
 
@@ -117,7 +101,6 @@ namespace LightTimetable.ViewModels
             tempWidth += Settings.Default.ShowOutages ? 25 : 0;
             Width = tempWidth;    
         }
-        
 
         private void OpenLinkInBrowser(string url)
         {
@@ -136,12 +119,6 @@ namespace LightTimetable.ViewModels
             }
         }
 
-        private void OnDateChanged()
-        {
-            OnPropertyChanged(nameof(Date));
-            OnPropertyChanged(nameof(CurrentSchedule));
-        }
-
         #endregion
 
         #region Commands
@@ -150,14 +127,12 @@ namespace LightTimetable.ViewModels
         private void ResetDate()
         {
             _dateControl?.SetCorrectDate();
-            OnDateChanged();
         }
 
         [RelayCommand]
         private void ChangeDate(string amount)
         {
             _dateControl?.ChangeDate(int.Parse(amount));
-            OnDateChanged();
         }
 
         [RelayCommand]
@@ -218,6 +193,7 @@ namespace LightTimetable.ViewModels
         {
             if (SelectedDataItem == null)
                 return;
+
             string noteText = InputBox.Show("Нотатка", "Введіть новий текст нотатки:", SelectedDataItem.Note);
             if (string.IsNullOrWhiteSpace(noteText) || noteText == SelectedDataItem.Note) 
                 return;

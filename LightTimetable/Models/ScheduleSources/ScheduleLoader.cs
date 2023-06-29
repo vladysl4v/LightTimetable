@@ -11,21 +11,21 @@ namespace LightTimetable.Models.ScheduleSources
 {
     public class ScheduleLoader
     {
-        public Dictionary<DateTime, List<DataItem>>? ScheduleDictionary { get; protected set; }
-        public DateTime[] AvailableDates => ScheduleDictionary?.Keys.ToArray() ?? Array.Empty<DateTime>();
+        public Dictionary<DateTime, List<DataItem>>? ScheduleData { get; protected set; }
+        public DateTime[] AvailableDates => ScheduleData?.Keys.ToArray() ?? Array.Empty<DateTime>();
 
         public async Task InitializeScheduleAsync(DateTime startDate, DateTime endDate, IScheduleSource scheduleSource)
         {
             if (string.IsNullOrEmpty(Settings.Default.StudyGroup))
                 return;
 
-            ScheduleDictionary = await scheduleSource.LoadDataAsync(startDate, endDate);
+            ScheduleData = await scheduleSource.LoadDataAsync(startDate, endDate);
 
-            if (ScheduleDictionary == null || !ScheduleDictionary.Any())
+            if (ScheduleData == null || !ScheduleData.Any())
                 return;
 
             // Check for obsolete notes
-            var oldestId = ScheduleDictionary.First().Value.First().Id;
+            var oldestId = ScheduleData.First().Value.First().Id;
 
             foreach (var obsoleteId in Settings.Default.Notes.Where(a => a.Key < oldestId))
             {

@@ -15,13 +15,20 @@ namespace LightTimetable.Models.Services
 {
     public static class TeamsAuthManager
     {
-        private static readonly IPublicClientApplication ClientApp;
+        private static readonly IPublicClientApplication? ClientApp;
         private const string AppId = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx";
 
         static TeamsAuthManager()
         {
-            ClientApp = PublicClientApplicationBuilder.Create(AppId).Build();
-            TeamsCacheManager.EnableSerialization(ClientApp.UserTokenCache);  
+            try
+            {
+                ClientApp = PublicClientApplicationBuilder.Create(AppId).Build();
+                TeamsCacheManager.EnableSerialization(ClientApp.UserTokenCache);
+            }
+            catch
+            {
+                ClientApp = null;
+            }          
         }
 
         public static BaseBearerTokenAuthenticationProvider GetAuthenticationProvider()
@@ -31,11 +38,17 @@ namespace LightTimetable.Models.Services
 
         public static async Task<AuthenticationResult?> RequestAuthenticationToken()
         {
+            if (ClientApp == null)
+                return null;
+
             return await AuthorizeSilentAsync() ?? await AuthorizeInteractiveAsync();
         }
 
         public static async Task<AuthenticationResult?> AuthorizeInteractiveAsync()
         {
+            if (ClientApp == null)
+                return null;
+
             string[] scopes = { "Calendars.Read.Shared" };
             try
             {
@@ -51,6 +64,9 @@ namespace LightTimetable.Models.Services
 
         public static async Task<AuthenticationResult?> AuthorizeSilentAsync()
         {
+            if (ClientApp == null)
+                return null;
+
             string[] scopes = { "Calendars.Read.Shared" };
 
             var accounts = await ClientApp.GetAccountsAsync();
@@ -67,6 +83,9 @@ namespace LightTimetable.Models.Services
 
         public static async Task<bool> SignOutAsync()
         {
+            if (ClientApp == null)
+                return false;
+
             var accounts = await ClientApp.GetAccountsAsync();
             try
             {

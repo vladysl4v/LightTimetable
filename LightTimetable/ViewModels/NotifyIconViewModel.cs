@@ -3,7 +3,9 @@
 using System.Windows;
 
 using LightTimetable.Views;
+using LightTimetable.Tools;
 using LightTimetable.Properties;
+
 
 namespace LightTimetable.ViewModels
 {
@@ -14,14 +16,6 @@ namespace LightTimetable.ViewModels
         public NotifyIconViewModel()
         {
             Application.Current.MainWindow = new TimetableView();
-
-            SettingsView.SettingsSaved += () =>
-            {
-                if (SettingsView.IsRequiredResize)
-                    InvokeWindowResize();
-                if (SettingsView.IsRequiredReload)
-                    RefreshData();
-            };
         }
 
         #region Commands
@@ -57,11 +51,9 @@ namespace LightTimetable.ViewModels
         }
 
         [RelayCommand]
-        private async void RefreshData()
+        private void RefreshData()
         {
-            var mainWindow = Application.Current.MainWindow as TimetableView;
-
-            await mainWindow?.ReloadViewModelData();
+            WindowMediator.ReloadRequired();
         }
 
         [RelayCommand]
@@ -78,14 +70,6 @@ namespace LightTimetable.ViewModels
         private void CloseApplication()
         {
             Application.Current.Shutdown();
-        }
-
-        
-        private void InvokeWindowResize()
-        {
-            var mainWindow = Application.Current.MainWindow as TimetableView;
-            
-            mainWindow?.InvokeWindowResize();
         }
 
         #endregion

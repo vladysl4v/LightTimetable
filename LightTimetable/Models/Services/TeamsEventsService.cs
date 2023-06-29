@@ -51,21 +51,27 @@ namespace LightTimetable.Models.Services
                 return;
             }
 
-            var result = await graphClient.Me.Calendar.CalendarView.GetAsync((requestConfiguration) =>
+            EventCollectionResponse? calendarData = null;
+
+            try
             {
-                requestConfiguration.QueryParameters.StartDateTime = start.ToString("yyyy-MM-ddTHH:mm:ss");
-                requestConfiguration.QueryParameters.EndDateTime = end.ToString("yyyy-MM-ddT23:59:59");
-                requestConfiguration.QueryParameters.Filter = "isCancelled eq false";
-                requestConfiguration.QueryParameters.Top = 150;
-            });
+                calendarData = await graphClient.Me.Calendar.CalendarView.GetAsync((requestConfiguration) =>
+                {
+                    requestConfiguration.QueryParameters.StartDateTime = start.ToString("yyyy-MM-ddTHH:mm:ss");
+                    requestConfiguration.QueryParameters.EndDateTime = end.ToString("yyyy-MM-ddT23:59:59");
+                    requestConfiguration.QueryParameters.Filter = "isCancelled eq false";
+                    requestConfiguration.QueryParameters.Top = 150;
+                });
+            }
+            catch { }
             
-            if (result == null)
+            if (calendarData == null)
             {
                 _eventsData = null;
                 return;   
             }
 
-            _eventsData = result.Value?.GroupBy(x => DateOnly.ParseExact(x.Start.DateTime, "yyyy-MM-ddTHH:mm:ss.0000000"))
+            _eventsData = calendarData.Value?.GroupBy(x => DateOnly.ParseExact(x.Start.DateTime, "yyyy-MM-ddTHH:mm:ss.0000000"))
                           .ToDictionary(k => k.Key, v => v.ToList());
         }
 

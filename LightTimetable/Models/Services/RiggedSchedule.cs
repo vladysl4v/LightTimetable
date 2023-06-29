@@ -15,7 +15,7 @@ namespace LightTimetable.Models.Services
 {
     public class RiggedSchedule
     {
-        private readonly RiggedScheduleDictionary _riggedSchedule;
+        private readonly RiggedScheduleDictionary? _riggedSchedule;
         private readonly GregorianCalendar _calendar;
 
         public RiggedSchedule(Dictionary<DateTime, List<DataItem>> scheduleDictionary)
@@ -24,10 +24,10 @@ namespace LightTimetable.Models.Services
             _riggedSchedule = InitializeRiggedSchedule(scheduleDictionary);
         }
 
-        public List<DataItem> GetRiggedSchedule(DateTime date)
+        public List<DataItem>? GetRiggedSchedule(DateTime date)
         {
 
-            if (!_riggedSchedule.Any())
+            if (_riggedSchedule == null)
                 return new List<DataItem>();
 
             var currentRiggedSchedule = _riggedSchedule[IsWeekPrimary(date)];
@@ -49,10 +49,10 @@ namespace LightTimetable.Models.Services
             return intPrimariness == 1;
         }
 
-        private RiggedScheduleDictionary InitializeRiggedSchedule(Dictionary<DateTime, List<DataItem>> scheduleDictionary)
+        private RiggedScheduleDictionary? InitializeRiggedSchedule(Dictionary<DateTime, List<DataItem>> scheduleDictionary)
         {
             if (!scheduleDictionary.Any())
-                return new RiggedScheduleDictionary();
+                return null;
 
             var isWeekPrimary = true;
             var previousDayOfWeek = NormalDayOfWeek.Sunday;

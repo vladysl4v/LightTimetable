@@ -1,9 +1,11 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 
+using System;
+using System.ComponentModel;
 using System.Threading.Tasks;
 
-using LightTimetable.Views;
+using LightTimetable.Tools;
 using LightTimetable.Properties;
 using LightTimetable.Models.Services;
 
@@ -14,23 +16,18 @@ namespace LightTimetable.SettingsPages.ViewModels
     {
         public IntegrationsPageViewModel()
         {
-            CheckForAuthStatus();
-            CheckIsOutagesSetUp();
-            IsAnythingChanged = false;
+            PropertyChanged += SomethingChanged;
+            
+            Task.Run(GetAuthorizationStateAsync).ConfigureAwait(false);
+            
+            IsOutagesSetUp = OutagesGroup != "0" && OutagesGroup != string.Empty 
+                            && OutagesCity != string.Empty;
         }
 
         #region Properties
 
-        public string AuthText { get; set; }
-        
-        public string AuthLogin { get; set; }
-        
-        public bool IsAuthenticated { get; set; }
-
-        public string AuthButtonTitle { get; set; }
-        
-        [ObservableProperty]
-        public bool _isOutagesSetUp;
+        // System.Tuple is used due to the presence of properties that the ValueTuple doesnt have
+        public static Tuple<string?, string, string> TeamsCredentials { get; set; }
 
         [ObservableProperty]
         private bool _showTeamsEvents = Settings.Default.ShowTeamsEvents;
@@ -44,30 +41,18 @@ namespace LightTimetable.SettingsPages.ViewModels
         [ObservableProperty]
         private bool _showOldEvents = Settings.Default.ShowOldEvents;
 
-        private int _outagesGroup = Settings.Default.OutagesGroup;
-
+        [ObservableProperty]
         private string _outagesCity = Settings.Default.OutagesCity;
 
-        public string OutagesCity
-        {
-            get => _outagesCity;
-            set
-            {
-                SetProperty(ref _outagesCity, value);
-                CheckIsOutagesSetUp();
-            }
-        }
+        [ObservableProperty]
+        private string _outagesGroup = Settings.Default.OutagesGroup.ToString();
 
-        public string OutagesGroup
-        {
-            get => _outagesGroup.ToString();
-            set
-            {
-                SetProperty(ref _outagesGroup, int.Parse(value));
-                CheckIsOutagesSetUp();
-            }
-        }
+        [ObservableProperty]
+        private bool _isTeamsSetUp;
         
+        [ObservableProperty]
+        private bool _isOutagesSetUp;
+
         #endregion
 
         #region Commands
@@ -75,24 +60,22 @@ namespace LightTimetable.SettingsPages.ViewModels
         [RelayCommand]
         public async Task Authorize()
         {
-            if (IsAuthenticated)
+            if (TeamsCredentials.Item1 == null)
+            {       
+                var authorizeResult = await TeamsAuthManager.AuthorizeInteractiveAsync();
+                
+                if (authorizeResult != null)
+                {
+                    ChangeAuthState(true, authorizeResult.Account.Username);
+                }
+            }
+            else
             {
                 var isSuccessful = await TeamsAuthManager.SignOutAsync();
                 if (isSuccessful)
                 {
-                    ChangeAuthStatus(false);
+                    ChangeAuthState(false);
                 }
-                return;
-            }
-
-            var auth = await TeamsAuthManager.AuthorizeInteractiveAsync();
-            if (auth == null)
-            {
-                ChangeAuthStatus(false);
-            }
-            else
-            {
-                ChangeAuthStatus(true, auth.Account.Username);
             }
         }
 
@@ -102,68 +85,66 @@ namespace LightTimetable.SettingsPages.ViewModels
 
         public override void Save()
         {
-            if (IsAnythingChanged)
-            {
-                SettingsView.IsRequiredReload = true;
-            }
-            var oldOutagesValue = Settings.Default.ShowOutages;
+            var isSettingsChanged = IsSettingsChanged();
 
             Settings.Default.ShowOutages = ShowOutages;
             Settings.Default.ShowPossibleOutages = ShowPossibleOutages;
-            Settings.Default.OutagesGroup = _outagesGroup;
+            Settings.Default.OutagesGroup = int.Parse(_outagesGroup);
             Settings.Default.OutagesCity = _outagesCity;
             Settings.Default.ShowTeamsEvents = ShowTeamsEvents;
             Settings.Default.ShowOldEvents = ShowOldEvents;
-            
-            Settings.Default.Save();
 
-            if (oldOutagesValue != ShowOutages)
+            if (isSettingsChanged)
             {
-                SettingsView.IsRequiredResize = true;
+                WindowMediator.ReloadRequired();
+                WindowMediator.RepositionRequired();
             }
-
-            IsAnythingChanged = false;
         }
 
-        private void CheckIsOutagesSetUp()
+        private bool IsSettingsChanged()
         {
-            IsOutagesSetUp = _outagesGroup != 0 && _outagesCity != string.Empty;
+            return Settings.Default.ShowPossibleOutages != ShowPossibleOutages ||
+                   Settings.Default.OutagesGroup != int.Parse(_outagesGroup) ||
+                   Settings.Default.ShowTeamsEvents != ShowTeamsEvents ||
+                   Settings.Default.OutagesCity != _outagesCity ||
+                   Settings.Default.ShowOutages != ShowOutages ||
+                   Settings.Default.ShowOldEvents != ShowOldEvents;
         }
 
-        private async void CheckForAuthStatus()
+        private async Task GetAuthorizationStateAsync()
         {
-            var tryAuthorize = await TeamsAuthManager.AuthorizeSilentAsync();
+            var authorizeResult = await TeamsAuthManager.AuthorizeSilentAsync();
 
-            if (tryAuthorize != null)
+            if (authorizeResult != null)
             {
-                ChangeAuthStatus(true, tryAuthorize.Account.Username);
+                ChangeAuthState(true, authorizeResult.Account.Username);
             }
             else
             {
-                ChangeAuthStatus(false);
+                ChangeAuthState(false);
             }
         }
 
-        private void ChangeAuthStatus(bool isAuth, string email = "")
+        private void ChangeAuthState(bool isAuth, string? email = null)
         {
-            AuthText = isAuth
-                ? $"Ви увійшли до облікового запису"
-                : "Ви не увійшли до облікового запису";
-            AuthLogin = email;
-            AuthButtonTitle = isAuth
-                ? "Вийти"
-                : "Авторизуватись";
-
-            IsAuthenticated = isAuth;
-
-            OnPropertyChanged(nameof(AuthText));
-            OnPropertyChanged(nameof(AuthLogin));
-            OnPropertyChanged(nameof(AuthButtonTitle));
-            OnPropertyChanged(nameof(IsAuthenticated));
+            TeamsCredentials = new Tuple<string?, string, string>
+            (
+                email,
+                isAuth ? "Ви увійшли до облікового запису" : "Ви не увійшли до облікового запису",
+                isAuth ? "Вийти" : "Авторизуватись"
+            );
+            OnPropertyChanged(nameof(TeamsCredentials));
+            IsTeamsSetUp = email != null;
         }
 
+        private void SomethingChanged(object? sender, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName is nameof(OutagesGroup) or nameof(OutagesCity))
+            {
+                IsOutagesSetUp = OutagesGroup != "0" && OutagesGroup != string.Empty 
+                                 && OutagesCity != string.Empty;
+            }
+        }
         #endregion 
-
     }
-
 }

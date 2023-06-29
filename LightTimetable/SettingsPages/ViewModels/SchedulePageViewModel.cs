@@ -1,11 +1,11 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 
+using System.ComponentModel;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 
 using LightTimetable.Tools;
-using LightTimetable.Views;
 using LightTimetable.Properties;
 
 
@@ -13,72 +13,45 @@ namespace LightTimetable.SettingsPages.ViewModels
 {
     public partial class SchedulePageViewModel : PageViewModelBase
     {
-        public SchedulePageViewModel(bool disableInitializing) { }
+        public SchedulePageViewModel(bool disableInitialation) { }
         public SchedulePageViewModel()
         {
-            CollectOptions();
-            TryRefreshStudyGroups();
-            IsAnythingChanged = false;
+            PropertyChanged += SomethingChanged; 
+            Task.Run(async () => 
+            {
+                await LoadStudentFiltersAsync();
+                await LoadStudyGroupsAsync();
+            }).ConfigureAwait(false);
         }
 
         #region Properties
 
         [ObservableProperty]
+        private static List<KeyValuePair<string, string>>? _facultiesSource;
+        
+        [ObservableProperty]
+        private static List<KeyValuePair<string, string>>? _educFormsSource;
+        
+        [ObservableProperty]
+        private static List<KeyValuePair<string, string>>? _coursesSource;
+
+        [ObservableProperty]
+        private static List<KeyValuePair<string, string>>? _studyGroupsSource;
+
+        [ObservableProperty]
+        private string _selectedFaculty = Settings.Default.Faculty;
+        
+        [ObservableProperty]
+        private string _selectedEducForm = Settings.Default.EducationForm;
+        
+        [ObservableProperty]
+        private string _selectedCourse = Settings.Default.Course;
+        
+        [ObservableProperty]
+        private string _selectedStudyGroup = Settings.Default.StudyGroup;
+        
+        [ObservableProperty]
         private bool _showRiggedSchedule = Settings.Default.ShowRiggedSchedule;
-
-        [ObservableProperty]
-        private JArray _facultiesSource;
-        
-        [ObservableProperty]
-        private JArray _educFormsSource;
-        
-        [ObservableProperty]
-        private JArray _coursesSource;
-        
-        [ObservableProperty]
-        private JArray _studyGroupsSource;
-
-        private string _currFaculty = Settings.Default.Faculty;
-        private string _currEducForm = Settings.Default.EducationForm;
-        private string _currCourse = Settings.Default.Course;
-        private string _currStudyGroup = Settings.Default.StudyGroup;
-
-        public JValue CurrentFaculty
-        {
-            get => new JValue(_currFaculty);
-            set
-            {
-                SetProperty(ref _currFaculty, value.ToString());
-                TryRefreshStudyGroups();
-            }
-        }
-
-        public JValue CurrentEducForm
-        {
-            get => new JValue(_currEducForm);
-            set
-            {
-                SetProperty(ref _currEducForm, value.ToString());
-                TryRefreshStudyGroups();
-            }
-        }
-
-        public JValue CurrentCourse
-        {
-            get => new JValue(_currCourse);
-            set
-            {
-                SetProperty(ref _currCourse, value.ToString());
-                TryRefreshStudyGroups();
-            }
-        }
-
-        public JValue CurrentStudyGroup
-        {
-
-            get => new JValue(_currStudyGroup);
-            set => SetProperty(ref _currStudyGroup, value.ToString());
-        }
 
         #endregion
         
@@ -86,65 +59,74 @@ namespace LightTimetable.SettingsPages.ViewModels
 
         public override void Save()
         {
-            if (Settings.Default.ShowRiggedSchedule != ShowRiggedSchedule ||
-                Settings.Default.StudyGroup != _currStudyGroup)
-            {
-                SettingsView.IsRequiredReload = true;
-            }
+            var isSettingsChanged = Settings.Default.ShowRiggedSchedule != ShowRiggedSchedule ||
+                                    Settings.Default.StudyGroup != SelectedStudyGroup;
 
-            Settings.Default.Faculty = _currFaculty;
-            Settings.Default.EducationForm = _currEducForm;
-            Settings.Default.Course = _currCourse;
-            Settings.Default.StudyGroup = _currStudyGroup;
+            Settings.Default.Faculty = SelectedFaculty;
+            Settings.Default.EducationForm = SelectedEducForm;
+            Settings.Default.Course = SelectedCourse;
+            Settings.Default.StudyGroup = SelectedStudyGroup;
             Settings.Default.ShowRiggedSchedule = ShowRiggedSchedule;
-            Settings.Default.Save();
+            
+            if (isSettingsChanged)
+            {
+                WindowMediator.ReloadRequired();
+            }
+        }
+
+        private async Task LoadStudentFiltersAsync()
+        {
+            var url = "https://vnz.osvita.net/BetaSchedule.asmx/GetStudentScheduleFiltersData?&" +
+                      "aVuzID=11784";
+
+            var serializedData = await HttpRequestService.LoadStringAsync(url);
+
+            if (serializedData == null || serializedData == string.Empty)
+                return;
+            
+            var jsonData = JObject.Parse(serializedData)["d"];
+
+            if (jsonData == null)
+                return;
+            
+            FacultiesSource = ((JArray)jsonData["faculties"]!).ToObject<List<KeyValuePair<string, string>>>();
+            EducFormsSource = ((JArray)jsonData["educForms"]!).ToObject<List<KeyValuePair<string, string>>>();
+            CoursesSource = ((JArray)jsonData["courses"]!).ToObject<List<KeyValuePair<string, string>>>();
+
             IsAnythingChanged = false;
         }
 
-        private async void CollectOptions()
+        private async Task LoadStudyGroupsAsync()
         {
-            var url = "https://vnz.osvita.net/BetaSchedule.asmx/GetStudentScheduleFiltersData?&aVuzID=11784";
-            var request = await HttpRequestService.LoadStringAsync(url);
+            if (SelectedCourse == "" || SelectedEducForm == "" || SelectedFaculty == "")
+                return;
 
-            if (request == string.Empty)
-            {
-                FacultiesSource = new JArray();
-                EducFormsSource = new JArray();
-                CoursesSource = new JArray();
-            }
-            else
-            {
-                var data = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, dynamic>>>(request)["d"];
+            var url = $"https://vnz.osvita.net/BetaSchedule.asmx/GetStudyGroups?&" + 
+                      $"aVuzID=11784&" + 
+                      $"aFacultyID=\"{SelectedFaculty}\"&" + 
+                      $"aEducationForm=\"{SelectedEducForm}\"&" + 
+                      $"aCourse=\"{SelectedCourse}\"&" + 
+                      $"aGiveStudyTimes=false";
 
-                FacultiesSource = data["faculties"];
-                EducFormsSource = data["educForms"];
-                CoursesSource = data["courses"];
-            }
+            var serializedData = await HttpRequestService.LoadStringAsync(url, maxAttemps: 2);
 
-            IsAnythingChanged = false;
+            if (serializedData == null || serializedData == string.Empty)
+                return;
+
+            var jsonData = JObject.Parse(serializedData)["d"];
+
+            if (jsonData == null)
+                return;
+
+            StudyGroupsSource = ((JArray)jsonData["studyGroups"]!).ToObject<List<KeyValuePair<string, string>>>();
         }
 
-        private void TryRefreshStudyGroups()
+        private async void SomethingChanged(object? sender, PropertyChangedEventArgs args)
         {
-            if (_currFaculty != "" && _currCourse != "" && _currEducForm != "")
-                CollectGroups();
-        }
-        private async void CollectGroups()
-        {
-            var url = $"https://vnz.osvita.net/BetaSchedule.asmx/GetStudyGroups?&aVuzID=11784&aFacultyID=\"{_currFaculty}\"&aEducationForm=\"{_currEducForm}\"&aCourse=\"{_currCourse}\"&aGiveStudyTimes=false";
-            var request = await HttpRequestService.LoadStringAsync(url, attemps: 1);
-
-            if (request == string.Empty)
+            if (args.PropertyName is nameof(SelectedFaculty) or nameof(SelectedCourse) or nameof(SelectedEducForm))
             {
-                StudyGroupsSource = new JArray();
+                await LoadStudyGroupsAsync();
             }
-            else
-            {
-                var data = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, dynamic>>>(request)["d"];
-                StudyGroupsSource = data["studyGroups"];
-            }
-
-            IsAnythingChanged = false;
         }
 
         #endregion
