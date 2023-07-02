@@ -84,7 +84,8 @@ namespace LightTimetable.SettingsPages.ViewModels
             Settings.Default.MiddleMouseClick = MiddleMouseClick;
             Settings.Default.WindowPosition = WindowPosition;
             Settings.Default.Autostart = StartAutomatically;
-
+            Settings.Default.Save();
+            
             if (isSettingsChanged)
             {
                 WindowMediator.RepositionRequired();

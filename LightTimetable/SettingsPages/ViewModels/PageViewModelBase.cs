@@ -35,7 +35,7 @@ namespace LightTimetable.SettingsPages.ViewModels
         private void SaveSettings()
         {
             Save();
-            Settings.Default.Save();
+            
             IsAnythingChanged = false;
         }
 
@@ -45,7 +45,7 @@ namespace LightTimetable.SettingsPages.ViewModels
             if (control is not UserControl and not Window) return;
 
             Save();
-            Settings.Default.Save();
+            
             IsAnythingChanged = false;
 
             switch (control)

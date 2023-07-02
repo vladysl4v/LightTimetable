@@ -8,10 +8,10 @@ namespace LightTimetable.Tools
         public TimeOnly Start { get; }
         public TimeOnly End { get; }
 
-        public TimeInterval(TimeOnly intervalBegin, TimeOnly intervalEnd)
+        public TimeInterval(TimeOnly start, TimeOnly end)
         {
-            Start = intervalBegin;
-            End = intervalEnd;
+            Start = start;
+            End = end;
         }
 
         public override string ToString()

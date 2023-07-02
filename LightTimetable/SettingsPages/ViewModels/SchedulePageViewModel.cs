@@ -67,6 +67,7 @@ namespace LightTimetable.SettingsPages.ViewModels
             Settings.Default.Course = SelectedCourse;
             Settings.Default.StudyGroup = SelectedStudyGroup;
             Settings.Default.ShowRiggedSchedule = ShowRiggedSchedule;
+            Settings.Default.Save();
             
             if (isSettingsChanged)
             {

@@ -1,7 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 
-using System;
 using System.ComponentModel;
 using System.Threading.Tasks;
 
@@ -19,15 +18,21 @@ namespace LightTimetable.SettingsPages.ViewModels
             PropertyChanged += SomethingChanged;
             
             Task.Run(GetAuthorizationStateAsync).ConfigureAwait(false);
-            
+
             IsOutagesSetUp = OutagesGroup != "0" && OutagesGroup != string.Empty 
                             && OutagesCity != string.Empty;
         }
 
         #region Properties
 
-        // System.Tuple is used due to the presence of properties that the ValueTuple doesnt have
-        public static Tuple<string?, string, string> TeamsCredentials { get; set; }
+        [ObservableProperty]
+        public string? _teamsLogin;
+
+        [ObservableProperty]
+        public string _teamsText;
+
+        [ObservableProperty]
+        public string _teamsTitle = "Завантаження...";
 
         [ObservableProperty]
         private bool _showTeamsEvents = Settings.Default.ShowTeamsEvents;
@@ -60,7 +65,7 @@ namespace LightTimetable.SettingsPages.ViewModels
         [RelayCommand]
         public async Task Authorize()
         {
-            if (TeamsCredentials.Item1 == null)
+            if (TeamsLogin == null)
             {       
                 var authorizeResult = await TeamsAuthManager.AuthorizeInteractiveAsync();
                 
@@ -93,7 +98,8 @@ namespace LightTimetable.SettingsPages.ViewModels
             Settings.Default.OutagesCity = _outagesCity;
             Settings.Default.ShowTeamsEvents = ShowTeamsEvents;
             Settings.Default.ShowOldEvents = ShowOldEvents;
-
+            Settings.Default.Save();
+            
             if (isSettingsChanged)
             {
                 WindowMediator.ReloadRequired();
@@ -127,13 +133,10 @@ namespace LightTimetable.SettingsPages.ViewModels
 
         private void ChangeAuthState(bool isAuth, string? email = null)
         {
-            TeamsCredentials = new Tuple<string?, string, string>
-            (
-                email,
-                isAuth ? "Ви увійшли до облікового запису" : "Ви не увійшли до облікового запису",
-                isAuth ? "Вийти" : "Авторизуватись"
-            );
-            OnPropertyChanged(nameof(TeamsCredentials));
+            TeamsLogin = email;
+            TeamsText = isAuth ? "Ви увійшли до облікового запису" : "Ви не увійшли до облікового запису";
+            TeamsTitle = isAuth ? "Вийти" : "Авторизуватись";
+        
             IsTeamsSetUp = email != null;
         }
 

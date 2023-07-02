@@ -8,11 +8,11 @@ namespace LightTimetable.Tools
         public string Original { get; }
         public string Modified => Settings.Default.Renames.TryGetValue(Original, out var modified) ? modified : Original; 
 
-        public DisciplineName(string originalName)
+        public DisciplineName(string original)
         {
-            Original = originalName;
+            Original = original;
         }
-
+        
         public override string ToString() => Modified;
     }
 }

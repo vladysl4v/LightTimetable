@@ -64,13 +64,14 @@ namespace LightTimetable.SettingsPages.ViewModels
         #region Methods
 
         public override void Save()
-        {
+        {                
+            Settings.Default.Renames = _renamesList.ToDictionary(x => x.Key, x => x.Value);
+            Settings.Default.Save();
+
             if (IsAnythingChanged)
             {
                 WindowMediator.UpdateRequired();
             }
-                
-            Settings.Default.Renames = _renamesList.ToDictionary(x => x.Key, x => x.Value);
         }
 
         #endregion

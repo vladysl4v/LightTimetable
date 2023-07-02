@@ -31,9 +31,9 @@
                     <CheckBox Content="Завантажувати минулі наради" IsEnabled="{Binding IsTeamsSetUp}" IsChecked="{Binding ShowOldEvents}" Margin="5 0 0 0" DockPanel.Dock="Top" HorizontalAlignment="Left" Height="16"/>
                 </DockPanel>
                 <DockPanel Grid.Column="1">
-                    <Label Content="{Binding TeamsCredentials.Item2, UpdateSourceTrigger=PropertyChanged}" Margin="0 7 0 0" HorizontalContentAlignment="Center"  DockPanel.Dock="Top" HorizontalAlignment="Right" Width="215" Height="25"/>
-                    <Label Content="{Binding TeamsCredentials.Item1, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding TeamsCredentials.Item1, Converter={StaticResource Anything2Visibility}, UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Center" DockPanel.Dock="Top" FontWeight="Bold" HorizontalAlignment="Right" Width="215" Height="25"/>
-                    <Button Content="{Binding TeamsCredentials.Item3, UpdateSourceTrigger=PropertyChanged}" Command="{Binding AuthorizeCommand}" Margin="0 0 60 0" DockPanel.Dock="Top" HorizontalAlignment="Right" FontSize="11" Height="25" Width="100"/>
+                    <Label Content="{Binding TeamsText, IsAsync=true}" Margin="0 7 0 0" HorizontalContentAlignment="Center"  DockPanel.Dock="Top" HorizontalAlignment="Right" Width="215" Height="25"/>
+                    <Label Content="{Binding TeamsLogin, IsAsync=true}" Visibility="{Binding TeamsLogin, IsAsync=true, Converter={StaticResource Anything2Visibility}}" HorizontalContentAlignment="Center" DockPanel.Dock="Top" FontWeight="Bold" HorizontalAlignment="Right" Width="215" Height="25"/>
+                    <Button Content="{Binding TeamsTitle, IsAsync=true}" Command="{Binding AuthorizeCommand}" Margin="0 0 60 0" DockPanel.Dock="Top" HorizontalAlignment="Right" FontSize="11" Height="25" Width="100"/>
                 </DockPanel>
             </Grid>
         </GroupBox>

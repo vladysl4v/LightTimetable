@@ -1,4 +1,5 @@
-﻿using Microsoft.Graph.Models;
+﻿using Newtonsoft.Json;
+using Microsoft.Graph.Models;
 
 using System;
 using System.Linq;
@@ -12,17 +13,20 @@ namespace LightTimetable.Models.Utilities
 {
     public class DataItem
     {
-        public uint Id { get; }
-        public DateTime Date { get; }
-        public TimeInterval StudyTime { get; }
-        public DisciplineName Discipline { get; set; }
-        public string StudyType { get; }
-        public string Cabinet { get; }
-        public string Employee { get; }
-        public string Subgroup { get; }
+        public uint Id { get; init; }
+        public DateTime Date { get; init; }
+        public TimeInterval StudyTime { get; init; }
+        public DisciplineName Discipline { get; init; }
+        public string StudyType { get; init; }
+        public string Cabinet { get; init; } 
+        public string Employee { get; init; }
+        public string Subgroup { get; init; }
         public string Note { get; set; }
-        public ElectricityStatus? Electricity { get; }
-        public List<Event>? OutlookEvents { get; set; }
+        public ElectricityStatus? Electricity { get; init; }
+        [JsonIgnore]
+        public List<Event>? OutlookEvents { get; }
+
+        public DataItem() { }
 
         public DataItem(DateTime date, TimeInterval studyTime, string discipline,
                string studyType, string employee, string cabinet, string subgroup = "",
