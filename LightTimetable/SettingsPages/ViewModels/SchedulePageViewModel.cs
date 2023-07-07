@@ -1,30 +1,44 @@
-﻿using Newtonsoft.Json.Linq;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 
+using System.Linq;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
 using LightTimetable.Tools;
+using LightTimetable.Models;
 using LightTimetable.Properties;
-
+using LightTimetable.DataTypes.Interfaces;
 
 namespace LightTimetable.SettingsPages.ViewModels
 {
     public partial class SchedulePageViewModel : PageViewModelBase
     {
-        public SchedulePageViewModel(bool disableInitialation) { }
+        private IScheduleSettings _settingsSource;
+        public SchedulePageViewModel(bool disableInitialization) { }
         public SchedulePageViewModel()
         {
-            PropertyChanged += SomethingChanged; 
-            Task.Run(async () => 
-            {
-                await LoadStudentFiltersAsync();
-                await LoadStudyGroupsAsync();
-            }).ConfigureAwait(false);
+            PropertyChanged += SomethingChanged;
+
+            ScheduleSourceSource = ScheduleReflector.GetScheduleNames();
+            
+            Task.Run(InitializeSettings).ConfigureAwait(false);
         }
 
         #region Properties
+
+        
+        [ObservableProperty]
+        private static bool _facultiesVisibility;
+        
+        [ObservableProperty]
+        private static bool _educFormsVisibility;
+        
+        [ObservableProperty]
+        private static bool _coursesVisibility;
+
+        [ObservableProperty]
+        private static List<string> _scheduleSourceSource = null!;
 
         [ObservableProperty]
         private static List<KeyValuePair<string, string>>? _facultiesSource;
@@ -37,6 +51,9 @@ namespace LightTimetable.SettingsPages.ViewModels
 
         [ObservableProperty]
         private static List<KeyValuePair<string, string>>? _studyGroupsSource;
+
+        [ObservableProperty]
+        private string _selectedScheduleSource = Settings.Default.ScheduleSource;
 
         [ObservableProperty]
         private string _selectedFaculty = Settings.Default.Faculty;
@@ -59,9 +76,11 @@ namespace LightTimetable.SettingsPages.ViewModels
 
         public override void Save()
         {
-            var isSettingsChanged = Settings.Default.ShowRiggedSchedule != ShowRiggedSchedule ||
+            var isSettingsChanged = Settings.Default.ShowRiggedSchedule != ShowRiggedSchedule || 
+                                    Settings.Default.ScheduleSource != SelectedScheduleSource ||
                                     Settings.Default.StudyGroup != SelectedStudyGroup;
 
+            Settings.Default.ScheduleSource = SelectedScheduleSource;
             Settings.Default.Faculty = SelectedFaculty;
             Settings.Default.EducationForm = SelectedEducForm;
             Settings.Default.Course = SelectedCourse;
@@ -74,59 +93,38 @@ namespace LightTimetable.SettingsPages.ViewModels
                 WindowMediator.ReloadRequired();
             }
         }
-
-        private async Task LoadStudentFiltersAsync()
+        
+        private async Task InitializeSettings()
         {
-            var url = "https://vnz.osvita.net/BetaSchedule.asmx/GetStudentScheduleFiltersData?&" +
-                      "aVuzID=11784";
-
-            var serializedData = await HttpRequestService.LoadStringAsync(url);
-
-            if (serializedData == null || serializedData == string.Empty)
+            _settingsSource = ScheduleReflector.GetScheduleSettings(SelectedScheduleSource);
+            if (_settingsSource == null)
+            {
                 return;
+            }
             
-            var jsonData = JObject.Parse(serializedData)["d"];
-
-            if (jsonData == null)
-                return;
+            await _settingsSource.LoadStudentFiltersAsync();
             
-            FacultiesSource = ((JArray)jsonData["faculties"]!).ToObject<List<KeyValuePair<string, string>>>();
-            EducFormsSource = ((JArray)jsonData["educForms"]!).ToObject<List<KeyValuePair<string, string>>>();
-            CoursesSource = ((JArray)jsonData["courses"]!).ToObject<List<KeyValuePair<string, string>>>();
+            (FacultiesVisibility, EducFormsVisibility, CoursesVisibility) = 
+                ScheduleReflector.ConfigureFiltersVisibility(SelectedScheduleSource);
+        
+            FacultiesSource = _settingsSource.Faculties?.ToList();
+            EducFormsSource = _settingsSource.EducationTypes?.ToList();
+            CoursesSource = _settingsSource.Courses?.ToList();
 
-            IsAnythingChanged = false;
-        }
-
-        private async Task LoadStudyGroupsAsync()
-        {
-            if (SelectedCourse == "" || SelectedEducForm == "" || SelectedFaculty == "")
-                return;
-
-            var url = $"https://vnz.osvita.net/BetaSchedule.asmx/GetStudyGroups?&" + 
-                      $"aVuzID=11784&" + 
-                      $"aFacultyID=\"{SelectedFaculty}\"&" + 
-                      $"aEducationForm=\"{SelectedEducForm}\"&" + 
-                      $"aCourse=\"{SelectedCourse}\"&" + 
-                      $"aGiveStudyTimes=false";
-
-            var serializedData = await HttpRequestService.LoadStringAsync(url, maxAttemps: 2);
-
-            if (serializedData == null || serializedData == string.Empty)
-                return;
-
-            var jsonData = JObject.Parse(serializedData)["d"];
-
-            if (jsonData == null)
-                return;
-
-            StudyGroupsSource = ((JArray)jsonData["studyGroups"]!).ToObject<List<KeyValuePair<string, string>>>();
+            StudyGroupsSource = (await _settingsSource.GetStudyGroupsAsync(
+                SelectedFaculty, SelectedCourse, SelectedEducForm))?.ToList();
         }
 
         private async void SomethingChanged(object? sender, PropertyChangedEventArgs args)
         {
+            if (args.PropertyName == nameof(SelectedScheduleSource))
+            {
+                await InitializeSettings();
+            }
             if (args.PropertyName is nameof(SelectedFaculty) or nameof(SelectedCourse) or nameof(SelectedEducForm))
             {
-                await LoadStudyGroupsAsync();
+                StudyGroupsSource = (await _settingsSource.GetStudyGroupsAsync(
+                    SelectedFaculty, SelectedCourse, SelectedEducForm))?.ToList();
             }
         }
 

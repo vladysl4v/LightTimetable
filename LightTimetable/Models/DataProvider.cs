@@ -66,9 +66,14 @@ namespace LightTimetable.Models
             var endDate = startOfTheWeek.AddDays(+13);
 
             await LoadServices(startDate, endDate);
-
-            await _scheduleLoader.InitializeScheduleAsync(startDate, endDate,
-                  new VnzOsvitaSource(_electricityService, _teamsService));
+            
+            var scheduleSource = ScheduleReflector.GetScheduleSource(
+                    Settings.Default.ScheduleSource, _electricityService, _teamsService);
+            
+            if (scheduleSource != null)
+            {
+                await _scheduleLoader.InitializeScheduleAsync(startDate, endDate, scheduleSource);
+            }
         }
 
         private async Task LoadServices(DateTime startDate, DateTime endDate)

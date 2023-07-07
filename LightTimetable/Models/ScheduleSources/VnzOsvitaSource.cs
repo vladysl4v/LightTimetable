@@ -9,23 +9,27 @@ using LightTimetable.Tools;
 using LightTimetable.Properties;
 using LightTimetable.Models.Services;
 using LightTimetable.Models.Utilities;
+using LightTimetable.DataTypes.Interfaces;
 
 
 namespace LightTimetable.Models.ScheduleSources
 {
     public class VnzOsvitaSource : IScheduleSource
     {
-        private ElectricityService? _electricityService;
-        private TeamsEventsService? _teamsService;
+        protected ElectricityService? _electricityService;
+        protected TeamsEventsService? _teamsService;
+        public int UniversityId { get; set; }
+
         public VnzOsvitaSource(ElectricityService? electricityService, TeamsEventsService? teamsService)
         {
             _electricityService = electricityService;
             _teamsService = teamsService;
         }
+        
         public async Task<Dictionary<DateTime, List<DataItem>>?> LoadDataAsync(DateTime startDate, DateTime endDate)
         {
             var url = $"https://vnz.osvita.net/BetaSchedule.asmx/GetScheduleDataX?" +
-                      $"aVuzID=11784&" +
+                      $"aVuzID={UniversityId}&" +
                       $"aStudyGroupID=\"{Settings.Default.StudyGroup}\"&" +
                       $"aStartDate=\"{startDate.ToShortDateString()}\"&" +
                       $"aEndDate=\"{endDate.ToShortDateString()}\"&" +
@@ -36,7 +40,7 @@ namespace LightTimetable.Models.ScheduleSources
             return (request != null) ? DeserializeData(request) : null;
         }
 
-        private Dictionary<DateTime, List<DataItem>>? DeserializeData(string serializedData)
+        protected Dictionary<DateTime, List<DataItem>>? DeserializeData(string serializedData)
         {
             var rawDataItems = JsonConvert.DeserializeObject<Dictionary<string, List<Dictionary<string, string>>>>(serializedData);
             

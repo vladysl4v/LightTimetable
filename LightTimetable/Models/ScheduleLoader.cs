@@ -7,9 +7,10 @@ using System.Collections.Generic;
 using LightTimetable.Tools;
 using LightTimetable.Properties;
 using LightTimetable.Models.Utilities;
+using LightTimetable.DataTypes.Interfaces;
 
 
-namespace LightTimetable.Models.ScheduleSources
+namespace LightTimetable.Models
 {
     public class ScheduleLoader
     {

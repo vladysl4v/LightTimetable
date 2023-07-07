@@ -34,7 +34,7 @@ namespace LightTimetable.Properties {
                 this["Faculty"] = value;
             }
         }
-        
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
@@ -44,6 +44,18 @@ namespace LightTimetable.Properties {
             }
             set {
                 this["EducationForm"] = value;
+            }
+        }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string ScheduleSource {
+            get {
+                return ((string)(this["ScheduleSource"]));
+            }
+            set {
+                this["ScheduleSource"] = value;
             }
         }
         

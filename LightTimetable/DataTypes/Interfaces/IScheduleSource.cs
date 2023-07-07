@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using LightTimetable.Models.Utilities;
 
 
-namespace LightTimetable.Models.ScheduleSources
+namespace LightTimetable.DataTypes.Interfaces
 {
     public interface IScheduleSource
     {
