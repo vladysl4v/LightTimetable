@@ -40,22 +40,22 @@
                 <Label Content="Налаштуйте Вашу навчальну групу" HorizontalAlignment="Left" VerticalAlignment="Top"/>
                 <StackPanel Orientation="Horizontal" Grid.Row="1">
                     <Grid Margin="5 0 0 0" Height="22" Width="160" Visibility="{Binding FacultiesVisibility, Converter={StaticResource Boolean2Visibility}}" VerticalAlignment="Center">
-                        <ComboBox Name="FacultyComboBox" SelectedValue="{Binding SelectedFaculty}" ItemsSource="{Binding FacultiesSource}" DisplayMemberPath="Value" SelectedValuePath="Key"/>
+                        <ComboBox Name="FacultyComboBox" SelectedValue="{Binding SelectedFaculty}" ItemsSource="{Binding FacultiesSource}" DisplayMemberPath="Key" SelectedValuePath="Value"/>
                         <TextBlock Text="-- Оберіть факультет --" DataContext="{Binding ElementName=FacultyComboBox,Path=SelectedItem}" Style="{StaticResource ComboBoxDefaultValue}"/> 
                     </Grid>
 
                     <Grid Margin="5 0 0 0" Height="22" Width="120" Visibility="{Binding EducFormsVisibility, Converter={StaticResource Boolean2Visibility}}" VerticalAlignment="Center">
-                        <ComboBox Name="EducFormComboBox" SelectedValue="{Binding SelectedEducForm}" ItemsSource="{Binding EducFormsSource}" DisplayMemberPath="Value" SelectedValuePath="Key"/>
+                        <ComboBox Name="EducFormComboBox" SelectedValue="{Binding SelectedEducForm}" ItemsSource="{Binding EducFormsSource}" DisplayMemberPath="Key" SelectedValuePath="Value"/>
                         <TextBlock Text="- Оберіть форму -" DataContext="{Binding ElementName=EducFormComboBox,Path=SelectedItem}" Style="{StaticResource ComboBoxDefaultValue}"/>
                     </Grid>
                     
                     <Grid Margin="5 0 0 0" Height="22" Width="125" Visibility="{Binding CoursesVisibility, Converter={StaticResource Boolean2Visibility}}" VerticalAlignment="Center">
-                        <ComboBox Name="CourseComboBox" SelectedValue="{Binding SelectedCourse}" ItemsSource="{Binding CoursesSource}" DisplayMemberPath="Value" SelectedValuePath="Key"/>
+                        <ComboBox Name="CourseComboBox" SelectedValue="{Binding SelectedCourse}" ItemsSource="{Binding CoursesSource}" DisplayMemberPath="Key" SelectedValuePath="Value"/>
                         <TextBlock Text="-- Оберіть курс --" DataContext="{Binding ElementName=CourseComboBox,Path=SelectedItem}" Style="{StaticResource ComboBoxDefaultValue}"/>
                     </Grid>
                 </StackPanel>
                 <Grid Margin="4 0 0 0" Grid.Row="2" Height="22" Width="285" HorizontalAlignment="Left" VerticalAlignment="Center">
-                    <ComboBox Name="StudyGroupComboBox" SelectedValue="{Binding SelectedStudyGroup}" ItemsSource="{Binding StudyGroupsSource}" DisplayMemberPath="Value" SelectedValuePath="Key"/>
+                    <ComboBox Name="StudyGroupComboBox" SelectedValue="{Binding SelectedStudyGroup}" ItemsSource="{Binding StudyGroupsSource}" DisplayMemberPath="Key" SelectedValuePath="Value"/>
                     <TextBlock Text="-- Оберіть навчальну групу --" DataContext="{Binding ElementName=StudyGroupComboBox,Path=SelectedItem}" Style="{StaticResource ComboBoxDefaultValue}"/>
                 </Grid>
             </Grid>
