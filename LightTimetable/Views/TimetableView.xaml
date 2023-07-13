@@ -96,8 +96,8 @@
             </DataGrid.Columns>
             <DataGrid.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="Відкрити у Teams" Command="{Binding OpenInTeamsCommand}" Visibility="{Binding DataContext.SelectedDataItem.OutlookEvents, Source={x:Reference DummyElement}, Converter={StaticResource Anything2Visibility}}"/>
-                    <Separator Visibility="{Binding DataContext.SelectedDataItem.OutlookEvents, Source={x:Reference DummyElement}, Converter={StaticResource Anything2Visibility}}"/>
+                    <MenuItem Header="Відкрити у Teams" Command="{Binding OpenInTeamsCommand}" Visibility="{Binding DataContext.SelectedDataItem.Events, Source={x:Reference DummyElement}, Converter={StaticResource Anything2Visibility}}"/>
+                    <Separator Visibility="{Binding DataContext.SelectedDataItem.Events, Source={x:Reference DummyElement}, Converter={StaticResource Anything2Visibility}}"/>
                     <MenuItem Header="Змінити нотатку" Command="{Binding ChangeNoteCommand}" Visibility="{Binding DataContext.SelectedDataItem.Note, Source={x:Reference DummyElement}, Converter={StaticResource Anything2Visibility}}"/>
                     <MenuItem Header="Видалити нотатку" Command="{Binding DeleteNoteCommand}" Visibility="{Binding DataContext.SelectedDataItem.Note, Source={x:Reference DummyElement}, Converter={StaticResource Anything2Visibility}}"/>
                     <MenuItem Header="Додати нотатку" Command="{Binding AddNoteCommand}" Visibility="{Binding DataContext.SelectedDataItem.Note, Source={x:Reference DummyElement}, Converter={StaticResource Anything2Visibility}, ConverterParameter=Invert}"/>

@@ -1,13 +1,16 @@
-﻿using System;
+﻿using Microsoft.Extensions.DependencyInjection;
+
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
 using LightTimetable.Tools;
+using LightTimetable.Common;
 using LightTimetable.Properties;
 using LightTimetable.Models.Services;
 using LightTimetable.Models.Utilities;
-using LightTimetable.Models.ScheduleSources;
+
 
 
 namespace LightTimetable.Models
@@ -15,9 +18,9 @@ namespace LightTimetable.Models
     public class DataProvider
     {
         private readonly ScheduleLoader _scheduleLoader = new ScheduleLoader();
-        private ElectricityService? _electricityService;
-        private TeamsEventsService? _teamsService;
-        private RiggedSchedule? _riggedSchedule;
+        private IServiceProvider _serviceProvider; 
+        private SchedulePredictor? _riggedSchedule;
+
         public DateTime[] AvailableDates => _scheduleLoader.AvailableDates;
 
         public List<DataItem> GetCurrentSchedule(DateTime date, out TimetableStatus status)
@@ -37,7 +40,7 @@ namespace LightTimetable.Models
 
             var suitableSchedule = _riggedSchedule.GetRiggedSchedule(date);
             
-            if (suitableSchedule != null && suitableSchedule.Any())
+            if (suitableSchedule.Any())
             {
                 status = TimetableStatus.RiggedScheduleShown;
             }
@@ -53,7 +56,7 @@ namespace LightTimetable.Models
                 return TimetableStatus.DataLoadingError;
 
             if (Settings.Default.ShowRiggedSchedule)
-                _riggedSchedule = new RiggedSchedule(_scheduleLoader.ScheduleData);
+                _riggedSchedule = new SchedulePredictor(_scheduleLoader.ScheduleData);
 
             return TimetableStatus.Default;
         }
@@ -65,39 +68,58 @@ namespace LightTimetable.Models
             var startDate = startOfTheWeek.AddDays(-14);
             var endDate = startOfTheWeek.AddDays(+13);
 
-            await LoadServices(startDate, endDate);
-            
-            var scheduleSource = ScheduleReflector.GetScheduleSource(
-                    Settings.Default.ScheduleSource, _electricityService, _teamsService);
+            _serviceProvider = ConfigureServices();
+            await InitializeServices(startDate, endDate);
+
+            var scheduleSource = ScheduleActivator.GetScheduleSource(
+                    Settings.Default.ScheduleSource, _serviceProvider);
             
             if (scheduleSource != null)
             {
                 await _scheduleLoader.InitializeScheduleAsync(startDate, endDate, scheduleSource);
             }
         }
-
-        private async Task LoadServices(DateTime startDate, DateTime endDate)
+        
+        private IServiceProvider ConfigureServices()
         {
-            _electricityService = null;
-            _teamsService = null;
-
-            if (Settings.Default.ShowOutages)
-            {
-                _electricityService = new ElectricityService(Settings.Default.OutagesCity, Settings.Default.OutagesGroup, Settings.Default.ShowPossibleOutages);
-                
-                await _electricityService.InitializeOutagesAsync();
-            }
+            var serviceCollection = new ServiceCollection();
+            
+            serviceCollection.AddHttpClient();
 
             if (Settings.Default.ShowTeamsEvents)
             {
-                _teamsService = new TeamsEventsService();
-                
+                serviceCollection.AddSingleton<IEventsService, TeamsEventsService>();
+            }
+
+            if (Settings.Default.ShowOutages)
+            {
+                serviceCollection.AddSingleton<IElectricityService, YasnoElectricityService>((_) =>
+                {
+                    return new YasnoElectricityService(Settings.Default.OutagesCity,
+                        Settings.Default.OutagesGroup, Settings.Default.ShowPossibleOutages, _serviceProvider);
+                });
+            }
+
+            return serviceCollection.BuildServiceProvider();
+        }
+
+        private async Task InitializeServices(DateTime startDate, DateTime endDate)
+        {
+            var electricityService = _serviceProvider.GetService<IElectricityService>();
+            if (electricityService != null)
+            {
+                await electricityService.InitializeAsync();
+            }
+
+            var eventService = _serviceProvider.GetService<IEventsService>();
+            if (eventService != null)
+            {
+                DateTime eventStartDate = startDate;
                 if (!Settings.Default.ShowOldEvents)
                 {
-                    startDate = (DateTime.Today < endDate) ? DateTime.Today : endDate;
+                    eventStartDate = (DateTime.Today < endDate) ? DateTime.Today : endDate;
                 }
-                
-                await _teamsService.InitializeTeamsCalendarAsync(startDate, endDate);
+                await eventService.InitializeAsync(eventStartDate, endDate);
             }
         }
     }

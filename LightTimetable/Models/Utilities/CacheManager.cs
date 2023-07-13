@@ -5,7 +5,7 @@ using System.IO;
 using System.Collections.Generic;
 
 
-namespace LightTimetable.Tools
+namespace LightTimetable.Models.Utilities
 {
     /// <summary>
     /// Manages data saving and retrieving by storing it in JSON file for certain time.

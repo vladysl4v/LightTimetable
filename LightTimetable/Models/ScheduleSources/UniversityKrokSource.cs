@@ -1,15 +1,16 @@
 ﻿using Newtonsoft.Json;
+using Microsoft.Extensions.DependencyInjection;
 
 using System;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
 using LightTimetable.Tools;
+using LightTimetable.Common;
 using LightTimetable.Properties;
-using LightTimetable.Models.Services;
 using LightTimetable.Models.Utilities;
-using LightTimetable.DataTypes.Interfaces;
 
 
 namespace LightTimetable.Models.ScheduleSources
@@ -17,13 +18,11 @@ namespace LightTimetable.Models.ScheduleSources
     [ScheduleSource("Унiверситет \"КРОК\"", typeof(UniversityKrokSettings))]
     public sealed class UniversityKrokSource : IScheduleSource
     {
-        private ElectricityService? _electricityService;
-        private TeamsEventsService? _teamsService;
+        private readonly IServiceProvider _serviceProvider;
 
-        public UniversityKrokSource(ElectricityService? electricityService, TeamsEventsService? teamsService)
+        public UniversityKrokSource(IServiceProvider serviceProvider)
         {
-            _electricityService = electricityService;
-            _teamsService = teamsService;
+            _serviceProvider = serviceProvider;
         }
         
         public async Task<Dictionary<DateTime, List<DataItem>>?> LoadDataAsync(DateTime startDate, DateTime endDate)
@@ -34,10 +33,20 @@ namespace LightTimetable.Models.ScheduleSources
                       $"aStartDate=\"{startDate.ToShortDateString()}\"&" +
                       $"aEndDate=\"{endDate.ToShortDateString()}\"&" +
                       $"aStudyTypeID=null";
+            
+            var httpClient = _serviceProvider.GetRequiredService<IHttpClientFactory>().CreateClient();
+            string serializedData;
+            try
+            {
+                serializedData = await httpClient.GetStringAsync(url); 
+            }
+            catch
+            {
+                return null;
+            }
+            var request = await httpClient.GetStringAsync(url);
 
-            var request = await HttpRequestService.LoadStringAsync(url);
-
-            return (request != null) ? DeserializeData(request) : null;
+            return DeserializeData(request);
         }
 
         private Dictionary<DateTime, List<DataItem>>? DeserializeData(string serializedData)
@@ -50,27 +59,31 @@ namespace LightTimetable.Models.ScheduleSources
 
             var result = new Dictionary<DateTime, List<DataItem>>();
 
+            var builder = new DataItemBuilder();
+
+            builder.AddGlobalServices(_serviceProvider);
+
             foreach (var group in groupedData)
             {
                 result.Add(Convert.ToDateTime(group.Key), new List<DataItem>());
 
                 foreach (var lesson in group)
                 {
-                    var dataItem = new DataItem
-                    (
-                        Convert.ToDateTime(lesson["full_date"]),
-                        new TimeInterval(TimeOnly.Parse(lesson["study_time_begin"]), TimeOnly.Parse(lesson["study_time_end"])),
-                        lesson["discipline"],
-                        lesson["study_type"],
-                        lesson["employee"],
-                        lesson["cabinet"],
-                        lesson["study_subgroup"],
-                        _electricityService == null ? null
-                        : _electricityService.GetElectricityInformation,
-                        _teamsService == null ? null
-                        : _teamsService.GetSuitableEvents                       
-                    );
-
+                    var timePeriod = new TimeInterval(TimeOnly.Parse(lesson["study_time_begin"]),
+                            TimeOnly.Parse(lesson["study_time_end"]));
+                    
+                    builder.AddTimePeriod(Convert.ToDateTime(lesson["full_date"]), timePeriod);
+                    builder.AddBasicInformation(lesson["discipline"], lesson["study_type"],
+                            lesson["cabinet"], lesson["emplyee"]);
+                    builder.AddServices();
+                    
+                    if (!string.IsNullOrEmpty(lesson["study_subgroup"]))
+                    {
+                        builder.AddPromt(lesson["study_subgroup"]);
+                    }
+                    
+                    var dataItem = builder.Build();
+                    
                     result[Convert.ToDateTime(group.Key)].Add(dataItem);
                 }
             }

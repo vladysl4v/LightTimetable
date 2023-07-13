@@ -1,7 +1,7 @@
 ﻿using LightTimetable.Properties;
 
 
-namespace LightTimetable.Tools
+namespace LightTimetable.Common
 {
     public readonly struct DisciplineName
     {

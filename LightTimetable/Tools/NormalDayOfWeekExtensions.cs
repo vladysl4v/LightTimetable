@@ -1,5 +1,7 @@
 ﻿using System;
 
+using LightTimetable.Common;
+
 
 namespace LightTimetable.Tools
 {

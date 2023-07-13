@@ -4,12 +4,12 @@ using System.Reflection;
 using System.Collections.Generic;
 
 using LightTimetable.Tools;
-using LightTimetable.DataTypes.Interfaces;
+using LightTimetable.Common;
 
 
-namespace LightTimetable.Models
+namespace LightTimetable.Models.Utilities
 {
-    public static class ScheduleReflector
+    public static class ScheduleActivator
     {
         public static (bool faculties, bool educType, bool course) ConfigureFiltersVisibility(string universityName)
         {
@@ -22,8 +22,10 @@ namespace LightTimetable.Models
             
             var educTypeVisibility = settingsType.GetProperty("EducationTypes")!
                 .GetCustomAttribute<HideFilterAttribute>() == null;
+            
             var facultiesVisibility = settingsType.GetProperty("Faculties")!
                 .GetCustomAttribute<HideFilterAttribute>() == null;
+            
             var courseVisibility = settingsType.GetProperty("Courses")!
                 .GetCustomAttribute<HideFilterAttribute>() == null;
             
@@ -53,7 +55,7 @@ namespace LightTimetable.Models
             return (IScheduleSettings)Activator.CreateInstance(settingsType)!;
         }
 
-        public static List<string> GetScheduleNames()
+        public static List<string> GetAllScheduleNames()
         {
             var sourceNames = new HashSet<string>();
             foreach (var sourceType in GetAllScheduleSources())
@@ -74,12 +76,11 @@ namespace LightTimetable.Models
                     .SingleOrDefault();
         }
 
-        private static List<Type> GetAllScheduleSources()
+        private static IEnumerable<Type> GetAllScheduleSources()
         {
             return Assembly.GetExecutingAssembly().GetTypes()
                 .Where(t => t.Namespace == "LightTimetable.Models.ScheduleSources")
-                   .Where(t => t.GetCustomAttribute<ScheduleSourceAttribute>() != null)
-                       .ToList();
+                   .Where(t => t.GetCustomAttribute<ScheduleSourceAttribute>() != null);
         }
     }
 }

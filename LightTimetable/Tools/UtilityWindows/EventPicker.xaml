@@ -24,8 +24,7 @@
         </Grid.RowDefinitions>
         <TextBlock Text="На дану годину у вас заплановано декілька нарад. Виберіть відповідну зі списку нижче:" Margin="10" Grid.Row="0" Grid.ColumnSpan="3" TextWrapping="Wrap"/>
         <DataGrid Name="EventPickerGrid"  AutoGenerateColumns="False" Margin="10,0,10,0" Grid.Row="1" Grid.ColumnSpan="3" Grid.Column="0"
-                  GridLinesVisibility = "None"
-                  
+                  GridLinesVisibility = "None"                  
                   RowHeight="20"
                   IsReadOnly="True"
                   VerticalScrollBarVisibility="Disabled" 
@@ -40,8 +39,8 @@
                   CanUserAddRows="False"
                   CanUserDeleteRows="False">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Час" Binding="{Binding BodyPreview}" Width="70"/>
-                <DataGridTextColumn Header="Назва наради" Binding="{Binding Subject}" Width="1*" />
+                <DataGridTextColumn Header="Час" Binding="{Binding Time}" Width="70"/>
+                <DataGridTextColumn Header="Назва наради" Binding="{Binding Name}" Width="1*" />
             </DataGrid.Columns>
         </DataGrid>
         <Button Grid.Column="0" Content="Закрити" Margin="5 0 0 0" IsCancel="True" Grid.Row="2" VerticalAlignment="Center" Width="100" Height="25" Click="Close_Click"/>

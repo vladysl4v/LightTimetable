@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 
 
-namespace LightTimetable.DataTypes.Interfaces
+namespace LightTimetable.Common
 {
     public interface IScheduleSettings
     {

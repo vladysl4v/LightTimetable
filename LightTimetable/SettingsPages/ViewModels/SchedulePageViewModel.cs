@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 
 using LightTimetable.Tools;
-using LightTimetable.Models;
+using LightTimetable.Common;
 using LightTimetable.Properties;
-using LightTimetable.DataTypes.Interfaces;
+using LightTimetable.Models.Utilities;
+
 
 namespace LightTimetable.SettingsPages.ViewModels
 {
@@ -20,7 +21,7 @@ namespace LightTimetable.SettingsPages.ViewModels
         {
             PropertyChanged += SomethingChanged;
 
-            ScheduleSourceSource = ScheduleReflector.GetScheduleNames();
+            ScheduleSourceSource = ScheduleActivator.GetAllScheduleNames();
             
             Task.Run(InitializeSettings).ConfigureAwait(false);
         }
@@ -96,7 +97,7 @@ namespace LightTimetable.SettingsPages.ViewModels
         
         private async Task InitializeSettings()
         {
-            _settingsSource = ScheduleReflector.GetScheduleSettings(SelectedScheduleSource);
+            _settingsSource = ScheduleActivator.GetScheduleSettings(SelectedScheduleSource);
             if (_settingsSource == null)
             {
                 return;
@@ -105,7 +106,7 @@ namespace LightTimetable.SettingsPages.ViewModels
             await _settingsSource.LoadStudentFiltersAsync();
             
             (FacultiesVisibility, EducFormsVisibility, CoursesVisibility) = 
-                ScheduleReflector.ConfigureFiltersVisibility(SelectedScheduleSource);
+                ScheduleActivator.ConfigureFiltersVisibility(SelectedScheduleSource);
         
             FacultiesSource = _settingsSource.Faculties?.ToList();
             EducFormsSource = _settingsSource.EducationTypes?.ToList();

@@ -15,7 +15,7 @@
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
                         Background="#505AC9"
-                        Visibility="{Binding OutlookEvents, Converter={StaticResource Anything2Visibility}}"
+                        Visibility="{Binding Events, Converter={StaticResource Anything2Visibility}}"
                         CornerRadius="2"
                         Margin="0 0 3 0"/>
                 <TextBlock Text="{Binding Discipline}"/>
@@ -26,9 +26,9 @@
                         <ToolTip Content="{Binding Note}"/>
                     </Image.ToolTip>
                 </Image>
-                <Image VerticalAlignment="Center" Visibility="{Binding Subgroup, Converter={StaticResource Anything2Visibility}}" Margin="0 0 1 0" Height="12" Width="12" Source="{Binding Subgroup, Converter={StaticResource Anything2IconSource}, ConverterParameter=Subgroup}" RenderOptions.BitmapScalingMode="HighQuality" ToolTipService.InitialShowDelay="200">
+                <Image VerticalAlignment="Center" Visibility="{Binding Promt, Converter={StaticResource Anything2Visibility}}" Margin="0 0 1 0" Height="12" Width="12" Source="{Binding Promt, Converter={StaticResource Anything2IconSource}, ConverterParameter=Subgroup}" RenderOptions.BitmapScalingMode="HighQuality" ToolTipService.InitialShowDelay="200">
                     <Image.ToolTip>
-                        <ToolTip Content="{Binding Subgroup}"/>
+                        <ToolTip Content="{Binding Promt}"/>
                     </Image.ToolTip>
                 </Image>
             </StackPanel>
@@ -37,9 +37,9 @@
     
     <!-- BLACKOUTS COLUMN -->
     <DataTemplate x:Key="BlackoutsCellTemplate">
-        <Image Height="16" Width="16" Source="{Binding Electricity.ImagePath}" RenderOptions.BitmapScalingMode="HighQuality" ToolTipService.InitialShowDelay="200">
+        <Image Height="16" Width="16" Source="{Binding Outages.Image}" RenderOptions.BitmapScalingMode="HighQuality" ToolTipService.InitialShowDelay="200">
             <Image.ToolTip>
-                <ToolTip Content="{Binding Electricity.ToolTipText}"/>
+                <ToolTip Content="{Binding Outages.Information}"/>
             </Image.ToolTip>
         </Image>
     </DataTemplate>

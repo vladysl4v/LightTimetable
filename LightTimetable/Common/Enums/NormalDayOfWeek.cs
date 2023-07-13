@@ -1,4 +1,4 @@
-﻿namespace LightTimetable.Tools
+﻿namespace LightTimetable.Common
 {
     /// <summary>
     /// DayOfWeek which counts days starting from Monday

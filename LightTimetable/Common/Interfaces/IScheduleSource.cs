@@ -2,10 +2,8 @@
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
-using LightTimetable.Models.Utilities;
 
-
-namespace LightTimetable.DataTypes.Interfaces
+namespace LightTimetable.Common
 {
     public interface IScheduleSource
     {

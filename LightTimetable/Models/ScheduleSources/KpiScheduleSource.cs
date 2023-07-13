@@ -1,4 +1,5 @@
 using Newtonsoft.Json.Linq;
+using Microsoft.Extensions.DependencyInjection;
 
 using System;
 using System.Linq;
@@ -7,31 +8,27 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 
 using LightTimetable.Tools;
+using LightTimetable.Common;
 using LightTimetable.Properties;
-using LightTimetable.DataTypes.Enums;
-using LightTimetable.Models.Services;
 using LightTimetable.Models.Utilities;
-using LightTimetable.DataTypes.Interfaces;
 
 using WeekDictionary = System.Collections.Generic.
-    Dictionary<LightTimetable.DataTypes.Enums.NormalDayOfWeek,
+    Dictionary<LightTimetable.Common.NormalDayOfWeek,
                     System.Collections.Generic.List<System.Collections
                         .Generic.Dictionary<string, string>>?>;
-
+using System.Net.Http;
 
 namespace LightTimetable.Models.ScheduleSources
 {
     [ScheduleSource("КПI iм. Iгоря Сiкорського", typeof(KpiScheduleSettings))]
     public sealed class KpiScheduleSource : IScheduleSource
     {
-        private Calendar _calendar = new GregorianCalendar();
-        private ElectricityService? _electricityService;
-        private TeamsEventsService? _teamsService;
+        private readonly Calendar _calendar = new GregorianCalendar();
+        private readonly IServiceProvider _serviceProvider;
 
-        public KpiScheduleSource(ElectricityService? electricityService, TeamsEventsService? teamsService)
+        public KpiScheduleSource(IServiceProvider serviceProvider)
         {
-            _electricityService = electricityService;
-            _teamsService = teamsService;
+            _serviceProvider = serviceProvider;
         }
 
         public async Task<Dictionary<DateTime, List<DataItem>>?> LoadDataAsync(DateTime startDate, DateTime endDate)
@@ -43,8 +40,12 @@ namespace LightTimetable.Models.ScheduleSources
             if (firstWeek == null | secWeek == null)
                 return null;           
 
+            var builder = new DataItemBuilder();
+                        
+            builder.AddGlobalServices(_serviceProvider);
+
             for (var date = startDate; date < endDate; date = date.AddDays(1))
-            {    
+            {
                 var dataItems = new List<DataItem>();
                 
                 var properWeek = IsWeekPrimary(date) == true ? firstWeek : secWeek;
@@ -55,19 +56,10 @@ namespace LightTimetable.Models.ScheduleSources
                 foreach (var lesson in properWeek[date.GetNormalDayOfWeek()])
                 {
                     var time = TimeOnly.ParseExact(lesson["time"], "H.mm");
-                    dataItems.Add(new DataItem
-                    (
-                        date,
-                        new TimeInterval(time, time.Add(new TimeSpan(1, 35, 0))),
-                        lesson["name"],
-                        lesson["type"],
-                        lesson["teacherName"],
-                        lesson["place"],
-                        electricityLoader: _electricityService == null ? null
-                        : _electricityService.GetElectricityInformation,
-                        teamsEventsLoader: _teamsService == null ? null
-                        : _teamsService.GetSuitableEvents  
-                    ));
+                    builder.AddTimePeriod(date, time, new TimeSpan(1, 35, 0));
+                    builder.AddBasicInformation(lesson["name"], lesson["type"], lesson["place"], lesson["teacherName"]);
+                    builder.AddServices();
+                    dataItems.Add(builder.Build());
                 }
                 dataItems.Sort();
 
@@ -82,14 +74,21 @@ namespace LightTimetable.Models.ScheduleSources
             var url = "https://schedule.kpi.ua/api/schedule/lessons?" + 
                       $"groupId={groupId}";
             
-            var serializedData = await HttpRequestService.LoadStringAsync(url);
+            var httpClient = _serviceProvider.GetRequiredService<IHttpClientFactory>().CreateClient();
 
-            if (serializedData == null || serializedData == string.Empty)
+            string serializedData;
+            try
+            {
+                serializedData = await httpClient.GetStringAsync(url);
+            }
+            catch
+            {
                 return (null, null);
+            }
             
             var jsonData = JObject.Parse(serializedData);
 
-            if (jsonData == null)
+            if (!jsonData.ContainsKey("data"))
                 return (null, null);
 
             var scheduleFirstData = ConvertToWeekDictionary(jsonData["data"]["scheduleFirstWeek"]);
@@ -111,7 +110,6 @@ namespace LightTimetable.Models.ScheduleSources
             
             foreach (var pair in jsonData)
             {
-                
                 var pairsList = pair["pairs"].ToObject<List<Dictionary<string, string>>>();
                 if (pairsList.Any())
                 {

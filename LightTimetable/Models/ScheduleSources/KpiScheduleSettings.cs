@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 
 using LightTimetable.Tools;
-using LightTimetable.DataTypes.Interfaces;
+using LightTimetable.Common;
 
 
 namespace LightTimetable.Models.ScheduleSources

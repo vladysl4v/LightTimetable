@@ -1,6 +1,6 @@
 using System;
 
-using LightTimetable.DataTypes.Interfaces;
+using LightTimetable.Common;
 
 
 namespace LightTimetable.Tools
@@ -12,11 +12,11 @@ namespace LightTimetable.Tools
         public Type Settings { get; set; }
         public ScheduleSourceAttribute(string name, Type settingsClass)
         {
-            Name = name;
             if (!settingsClass.IsAssignableTo(typeof(IScheduleSettings)))
             {
-                throw new TypeLoadException("Type is not implemented IScheduleSettings interface.");
+                throw new TypeLoadException("Type does not implement IScheduleSettings interface.");
             }
+            Name = name;
             Settings = settingsClass;
         }
     }

@@ -6,15 +6,15 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
-using LightTimetable.Tools;
+using LightTimetable.Common;
 
 
 namespace LightTimetable.Models.Services
 {
-    public class TeamsEventsService
+    public sealed class TeamsEventsService : IEventsService
     {
         public static readonly int UtcOffset;
-        private Dictionary<DateOnly, List<Event>>? _eventsData;
+        private Dictionary<DateOnly, List<SpecificEvent>> _eventsData = null!;
 
         static TeamsEventsService()
         {
@@ -22,32 +22,26 @@ namespace LightTimetable.Models.Services
                         GetUtcOffset(DateTime.UtcNow).Hours;
         }
 
-        public List<Event>? GetSuitableEvents(DateTime date, TimeInterval timeInterval)
+        public List<SpecificEvent> GetMeetingsInformation(DateTime date, TimeInterval timeInterval)
         {
-            if (_eventsData == null ||
-               !_eventsData.TryGetValue(DateOnly.FromDateTime(date), out var dateEvents))
+            if (!_eventsData.TryGetValue(DateOnly.FromDateTime(date), out var dateEvents))
             {
-                return null;
+                return new List<SpecificEvent>();
             }
 
-            var startDate = date.Date.Add(timeInterval.Start.AddHours(-UtcOffset).ToTimeSpan()); 
-            var endDate = date.Date.Add(timeInterval.End.AddHours(-UtcOffset).ToTimeSpan()); 
-
-            var outputList = dateEvents.Where((teamsEvent) => (
-                teamsEvent.Start.ToDateTime() >= startDate &&
-                teamsEvent.Start.ToDateTime() < endDate &&
-                teamsEvent.OnlineMeeting?.JoinUrl != null)).ToList();
-
-            return outputList.Any() ? outputList : null;
+            return dateEvents.Where((currEvent) => (
+                currEvent.Time.Start >= timeInterval.Start &&
+                currEvent.Time.Start < timeInterval.End &&
+                currEvent.Link != null)).ToList();
         }
 
-        public async Task InitializeTeamsCalendarAsync(DateTime start, DateTime end)
+        public async Task InitializeAsync(DateTime start, DateTime end)
         {
             var graphClient = new GraphServiceClient(TeamsAuthManager.GetAuthenticationProvider());
 
             if (graphClient == null)
             {
-                _eventsData = null;
+                _eventsData = new Dictionary<DateOnly, List<SpecificEvent>>();
                 return;
             }
 
@@ -67,12 +61,27 @@ namespace LightTimetable.Models.Services
             
             if (calendarData == null)
             {
-                _eventsData = null;
+                _eventsData = new Dictionary<DateOnly, List<SpecificEvent>>();
                 return;   
             }
+            var ungroupedData = new List<SpecificEvent>();
 
-            _eventsData = calendarData.Value?.GroupBy(x => DateOnly.ParseExact(x.Start.DateTime, "yyyy-MM-ddTHH:mm:ss.0000000"))
-                          .ToDictionary(k => k.Key, v => v.ToList());
+            foreach (var anEvent in calendarData.Value)
+            {
+                var time = new TimeInterval(
+                    TimeOnly.FromDateTime(anEvent.Start.ToDateTime()).AddHours(UtcOffset),
+                    TimeOnly.FromDateTime(anEvent.End.ToDateTime()).AddHours(UtcOffset));
+            
+                ungroupedData.Add(new SpecificEvent(
+                    time,
+                    anEvent.Subject,
+                    new Uri(anEvent.OnlineMeeting.JoinUrl),
+                    DateOnly.FromDateTime(anEvent.Start.ToDateTime())
+                ));
+            }
+            
+            _eventsData = ungroupedData.GroupBy(x => x.Date)
+                .ToDictionary(k => k.Key, v => v.ToList());
         }
 
     }
