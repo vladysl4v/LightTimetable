@@ -1,9 +1,10 @@
 ﻿using System.Windows;
-using System.Threading.Tasks;
 
 using LightTimetable.Tools;
+using LightTimetable.Common;
 using LightTimetable.ViewModels;
 using LightTimetable.Properties;
+
 
 namespace LightTimetable.Views
 {

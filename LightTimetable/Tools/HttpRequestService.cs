@@ -30,15 +30,16 @@ namespace LightTimetable.Tools
         /// Asynchronously tries to download data for a given number of times
         /// </summary>
         /// <returns>Response body as a string or null if unsuccessful</returns>
-        public static async Task<string?> LoadStringAsync(string url, int maxAttemps = 5)
+        public static async Task<string?> LoadStringAsync(string url, int maxAttemps = 5, HttpClient httpClient = null)
         {
+            httpClient ??= _sharedClient;
             string? outputStringResult = null;
 
             for (var retries = 0; retries < maxAttemps; retries++)
             {
                 try
                 {
-                    outputStringResult = await _sharedClient.GetStringAsync(url);
+                    outputStringResult = await httpClient.GetStringAsync(url);
                 }
                 catch
                 {

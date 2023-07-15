@@ -4,38 +4,25 @@ using System.Windows;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
-using LightTimetable.Tools;
+using LightTimetable.Common;
 using LightTimetable.Properties;
 using LightTimetable.Models.Utilities;
 
 
-namespace LightTimetable.Models.ScheduleSources
+namespace LightTimetable.Models
 {
     public class ScheduleLoader
     {
-        public Dictionary<DateTime, List<DataItem>>? ScheduleData { get; protected set; }
+        public Dictionary<DateTime, List<DataItem>>? ScheduleData { get; private set; }
         public DateTime[] AvailableDates => ScheduleData?.Keys.ToArray() ?? Array.Empty<DateTime>();
         private CacheManager<Dictionary<DateTime, List<DataItem>>?> _cache;
-
-        public CacheManager<Dictionary<DateTime, List<DataItem>>?> GetCacheManager()
-        {
-            return new CacheManager<Dictionary<DateTime, List<DataItem>>?>("scheduleloader", TimeSpan.FromDays(3))
-            {
-                ExtraDataCondition = (data) => ((string)data["studyGroup"] != Settings.Default.StudyGroup),
-                ExtraData = new Dictionary<string, object>
-                {
-                    { "studyGroup", Settings.Default.StudyGroup },
-                    { "date", DateTime.Today }
-                }
-            };    
-        }
 
         public async Task InitializeScheduleAsync(DateTime startDate, DateTime endDate, IScheduleSource scheduleSource)
         {
             if (string.IsNullOrEmpty(Settings.Default.StudyGroup))
                 return;
 
-            _cache = GetCacheManager();
+            _cache = InitializeCacheManager();
 
             ScheduleData = await scheduleSource.LoadDataAsync(startDate, endDate);
             
@@ -69,6 +56,19 @@ namespace LightTimetable.Models.ScheduleSources
             }
 
             return null;
+        }
+
+        private CacheManager<Dictionary<DateTime, List<DataItem>>?> InitializeCacheManager()
+        {
+            return new CacheManager<Dictionary<DateTime, List<DataItem>>?>("scheduleloader", TimeSpan.FromDays(3))
+            {
+                ExtraDataCondition = (data) => ((string)data["studyGroup"] != Settings.Default.StudyGroup),
+                ExtraData = new Dictionary<string, object>
+                {
+                    { "studyGroup", Settings.Default.StudyGroup },
+                    { "date", DateTime.Today }
+                }
+            };    
         }
 
         private void RemoveObsoleteNotes(uint oldestId)

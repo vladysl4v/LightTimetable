@@ -1,4 +1,4 @@
-﻿namespace LightTimetable.Tools
+﻿namespace LightTimetable.Common
 {
     public enum WindowPosition
     {

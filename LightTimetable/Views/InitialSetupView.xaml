@@ -7,44 +7,56 @@
         mc:Ignorable="d"
         x:Name="InitialSettingsWindow"
         Title="LightTimetable | Початкове налаштування"
-        Height="400" 
-        Width="400"
+        Width="420"
+        SizeToContent="Height"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen"
         WindowStyle="SingleBorderWindow"
+        FontFamily="Bahnschrift"
         Icon="../Assets/LightTimetable-Logo.ico">
     <Window.DataContext>
         <vm:SchedulePageViewModel/>
     </Window.DataContext>
     <StackPanel>
-        <StackPanel>
-            <Label Content="Ласкаво просимо до програми LightTimetable!" HorizontalContentAlignment="Center" FontSize="16" FontWeight="Bold"/>
-            <Label Content="Для коректної роботи обов'язково виконайте початкове" HorizontalContentAlignment="Center" FontSize="13"/>
-            <Label Content="налаштування програми або використання буде неможливо." HorizontalContentAlignment="Center" FontSize="13"/>
-        </StackPanel>
-
-        <Border BorderBrush="Gray" BorderThickness="2" HorizontalAlignment="Stretch">
-            <StackPanel>
-                <Label Content="На даний момент програма підтримує лише факультети" HorizontalContentAlignment="Center" Margin="0 -2 0 0" FontSize="14"/>
-                <Label Content="університету КРОК" HorizontalContentAlignment="Center" Margin="0 -10 0 0" FontSize="14" />
-            </StackPanel>
-        </Border>
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="45"/>
-                <RowDefinition Height="28"/>
-                <RowDefinition Height="28"/>
-                <RowDefinition Height="28"/>
-                <RowDefinition Height="30"/>
-            </Grid.RowDefinitions>
-            <Label Grid.Row="0" Content="Оберіть ваш факультет, форму навчання та курс, після цього ви " HorizontalContentAlignment="Center" HorizontalAlignment="Center"/>
-            <Label Grid.Row="0" Content="зможете обрати вашу групу" HorizontalContentAlignment="Center" Margin="0 20 0 0" HorizontalAlignment="Center"/>
-            <ComboBox Grid.Row="1" SelectedValue="{Binding SelectedFaculty}" ItemsSource="{Binding FacultiesSource}" Margin="25 0 0 0" HorizontalAlignment="Left" Width="335" Height="22" DisplayMemberPath="Value" SelectedValuePath="Key"/>
-            <ComboBox Grid.Row="2" SelectedValue="{Binding SelectedEducForm}" ItemsSource="{Binding EducFormsSource}" Margin="25 0 0 0" HorizontalAlignment="Left" Width="165" Height="22" DisplayMemberPath="Value" SelectedValuePath="Key"/>
-            <ComboBox Grid.Row="2" SelectedValue="{Binding SelectedCourse}" ItemsSource="{Binding CoursesSource}" Margin="0 0 24 0" HorizontalAlignment="Right" Width="165" Height="22" DisplayMemberPath="Value" SelectedValuePath="Key"/>
-            <ComboBox Grid.Row="3" SelectedValue="{Binding SelectedStudyGroup}" ItemsSource="{Binding StudyGroupsSource}" Margin="25 0 0 0" HorizontalAlignment="Left" Width="335" Height="22" DisplayMemberPath="Value" SelectedValuePath="Key"/>
-            <Label Grid.Row="4" Content="Більше конфігурацій ви знайдете в налаштуваннях програми" HorizontalContentAlignment="Center" HorizontalAlignment="Center"/>
+        <Label Content="Вітаємо у LightTimetable!"  Margin="0 12 0 0"  HorizontalContentAlignment="Center" FontSize="32" FontWeight="Bold"/>
+        <Label Content="Програма для комфортного отримання розкладу" HorizontalContentAlignment="Center" FontFamily="Segoe UI" FontStyle="Italic" FontSize="12"/>
+        <Line Stroke="Gray" StrokeThickness="4" X2="500" Margin="8"/>
+        <TextBlock TextAlignment="Center" Text="Виконаємо декілька стандартних налаштувань для використання програми" Margin="0 -2 0 0" FontSize="14" TextWrapping="WrapWithOverflow"/>
+        <TextBlock>
+            <Label Content="1." FontSize="25"/>
+            <Label Content="Оберіть необхідне джерело розкладу у випадаючому списку" FontSize="13" Padding="0 0 0 13" />
+        </TextBlock>
+        <Grid HorizontalAlignment="Center" Width="300" Height="22">
+            <ComboBox Name="ScheduleSourceComboBox" SelectedValue="{Binding SelectedScheduleSource}" ItemsSource="{Binding ScheduleSourceSource}"/>
+            <TextBlock Text="-- Налаштуйте джерело розкладу --" FontFamily="Segoe UI" HorizontalAlignment="Center" DataContext="{Binding ElementName=ScheduleSourceComboBox,Path=SelectedItem}" Style="{StaticResource ComboBoxDefaultValue}"/>
         </Grid>
-        <Button Content="Зберегти та розпочати роботу" Command="{Binding SaveAndCloseCommand}" CommandParameter="{Binding ElementName=InitialSettingsWindow}" Margin="0 10 0 0" BorderThickness="2" IsDefault="True" Width="300" Height="40"/>
+        <TextBlock>
+            <Label Content="2." FontSize="25"/>
+            <Label Content="Налаштуйте фільтри та оберіть Вашу навчальну групу" FontSize="13" Padding="0 0 0 13" />
+        </TextBlock>
+
+        <Grid Margin="0 5 0 5" Height="22" Width="300"  VerticalAlignment="Center" Visibility="{Binding FacultiesVisibility, Converter={StaticResource Boolean2Visibility}}">
+            <ComboBox Name="FacultyComboBox" SelectedValue="{Binding SelectedFaculty}" ItemsSource="{Binding FacultiesSource}" DisplayMemberPath="Key" SelectedValuePath="Value"/>
+            <TextBlock Text="-- Налаштуйте факультет --" FontFamily="Segoe UI" HorizontalAlignment="Center" DataContext="{Binding ElementName=FacultyComboBox,Path=SelectedItem}" Style="{StaticResource ComboBoxDefaultValue}"/>
+        </Grid>
+
+        <Grid Margin="0 5 0 5"  Height="22" Width="300" VerticalAlignment="Center" Visibility="{Binding EducFormsVisibility, Converter={StaticResource Boolean2Visibility}}">
+            <ComboBox Name="EducFormComboBox" SelectedValue="{Binding SelectedEducForm}" ItemsSource="{Binding EducFormsSource}" DisplayMemberPath="Key" SelectedValuePath="Value"/>
+            <TextBlock Text="-- Налаштуйте форму навчання --" FontFamily="Segoe UI" HorizontalAlignment="Center" DataContext="{Binding ElementName=EducFormComboBox,Path=SelectedItem}" Style="{StaticResource ComboBoxDefaultValue}"/>
+        </Grid>
+
+        <Grid Margin="0 5 0 5" Height="22" Width="300" Visibility="{Binding CoursesVisibility, Converter={StaticResource Boolean2Visibility}}">
+            <ComboBox Name="CourseComboBox" SelectedValue="{Binding SelectedCourse}" ItemsSource="{Binding CoursesSource}" DisplayMemberPath="Key" SelectedValuePath="Value"/>
+            <TextBlock Text="-- Налаштуйте курс --" FontFamily="Segoe UI" HorizontalAlignment="Center" DataContext="{Binding ElementName=CourseComboBox,Path=SelectedItem}" Style="{StaticResource ComboBoxDefaultValue}"/>
+        </Grid>
+
+        <Line Stroke="Gray" VerticalAlignment="Center" StrokeThickness="4" X2="500" Margin="50 5 50 5"/>
+
+        <Grid Margin="0 5 0 5" Height="22" Width="300" VerticalAlignment="Center">
+            <ComboBox Name="StudyGroupComboBox" SelectedValue="{Binding SelectedStudyGroup}" ItemsSource="{Binding StudyGroupsSource}" DisplayMemberPath="Key" SelectedValuePath="Value"/>
+            <TextBlock Text="-- Налаштуйте навчальну групу --" FontFamily="Segoe UI" HorizontalAlignment="Center" DataContext="{Binding ElementName=StudyGroupComboBox,Path=SelectedItem}" Style="{StaticResource ComboBoxDefaultValue}"/>
+        </Grid>
+        <Label Content="Більше конфігурацій ви знайдете в налаштуваннях програми" HorizontalContentAlignment="Center" HorizontalAlignment="Center" Margin="0 0 0 5"/>
+        <Button Content="Зберегти та розпочати роботу" Command="{Binding SaveAndCloseCommand}" FontFamily="Segoe UI" CommandParameter="{Binding ElementName=InitialSettingsWindow}" Margin="0 0 0 20" BorderThickness="2" IsDefault="True" Width="300" Height="40"/>
     </StackPanel>
 </Window>

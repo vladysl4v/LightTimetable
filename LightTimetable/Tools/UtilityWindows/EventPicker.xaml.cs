@@ -1,35 +1,28 @@
-﻿using Microsoft.Graph.Models;
-
-using System;
+﻿using System;
 using System.Windows;
 using System.Collections.Generic;
 
-using LightTimetable.Models.Services;
+using LightTimetable.Common;
+
 
 namespace LightTimetable.Tools.UtilityWindows
 {
     public partial class EventPicker 
     {
         private bool _isOpenButtonClicked;
-        private EventPicker(string title, List<Event> events)
+        private EventPicker(string title, List<SpecificEvent> events)
         {
             InitializeComponent();
             Title = title;
-            foreach (var teamsEvent in events)
-            {
-                var teamsTimeStart = teamsEvent.Start.ToDateTime().AddHours(TeamsEventsService.UtcOffset).ToShortTimeString();
-                var teamsTimeEnd = teamsEvent.End.ToDateTime().AddHours(TeamsEventsService.UtcOffset).ToShortTimeString();
-                teamsEvent.BodyPreview = teamsTimeStart + "-" + teamsTimeEnd;
-                EventPickerGrid.Items.Add(teamsEvent);
-            }
+            events.ForEach(specEvent => EventPickerGrid.Items.Add(specEvent));
         }
 
-        public static Event? Show(string title, List<Event> events)
+        public static SpecificEvent? Show(string title, List<SpecificEvent> events)
         {
             var inputWindow = new EventPicker(title, events);
             inputWindow.ShowDialog();
 
-            var selectedEvent = inputWindow.EventPickerGrid.SelectedItem as Event;
+            var selectedEvent = inputWindow.EventPickerGrid.SelectedItem as SpecificEvent;
             return selectedEvent;
         }
 

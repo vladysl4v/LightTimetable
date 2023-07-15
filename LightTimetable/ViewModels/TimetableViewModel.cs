@@ -11,8 +11,8 @@ using System.Runtime.InteropServices;
 
 using LightTimetable.Tools;
 using LightTimetable.Models;
+using LightTimetable.Common;
 using LightTimetable.Properties;
-using LightTimetable.Models.Utilities;
 using LightTimetable.Tools.UtilityWindows;
 
 
@@ -74,8 +74,16 @@ namespace LightTimetable.ViewModels
         public async Task ReloadDataAsync()
         {
             ScheduleStatus = TimetableStatus.LoadingData;
-    
-            ScheduleStatus = await _dataProvider.RefreshDataAsync();
+            try
+            {
+                ScheduleStatus = await _dataProvider.RefreshDataAsync();
+                //.WaitAsync(TimeSpan.FromSeconds(30));
+            }    
+            catch (TimeoutException)
+            {
+                ScheduleStatus = TimetableStatus.DataLoadingError;
+                return;
+            }
 
             _dateControl = new DateControl(_dataProvider.AvailableDates, () => {
                 OnPropertyChanged(nameof(Date));
@@ -102,20 +110,20 @@ namespace LightTimetable.ViewModels
             Width = tempWidth;    
         }
 
-        private void OpenLinkInBrowser(string url)
+        private void OpenLinkInBrowser(Uri uri)
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                url = url.Replace("&", "^&");
-                Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
+                string link = uri.ToString().Replace("&", "^&");
+                Process.Start(new ProcessStartInfo(link) { UseShellExecute = true });
             }
             else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
-                Process.Start("xdg-open", url);
+                Process.Start("xdg-open", uri.ToString());
             }
             else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
-                Process.Start("open", url);
+                Process.Start("open", uri.ToString());
             }
         }
 
@@ -148,26 +156,27 @@ namespace LightTimetable.ViewModels
         [RelayCommand]
         private void OpenInTeams()
         {
-            if (SelectedDataItem == null || SelectedDataItem.OutlookEvents == null)
+            if (SelectedDataItem == null || SelectedDataItem.Events == null)
                 return;
-
-            if (SelectedDataItem.OutlookEvents.Count == 1)
+            
+            if (SelectedDataItem.Events.Count == 1)
             {
-                var outlookEvent = SelectedDataItem.OutlookEvents.First();
+                var outlookEvent = SelectedDataItem.Events.Single();
                 var message =
-                    $"Ви впевнені, що хочете зайти на нараду \"{outlookEvent.Subject?.Trim()}\"?\nВона буде відкрита в Microsoft Teams.";
+                    $"Ви впевнені, що хочете зайти на нараду \"{outlookEvent.Name.Trim()}\"?\nВона буде відкрита в Microsoft Teams.";
                 var mbResult = MessageBox.Show(message, SelectedDataItem.Discipline.Modified, MessageBoxButton.YesNo);
                 if (mbResult == MessageBoxResult.Yes)
                 {
-                    OpenLinkInBrowser(outlookEvent.OnlineMeeting.JoinUrl);
+                    OpenLinkInBrowser(outlookEvent.Link);
                 }
             }
-            else
-            { 
-                var selectedEvent = EventPicker.Show(SelectedDataItem.Discipline.Modified, SelectedDataItem.OutlookEvents);
+            
+            if (SelectedDataItem.Events.Count > 1)
+            {
+                var selectedEvent = EventPicker.Show(SelectedDataItem.Discipline.Modified, SelectedDataItem.Events);
                 if (selectedEvent != null)
                 {
-                    OpenLinkInBrowser(selectedEvent.OnlineMeeting.JoinUrl);
+                    OpenLinkInBrowser(selectedEvent.Link);
                 }
             }
         }
