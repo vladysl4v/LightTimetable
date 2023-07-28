@@ -1,13 +1,10 @@
 ﻿using Hardcodet.Wpf.TaskbarNotification;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
+
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 
 using LightTimetable.Views;
+
 
 namespace LightTimetable
 {
@@ -18,14 +15,14 @@ namespace LightTimetable
     {
         private TaskbarIcon _notifyIcon;
 
-        protected override void OnStartup(StartupEventArgs e)
+        protected override void OnStartup(StartupEventArgs startupArgs)
         {
-            base.OnStartup(e);
+            base.OnStartup(startupArgs);
 
-            //create the notifyicon (it's a resource declared in NotifyIconResources.xaml
-            _notifyIcon = (TaskbarIcon)FindResource("NotifyIcon");
+            // Create the notifyicon (it's a resource declared in NotifyIconResources.xaml
+            _notifyIcon = (TaskbarIcon)FindResource("NotifyIcon")!;
 
-            if (string.IsNullOrEmpty(LightTimetable.Properties.Settings.Default.StudyGroup))
+            if (startupArgs.Args.Contains("-initial"))
             {
                 var initSetupWindow = new InitialSetupView();
                 initSetupWindow.ShowDialog();
@@ -34,7 +31,8 @@ namespace LightTimetable
 
         protected override void OnExit(ExitEventArgs e)
         {
-            _notifyIcon.Dispose(); //the icon would clean up automatically, but this is cleaner
+            // The icon would clean up automatically, but this is cleaner
+            _notifyIcon.Dispose(); 
             base.OnExit(e);
         }
     }

@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Linq;
 using System.Globalization;
+using System.Net.Http;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
@@ -12,11 +13,10 @@ using LightTimetable.Common;
 using LightTimetable.Properties;
 using LightTimetable.Models.Utilities;
 
-using WeekDictionary = System.Collections.Generic.
-    Dictionary<LightTimetable.Common.NormalDayOfWeek,
-                    System.Collections.Generic.List<System.Collections
-                        .Generic.Dictionary<string, string>>?>;
-using System.Net.Http;
+using WeekDictionary =
+    System.Collections.Generic.Dictionary<LightTimetable.Common.NormalDayOfWeek, System.Collections.Generic.List<
+        System.Collections.Generic.Dictionary<string, string>>?>;
+
 
 namespace LightTimetable.Models.ScheduleSources
 {
@@ -35,7 +35,7 @@ namespace LightTimetable.Models.ScheduleSources
         {
             var outputData = new Dictionary<DateTime, List<DataItem>>();
 
-            (var firstWeek, var secWeek) = await LoadScheduleForWeeks(Settings.Default.StudyGroup);
+            var (firstWeek, secWeek) = await LoadScheduleForWeeks(Settings.Default.StudyGroup);
 
             if (firstWeek == null | secWeek == null)
                 return null;           
@@ -48,7 +48,7 @@ namespace LightTimetable.Models.ScheduleSources
             {
                 var dataItems = new List<DataItem>();
                 
-                var properWeek = IsWeekPrimary(date) == true ? firstWeek : secWeek;
+                var properWeek = IsWeekPrimary(date) ? firstWeek : secWeek;
 
                 if (!properWeek.ContainsKey(date.GetNormalDayOfWeek()))
                     continue;
@@ -56,8 +56,15 @@ namespace LightTimetable.Models.ScheduleSources
                 foreach (var lesson in properWeek[date.GetNormalDayOfWeek()])
                 {
                     var time = TimeOnly.ParseExact(lesson["time"], "H.mm");
+
+                    var place = lesson["place"];
+                    if (place.LastOrDefault() == '-')
+                    {
+                        place = place[..^1];
+                    }
                     builder.AddTimePeriod(date, time, new TimeSpan(1, 35, 0));
-                    builder.AddBasicInformation(lesson["name"], lesson["type"], lesson["place"], lesson["teacherName"]);
+
+                    builder.AddBasicInformation(lesson["name"], lesson["type"], place, lesson["teacherName"]);
                     builder.AddServices();
                     dataItems.Add(builder.Build());
                 }
@@ -99,7 +106,7 @@ namespace LightTimetable.Models.ScheduleSources
 
         private bool IsWeekPrimary(DateTime date)
         {
-            var intPrimariness = _calendar.GetWeekOfYear(DateTime.Today, CalendarWeekRule.FirstDay, DayOfWeek.Monday) % 2;
+            var intPrimariness = _calendar.GetWeekOfYear(date, CalendarWeekRule.FirstDay, DayOfWeek.Monday) % 2;
             return intPrimariness == 1;
         }
         

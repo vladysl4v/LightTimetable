@@ -20,7 +20,7 @@ namespace LightTimetable.Common
             sbuilder.Append("Запланованi наради:");
             foreach (var specEvent in this)
             {
-                sbuilder.Append("\n" + specEvent.ToString());
+                sbuilder.Append("\n" + specEvent);
             }
             return sbuilder.ToString();
         }

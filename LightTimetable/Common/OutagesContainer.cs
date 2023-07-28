@@ -20,7 +20,7 @@ namespace LightTimetable.Common
 
         private string ConfigureImage()
         {
-            if (this.Where(x => x.Type == OutageType.Definite).Any())
+            if (this.Any(x => x.Type == OutageType.Definite))
             {
                 return "/Assets/DataGrid/NoElectricity.png";
             }
@@ -33,7 +33,7 @@ namespace LightTimetable.Common
             sbuilder.Append("Вiдключення свiтла:");
             foreach (var specOutage in this)
             {
-                sbuilder.Append("\n" + specOutage.ToString());
+                sbuilder.Append("\n" + specOutage);
             }
             return sbuilder.ToString();
         }

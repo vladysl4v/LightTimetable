@@ -72,8 +72,7 @@ namespace LightTimetable.Models.Utilities
         private static Type? GetScheduleSourceType(string universityName)
         {
             return GetAllScheduleSources()
-                .Where(t => t.GetCustomAttribute<ScheduleSourceAttribute>()?.Name == universityName)
-                    .SingleOrDefault();
+                .SingleOrDefault(t => t.GetCustomAttribute<ScheduleSourceAttribute>()?.Name == universityName);
         }
 
         private static IEnumerable<Type> GetAllScheduleSources()

@@ -1,5 +1,3 @@
-using Newtonsoft.Json;
-
 using System;
 
 
@@ -17,7 +15,7 @@ namespace LightTimetable.Common
         public string Promt { get; set; }
         public string Note { get; set; }
         public OutagesContainer? Outages { get; set; }
-        [JsonIgnore]
+        [Newtonsoft.Json.JsonIgnore]
         public EventsContainer? Events { get; set; }
 
         public int CompareTo(object? item)

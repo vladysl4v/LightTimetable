@@ -62,14 +62,11 @@ namespace LightTimetable.Models.ScheduleSources
             
             var serializedData = await HttpRequestService.LoadStringAsync(url);
 
-            if (serializedData == null || serializedData == string.Empty)
+            if (string.IsNullOrEmpty(serializedData))
                 return null;
             
             var jsonData = JObject.Parse(serializedData);
 
-            if (jsonData == null)
-                return null;
-            
             return ((JArray)jsonData["data"]!).ToObject<List<Dictionary<string, string>>>();
         }
     }

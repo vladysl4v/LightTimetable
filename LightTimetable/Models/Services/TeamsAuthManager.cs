@@ -108,7 +108,7 @@ namespace LightTimetable.Models.Services
                 return authResult?.AccessToken;
             }
 
-            public AllowedHostsValidator? AllowedHostsValidator { get; }
+            public AllowedHostsValidator AllowedHostsValidator => null!;
         }
     }
 }

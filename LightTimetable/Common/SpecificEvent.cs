@@ -1,7 +1,5 @@
 using System;
 
-using LightTimetable.Tools;
-
 
 namespace LightTimetable.Common
 {
@@ -9,10 +7,10 @@ namespace LightTimetable.Common
     {
         public TimeInterval Time { get; init; }
         public string Name { get; init; }
-        public Uri Link { get; init; }
+        public string Link { get; init; }
         public DateOnly Date { get; init; }
 
-        public SpecificEvent(TimeInterval time, string name, Uri link, DateOnly date)
+        public SpecificEvent(TimeInterval time, string name, string link, DateOnly date)
         {
             Time = time;
             Name = name;
@@ -22,7 +20,7 @@ namespace LightTimetable.Common
 
         public override string ToString()
         {
-            return Time.ToString() + " - " + Name;
+            return Time + " - " + Name;
         }
     }
 }

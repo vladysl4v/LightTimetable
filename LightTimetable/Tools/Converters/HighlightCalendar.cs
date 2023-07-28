@@ -15,7 +15,7 @@ namespace LightTimetable.Tools.Converters
                 return false;
             var currentDate = (DateTime)values[0];
             var availableDates = values[1] as DateTime[];
-            return availableDates.Contains(currentDate);
+            return availableDates?.Contains(currentDate) ?? null;
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)

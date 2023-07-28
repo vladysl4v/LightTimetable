@@ -40,7 +40,7 @@ namespace LightTimetable.ViewModels
         private bool _isDataGridExpanded;
 
         [ObservableProperty]
-        public DateTime[] _availableDates;
+        private DateTime[] _availableDates;
 
         [ObservableProperty]    
         private DataItem? _selectedDataItem;
@@ -110,20 +110,20 @@ namespace LightTimetable.ViewModels
             Width = tempWidth;    
         }
 
-        private void OpenLinkInBrowser(Uri uri)
+        private void OpenLinkInBrowser(string link)
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                string link = uri.ToString().Replace("&", "^&");
+                link = link.Replace("&", "^&");
                 Process.Start(new ProcessStartInfo(link) { UseShellExecute = true });
             }
             else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
-                Process.Start("xdg-open", uri.ToString());
+                Process.Start("xdg-open", link);
             }
             else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
-                Process.Start("open", uri.ToString());
+                Process.Start("open", link);
             }
         }
 

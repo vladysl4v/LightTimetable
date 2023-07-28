@@ -44,9 +44,8 @@ namespace LightTimetable.Models.ScheduleSources
             {
                 return null;
             }
-            var request = await httpClient.GetStringAsync(url);
 
-            return DeserializeData(request);
+            return DeserializeData(serializedData);
         }
 
         private Dictionary<DateTime, List<DataItem>>? DeserializeData(string serializedData)
@@ -74,7 +73,7 @@ namespace LightTimetable.Models.ScheduleSources
                     
                     builder.AddTimePeriod(Convert.ToDateTime(lesson["full_date"]), timePeriod);
                     builder.AddBasicInformation(lesson["discipline"], lesson["study_type"],
-                            lesson["cabinet"], lesson["emplyee"]);
+                            lesson["cabinet"], lesson["employee"]);
                     builder.AddServices();
                     
                     if (!string.IsNullOrEmpty(lesson["study_subgroup"]))

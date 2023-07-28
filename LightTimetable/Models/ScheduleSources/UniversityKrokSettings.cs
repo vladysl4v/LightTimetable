@@ -23,7 +23,7 @@ namespace LightTimetable.Models.ScheduleSources
             
             var serializedData = await HttpRequestService.LoadStringAsync(url);
 
-            if (serializedData == null || serializedData == string.Empty)
+            if (string.IsNullOrEmpty(serializedData))
                 return;
             
             var jsonData = JObject.Parse(serializedData)["d"];
@@ -59,7 +59,7 @@ namespace LightTimetable.Models.ScheduleSources
 
             var serializedData = await HttpRequestService.LoadStringAsync(url, maxAttemps: 2);
 
-            if (serializedData == null || serializedData == string.Empty)
+            if (string.IsNullOrEmpty(serializedData))
                 return null;
 
             var jsonData = JObject.Parse(serializedData)["d"];

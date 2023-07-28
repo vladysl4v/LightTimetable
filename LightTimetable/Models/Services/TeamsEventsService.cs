@@ -39,13 +39,7 @@ namespace LightTimetable.Models.Services
         {
             var graphClient = new GraphServiceClient(TeamsAuthManager.GetAuthenticationProvider());
 
-            if (graphClient == null)
-            {
-                _eventsData = new Dictionary<DateOnly, List<SpecificEvent>>();
-                return;
-            }
-
-            EventCollectionResponse? calendarData = null;
+            EventCollectionResponse? calendarData;
 
             try
             {
@@ -56,17 +50,21 @@ namespace LightTimetable.Models.Services
                     requestConfiguration.QueryParameters.Filter = "isCancelled eq false";
                     requestConfiguration.QueryParameters.Top = 150;
                 });
+
+                if (calendarData == null)
+                {
+                    throw new ArgumentNullException();
+                }
             }
-            catch { }
-            
-            if (calendarData == null)
+            catch
             {
                 _eventsData = new Dictionary<DateOnly, List<SpecificEvent>>();
-                return;   
+                return;
             }
+            
             var ungroupedData = new List<SpecificEvent>();
 
-            foreach (var anEvent in calendarData.Value)
+            foreach (var anEvent in calendarData.Value ?? new List<Event>())
             {
                 var time = new TimeInterval(
                     TimeOnly.FromDateTime(anEvent.Start.ToDateTime()).AddHours(UtcOffset),
@@ -75,7 +73,7 @@ namespace LightTimetable.Models.Services
                 ungroupedData.Add(new SpecificEvent(
                     time,
                     anEvent.Subject,
-                    new Uri(anEvent.OnlineMeeting.JoinUrl),
+                    anEvent.OnlineMeeting?.JoinUrl,
                     DateOnly.FromDateTime(anEvent.Start.ToDateTime())
                 ));
             }

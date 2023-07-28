@@ -8,6 +8,7 @@ using LightTimetable.Properties;
 
 namespace LightTimetable.Views
 {
+    // MVVM violating
     public partial class TimetableView : Window
     {
         private SizeChangedEventHandler _sizeChanged;

@@ -45,7 +45,7 @@ namespace LightTimetable.Models
                 status = TimetableStatus.RiggedScheduleShown;
             }
 
-            return suitableSchedule ?? new List<DataItem>(0);
+            return suitableSchedule;
         }
 
         public async Task<TimetableStatus> RefreshDataAsync()
@@ -67,6 +67,11 @@ namespace LightTimetable.Models
 
             var startDate = startOfTheWeek.AddDays(-14);
             var endDate = startOfTheWeek.AddDays(+13);
+
+            // FAKE DATE
+            startDate = new DateTime(2023, 01, 20);
+            endDate = new DateTime(2023, 02, 10);
+            //
 
             _serviceProvider = ConfigureServices();
             await InitializeServices(startDate, endDate);

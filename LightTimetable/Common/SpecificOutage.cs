@@ -17,7 +17,7 @@ namespace LightTimetable.Common
         {
             var outageText = Type == OutageType.Possible ?
                 "можливе вiдключення" : "електроенергії не буде";
-            return Time.ToString() + " - " + outageText;
+            return Time + " - " + outageText;
         }
     }
 }
