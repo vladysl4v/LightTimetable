@@ -1,11 +1,11 @@
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
 using System;
 using System.IO;
 using System.Collections.Generic;
 
 
-namespace LightTimetable.Models.Utilities
+namespace LightTimetable.Handlers.Utilities
 {
     /// <summary>
     /// Manages data saving and retrieving by storing it in JSON file for certain time.
@@ -42,12 +42,12 @@ namespace LightTimetable.Models.Utilities
         /// </summary>
         /// <value>Condition that checks extra data correctness.</value>
         public Func<Dictionary<string, object>, bool>? ExtraDataCondition { get; init; }
-        
+
         /// <summary>
         /// A dictionary of additional data for the cache.
         /// </summary>
         public Dictionary<string, object>? ExtraData { get; init; }
-        
+
         /// <summary>
         /// Sets the new cache value if previous value is stale
         /// or the ExtraDataCondition passes.
@@ -61,7 +61,7 @@ namespace LightTimetable.Models.Utilities
 
             // Write to file if ExtraDataCondition not null and passes
             // or previous cache is stale.
-            if ((cached != null && (ExtraDataCondition?.Invoke(cached) ?? false)) ||
+            if (cached != null && (ExtraDataCondition?.Invoke(cached) ?? false) ||
                 GetLastCachedTime() > _cacheLifetime)
             {
                 WriteToJsonFile(objectToCache);
@@ -78,15 +78,15 @@ namespace LightTimetable.Models.Utilities
 
             // Returns null if ExtraDataCondition not null and passes
             // or previous cache is stale.
-            if ((cached != null && (ExtraDataCondition?.Invoke(cached) ?? false)) ||
+            if (cached != null && (ExtraDataCondition?.Invoke(cached) ?? false) ||
                 GetLastCachedTime() > _cacheLifetime)
             {
-                return default(T);
+                return default;
             }
-            
+
             return ReadFromJsonFile();
         }
-        
+
         /// <summary>
         /// Get current cache extra data.<br/>
         /// Returns null if the file does not exist or error occured.
@@ -114,7 +114,7 @@ namespace LightTimetable.Models.Utilities
                     dataReader?.Close();
                 }
             }
- 
+
             return JsonConvert.DeserializeObject<Dictionary<string, object>?>(fileAdditionalData);
         }
 
@@ -148,7 +148,7 @@ namespace LightTimetable.Models.Utilities
         {
             if (!File.Exists(_fullPath))
             {
-                return default(T);
+                return default;
             }
 
             var dataReader = new StreamReader(_fullPath);
@@ -164,14 +164,14 @@ namespace LightTimetable.Models.Utilities
                 }
                 catch
                 {
-                    return default(T);
+                    return default;
                 }
                 finally
                 {
                     dataReader?.Close();
                 }
             }
- 
+
             return JsonConvert.DeserializeObject<T>(fileContent);
         }
     }

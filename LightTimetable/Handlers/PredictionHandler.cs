@@ -3,24 +3,34 @@ using System.Linq;
 using System.Globalization;
 using System.Collections.Generic;
 
-using LightTimetable.Tools;
-using LightTimetable.Common;
+using LightTimetable.Models;
+using LightTimetable.Models.Enums;
+using LightTimetable.ScheduleSources;
+using LightTimetable.Models.Extensions;
+using LightTimetable.Handlers.Abstractions;
 
 using PredictedSchedule =
     System.Collections.Generic.Dictionary<bool, System.Collections.Generic.Dictionary<int,
-        System.Collections.Generic.List<LightTimetable.Common.DataItem>>>;
+        System.Collections.Generic.List<LightTimetable.Models.DataItem>>>;
 
 
-namespace LightTimetable.Models.Utilities
+namespace LightTimetable.Handlers
 {
-    public class SchedulePredictor
+    public class PredictionHandler : IPredictionHandler
     {
-        private readonly PredictedSchedule? _predictedSchedule;
         private readonly GregorianCalendar _calendar;
+        private readonly DataItemBuilder _builder;
 
-        public SchedulePredictor(Dictionary<DateTime, List<DataItem>> fullSchedule)
+        private PredictedSchedule? _predictedSchedule;
+
+        public PredictionHandler(DataItemBuilder dataItemBuilder)
         {
+            _builder = dataItemBuilder;
             _calendar = new GregorianCalendar();
+        }
+
+        public void SetBaseSchedule(Dictionary<DateTime, List<DataItem>> fullSchedule)
+        {
             _predictedSchedule = CreateSchedule(fullSchedule);
         }
 
@@ -36,18 +46,17 @@ namespace LightTimetable.Models.Utilities
                 return new List<DataItem>();
 
             var result = new List<DataItem>();
-            var builder = new DataItemBuilder();
-            
+
             foreach (var dataItem in suitableList)
             {
-                builder.AddTimePeriod(date, dataItem.StudyTime);
-                builder.AddBasicInformation(dataItem.Discipline.Original,
+                _builder.AddTimePeriod(date, dataItem.StudyTime);
+                _builder.AddBasicInformation(dataItem.Discipline.Original,
                     dataItem.StudyType, dataItem.Cabinet, dataItem.Employee);
-                builder.AddPromt(dataItem.Promt);
+                _builder.AddPromt(dataItem.Promt);
 
-                result.Add(builder.Build());
+                result.Add(_builder.Build());
             }
-            
+
             return result;
         }
 
