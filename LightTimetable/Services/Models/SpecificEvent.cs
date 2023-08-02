@@ -1,7 +1,8 @@
 using System;
+using LightTimetable.Models;
 
 
-namespace LightTimetable.Common
+namespace LightTimetable.Services.Models
 {
     public record SpecificEvent
     {

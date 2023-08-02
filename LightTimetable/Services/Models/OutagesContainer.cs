@@ -2,9 +2,10 @@ using System.Linq;
 using System.Text;
 using System.Collections.Generic;
 
+using LightTimetable.Services.Enums;
 
 
-namespace LightTimetable.Common
+namespace LightTimetable.Services.Models
 {
     public class OutagesContainer : List<SpecificOutage>
     {
@@ -13,7 +14,7 @@ namespace LightTimetable.Common
 
         public OutagesContainer(IEnumerable<SpecificOutage> list)
         {
-            this.AddRange(list);
+            AddRange(list);
             Image = ConfigureImage();
             Information = CreateString();
         }

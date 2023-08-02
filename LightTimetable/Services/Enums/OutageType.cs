@@ -1,4 +1,4 @@
-namespace LightTimetable.Common
+namespace LightTimetable.Services.Enums
 {
     public enum OutageType
     {

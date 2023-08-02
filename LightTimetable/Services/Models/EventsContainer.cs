@@ -2,7 +2,7 @@ using System.Text;
 using System.Collections.Generic;
 
 
-namespace LightTimetable.Common
+namespace LightTimetable.Services.Models
 {
     public class EventsContainer : List<SpecificEvent>
     {
@@ -10,8 +10,8 @@ namespace LightTimetable.Common
 
         public EventsContainer(IEnumerable<SpecificEvent> list)
         {
-            this.AddRange(list);
-            Information = CreateString(); 
+            AddRange(list);
+            Information = CreateString();
         }
 
         public string CreateString()

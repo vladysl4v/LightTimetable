@@ -6,20 +6,36 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
-using LightTimetable.Common;
+using LightTimetable.Models;
+using LightTimetable.Properties;
+using LightTimetable.Services.Models;
+using LightTimetable.Handlers.Abstractions;
+using LightTimetable.Services.Abstractions;
 
 
-namespace LightTimetable.Models.Services
+
+namespace LightTimetable.Services
 {
     public sealed class TeamsEventsService : IEventsService
     {
-        public static readonly int UtcOffset;
+        private readonly int _utcOffset;
         private Dictionary<DateOnly, List<SpecificEvent>> _eventsData = null!;
 
-        static TeamsEventsService()
+        private readonly DateTime _startDate;
+        private readonly DateTime _endDate;
+
+        public TeamsEventsService(IUserSettings settings, IDateTimeHandler dates)
         {
-            UtcOffset = TimeZoneInfo.FindSystemTimeZoneById("FLE Standard Time").
-                        GetUtcOffset(DateTime.UtcNow).Hours;
+            _utcOffset = TimeZoneInfo.FindSystemTimeZoneById("FLE Standard Time").
+                GetUtcOffset(DateTime.UtcNow).Hours;
+
+            _startDate = dates.AvailableDates.First();
+            _endDate = dates.AvailableDates.Last();
+
+            if (!settings.ShowOldEvents)
+            {
+                _startDate = DateTime.Today < _endDate ? DateTime.Today : _endDate;
+            }
         }
 
         public List<SpecificEvent> GetMeetingsInformation(DateTime date, TimeInterval timeInterval)
@@ -29,13 +45,13 @@ namespace LightTimetable.Models.Services
                 return new List<SpecificEvent>();
             }
 
-            return dateEvents.Where((currEvent) => (
+            return dateEvents.Where((currEvent) => 
                 currEvent.Time.Start >= timeInterval.Start &&
                 currEvent.Time.Start < timeInterval.End &&
-                currEvent.Link != null)).ToList();
+                currEvent.Link != null).ToList();
         }
 
-        public async Task InitializeAsync(DateTime start, DateTime end)
+        public async Task InitializeAsync()
         {
             var graphClient = new GraphServiceClient(TeamsAuthManager.GetAuthenticationProvider());
 
@@ -45,8 +61,8 @@ namespace LightTimetable.Models.Services
             {
                 calendarData = await graphClient.Me.Calendar.CalendarView.GetAsync((requestConfiguration) =>
                 {
-                    requestConfiguration.QueryParameters.StartDateTime = start.ToString("yyyy-MM-ddTHH:mm:ss");
-                    requestConfiguration.QueryParameters.EndDateTime = end.ToString("yyyy-MM-ddT23:59:59");
+                    requestConfiguration.QueryParameters.StartDateTime = _startDate.ToString("yyyy-MM-ddTHH:mm:ss");
+                    requestConfiguration.QueryParameters.EndDateTime = _endDate.ToString("yyyy-MM-ddT23:59:59");
                     requestConfiguration.QueryParameters.Filter = "isCancelled eq false";
                     requestConfiguration.QueryParameters.Top = 150;
                 });
@@ -61,15 +77,15 @@ namespace LightTimetable.Models.Services
                 _eventsData = new Dictionary<DateOnly, List<SpecificEvent>>();
                 return;
             }
-            
+
             var ungroupedData = new List<SpecificEvent>();
 
             foreach (var anEvent in calendarData.Value ?? new List<Event>())
             {
                 var time = new TimeInterval(
-                    TimeOnly.FromDateTime(anEvent.Start.ToDateTime()).AddHours(UtcOffset),
-                    TimeOnly.FromDateTime(anEvent.End.ToDateTime()).AddHours(UtcOffset));
-            
+                    TimeOnly.FromDateTime(anEvent.Start.ToDateTime()).AddHours(_utcOffset),
+                    TimeOnly.FromDateTime(anEvent.End.ToDateTime()).AddHours(_utcOffset));
+
                 ungroupedData.Add(new SpecificEvent(
                     time,
                     anEvent.Subject,
@@ -77,7 +93,7 @@ namespace LightTimetable.Models.Services
                     DateOnly.FromDateTime(anEvent.Start.ToDateTime())
                 ));
             }
-            
+
             _eventsData = ungroupedData.GroupBy(x => x.Date)
                 .ToDictionary(k => k.Key, v => v.ToList());
         }

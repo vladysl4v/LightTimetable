@@ -1,8 +1,12 @@
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
+using LightTimetable.Models;
+using LightTimetable.Models.Enums;
+using LightTimetable.Services.Models;
 
-namespace LightTimetable.Common
+
+namespace LightTimetable.Services.Abstractions
 {
     public interface IElectricityService
     {

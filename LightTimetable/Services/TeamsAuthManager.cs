@@ -8,10 +8,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
-using LightTimetable.Tools;
 
-
-namespace LightTimetable.Models.Services
+namespace LightTimetable.Services
 {
     public static class TeamsAuthManager
     {
@@ -28,7 +26,7 @@ namespace LightTimetable.Models.Services
             catch
             {
                 ClientApp = null;
-            }          
+            }
         }
 
         public static BaseBearerTokenAuthenticationProvider GetAuthenticationProvider()

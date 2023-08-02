@@ -32,7 +32,7 @@ using System.IO;
 using System.Security.Cryptography;
 
 
-namespace LightTimetable.Tools
+namespace LightTimetable.Services
 {
     public static class TeamsCacheManager
     {
