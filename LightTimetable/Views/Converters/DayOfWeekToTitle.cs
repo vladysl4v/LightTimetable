@@ -2,7 +2,7 @@
 using System.Windows.Data;
 
 
-namespace LightTimetable.Tools.Converters
+namespace LightTimetable.Views.Converters
 {
     public class DayOfWeekToTitleConverter : IValueConverter
     {

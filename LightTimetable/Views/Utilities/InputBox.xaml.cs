@@ -1,7 +1,7 @@
 ﻿using System;
 
 
-namespace LightTimetable.Tools.UtilityWindows
+namespace LightTimetable.Views.Utilities
 {
     public partial class InputBox
     {

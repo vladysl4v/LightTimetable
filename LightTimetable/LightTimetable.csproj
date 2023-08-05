@@ -38,10 +38,10 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Update="SettingsPages\Views\ApplicationPageView.xaml.cs">
+    <Compile Update="Views\Pages\ApplicationPageView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="SettingsPages\Views\RenamingPageView.xaml.cs">
+    <Compile Update="Views\Pages\RenamingPageView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>

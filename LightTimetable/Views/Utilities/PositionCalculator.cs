@@ -1,10 +1,8 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using LightTimetable.Models.Enums;
 
-using LightTimetable.Common;
-
-
-namespace LightTimetable.Tools
+namespace LightTimetable.Views.Utilities
 {
     public static class PositionCalculator
     {
@@ -19,10 +17,10 @@ namespace LightTimetable.Tools
             _taskbarPosition = GetCurrentTaskbarPosition();
             var taskbarSize = GetCurrentTaskbarHeight();
 
-            _dockTop = (_taskbarPosition == Dock.Top) ? taskbarSize : 0;
-            _dockLeft = (_taskbarPosition == Dock.Left) ? taskbarSize : 0;
-            _dockRight = (_taskbarPosition == Dock.Right) ? SystemParameters.PrimaryScreenWidth - taskbarSize : SystemParameters.PrimaryScreenWidth;
-            _dockBottom = (_taskbarPosition == Dock.Bottom) ? SystemParameters.PrimaryScreenHeight - taskbarSize : SystemParameters.PrimaryScreenHeight;
+            _dockTop = _taskbarPosition == Dock.Top ? taskbarSize : 0;
+            _dockLeft = _taskbarPosition == Dock.Left ? taskbarSize : 0;
+            _dockRight = _taskbarPosition == Dock.Right ? SystemParameters.PrimaryScreenWidth - taskbarSize : SystemParameters.PrimaryScreenWidth;
+            _dockBottom = _taskbarPosition == Dock.Bottom ? SystemParameters.PrimaryScreenHeight - taskbarSize : SystemParameters.PrimaryScreenHeight;
 
             return GetSuitableDelegate(winPosition);
         }
@@ -49,7 +47,7 @@ namespace LightTimetable.Tools
         private static void TopRightSizeChanged(object s, SizeChangedEventArgs? e)
         {
             var win = (Window)s;
-            var width = (e == null) ? win.Width : e.NewSize.Width;
+            var width = e == null ? win.Width : e.NewSize.Width;
 
             win.Top = _dockTop;
             win.Left = _dockRight - width;
@@ -58,7 +56,7 @@ namespace LightTimetable.Tools
         private static void BottomLeftSizeChanged(object s, SizeChangedEventArgs? e)
         {
             var win = (Window)s;
-            var height = (e == null) ? win.Height : e.NewSize.Height;
+            var height = e == null ? win.Height : e.NewSize.Height;
 
             win.Left = _dockLeft;
             win.Top = _dockBottom - height;
@@ -68,8 +66,8 @@ namespace LightTimetable.Tools
         {
             var win = (Window)s;
 
-            var width = (e == null) ? win.Width : e.NewSize.Width;
-            var height = (e == null) ? win.Height : e.NewSize.Height;
+            var width = e == null ? win.Width : e.NewSize.Width;
+            var height = e == null ? win.Height : e.NewSize.Height;
 
             win.Top = _dockBottom - height;
             win.Left = _dockRight - width;

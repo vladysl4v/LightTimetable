@@ -1,9 +1,9 @@
-﻿namespace LightTimetable.Tools
+﻿namespace LightTimetable.Models
 {
     public readonly struct TimetableStatus
     {
-        public readonly string? IconPath { get; }
-        public readonly string? ToolTip { get; }
+        public string? IconPath { get; }
+        public string? ToolTip { get; }
         
         private TimetableStatus(string? iconPath, string? toolTip)
         {

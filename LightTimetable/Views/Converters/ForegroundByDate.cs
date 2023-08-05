@@ -3,7 +3,7 @@ using System.Windows.Data;
 using System.Windows.Media;
 
 
-namespace LightTimetable.Tools.Converters
+namespace LightTimetable.Views.Converters
 {
     public class ForegroundByDateConverter : IValueConverter
     {

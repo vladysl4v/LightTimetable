@@ -1,7 +1,7 @@
 using System;
+using LightTimetable.Services.Models;
 
-
-namespace LightTimetable.Common
+namespace LightTimetable.Models
 {
     public class DataItem : IComparable
     {

@@ -3,7 +3,7 @@ using System.Windows;
 using System.Windows.Data;
 
 
-namespace LightTimetable.Tools.Converters
+namespace LightTimetable.Views.Converters
 {
     public class AnythingToVisibilityConverter : IValueConverter
     {

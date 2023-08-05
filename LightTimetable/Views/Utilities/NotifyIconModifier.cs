@@ -4,7 +4,7 @@ using System.Windows.Input;
 using Hardcodet.Wpf.TaskbarNotification;
 
 
-namespace LightTimetable.Tools
+namespace LightTimetable.Views.Utilities
 {
     public class NotifyIconModifier : DependencyObject
     {
@@ -17,7 +17,7 @@ namespace LightTimetable.Tools
         {
             obj.SetValue(MiddleMouseProperty, value);
         }
-        
+
         public static readonly DependencyProperty MiddleMouseProperty =
             DependencyProperty.RegisterAttached("MiddleMouseCommand", typeof(ICommand), typeof(NotifyIconModifier), new PropertyMetadata(null, OnMiddleMouseClick));
 

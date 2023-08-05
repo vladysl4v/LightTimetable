@@ -1,4 +1,4 @@
-﻿namespace LightTimetable.Common
+﻿namespace LightTimetable.Models.Enums
 {
     /// <summary>
     /// DayOfWeek which counts days starting from Monday

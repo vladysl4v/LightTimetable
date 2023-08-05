@@ -2,10 +2,10 @@
 using System.Windows;
 using System.Collections.Generic;
 
-using LightTimetable.Common;
+using LightTimetable.Services.Models;
 
 
-namespace LightTimetable.Tools.UtilityWindows
+namespace LightTimetable.Views.Utilities
 {
     public partial class EventPicker 
     {

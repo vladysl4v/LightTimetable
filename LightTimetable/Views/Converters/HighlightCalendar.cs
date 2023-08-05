@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 
-namespace LightTimetable.Tools.Converters
+namespace LightTimetable.Views.Converters
 {
     public class HighlightCalendarConverter : IMultiValueConverter
     {

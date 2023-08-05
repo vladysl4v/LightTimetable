@@ -1,9 +1,9 @@
 ﻿using System;
 
-using LightTimetable.Common;
+using LightTimetable.Models.Enums;
 
 
-namespace LightTimetable.Tools
+namespace LightTimetable.Models.Extensions
 {
 
     public static class NormalDayOfWeekExtensions
@@ -14,13 +14,13 @@ namespace LightTimetable.Tools
         {
             return dayOfWeek switch
             {
-                DayOfWeek.Monday    => NormalDayOfWeek.Monday,
-                DayOfWeek.Tuesday   => NormalDayOfWeek.Tuesday,
+                DayOfWeek.Monday => NormalDayOfWeek.Monday,
+                DayOfWeek.Tuesday => NormalDayOfWeek.Tuesday,
                 DayOfWeek.Wednesday => NormalDayOfWeek.Wednesday,
-                DayOfWeek.Thursday  => NormalDayOfWeek.Thursday,
-                DayOfWeek.Friday    => NormalDayOfWeek.Friday,
-                DayOfWeek.Saturday  => NormalDayOfWeek.Saturday,
-                DayOfWeek.Sunday    => NormalDayOfWeek.Sunday,
+                DayOfWeek.Thursday => NormalDayOfWeek.Thursday,
+                DayOfWeek.Friday => NormalDayOfWeek.Friday,
+                DayOfWeek.Saturday => NormalDayOfWeek.Saturday,
+                DayOfWeek.Sunday => NormalDayOfWeek.Sunday,
                 _ => throw new NotImplementedException()
             };
         }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Data;
 
 
-namespace LightTimetable.Tools.Converters
+namespace LightTimetable.Views.Converters
 {
     public class RadioBoolToIntConverter : IValueConverter
     {

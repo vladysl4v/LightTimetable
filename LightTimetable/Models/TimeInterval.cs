@@ -1,7 +1,7 @@
 ﻿using System;
 
 
-namespace LightTimetable.Common
+namespace LightTimetable.Models
 {
     public readonly struct TimeInterval
     {
