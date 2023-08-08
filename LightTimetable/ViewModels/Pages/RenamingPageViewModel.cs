@@ -4,18 +4,29 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-using LightTimetable.Tools;
+using LightTimetable.Models;
 using LightTimetable.Properties;
-using LightTimetable.Tools.UtilityWindows;
+using LightTimetable.Views.Utilities;
 
 
-namespace LightTimetable.SettingsPages.ViewModels
+namespace LightTimetable.ViewModels.Pages
 {
     public partial class RenamingPageViewModel : PageViewModelBase
     {
+        private readonly UpdatesMediator _mediator;
+        private readonly IUserSettings _settings;
+        
+        public RenamingPageViewModel(IUserSettings settings, UpdatesMediator mediator)
+        {
+            _settings = settings;
+            _mediator = mediator;
+
+            _renamesList = _settings.Renames.ToList();
+        }
+
         #region Properties
 
-        private List<KeyValuePair<string, string>> _renamesList = Settings.Default.Renames.ToList();
+        private List<KeyValuePair<string, string>> _renamesList;
 
         public ObservableCollection<KeyValuePair<string, string>> RenamesList
         {
@@ -64,13 +75,13 @@ namespace LightTimetable.SettingsPages.ViewModels
         #region Methods
 
         public override void Save()
-        {                
-            Settings.Default.Renames = _renamesList.ToDictionary(x => x.Key, x => x.Value);
-            Settings.Default.Save();
+        {
+            _settings.Renames = _renamesList.ToDictionary(x => x.Key, x => x.Value);
+            _settings.Save();
 
             if (IsAnythingChanged)
             {
-                WindowMediator.UpdateRequired();
+                _mediator.UpdateRequired();
             }
         }
 

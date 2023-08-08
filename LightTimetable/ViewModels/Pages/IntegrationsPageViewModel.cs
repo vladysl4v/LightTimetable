@@ -4,20 +4,32 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using System.ComponentModel;
 using System.Threading.Tasks;
 
-using LightTimetable.Tools;
+using LightTimetable.Models;
+using LightTimetable.Services;
 using LightTimetable.Properties;
-using LightTimetable.Models.Services;
 
 
-namespace LightTimetable.SettingsPages.ViewModels
+namespace LightTimetable.ViewModels.Pages
 {
     public partial class IntegrationsPageViewModel : PageViewModelBase
     {
-        public IntegrationsPageViewModel()
+        private readonly UpdatesMediator _mediator;
+        private readonly IUserSettings _settings;
+        public IntegrationsPageViewModel(IUserSettings settings, UpdatesMediator mediator)
         {
+            _settings = settings;
+            _mediator = mediator;
+
             PropertyChanged += SomethingChanged;
             
             Task.Run(GetAuthorizationStateAsync).ConfigureAwait(false);
+
+            _showTeamsEvents = _settings.ShowTeamsEvents;
+            _showOutages = _settings.ShowOutages;
+            _showPossibleOutages = settings.ShowPossibleOutages;
+            _showOldEvents = _settings.ShowOldEvents;
+            _outagesCity = _settings.OutagesCity;
+            _outagesGroup = _settings.OutagesGroup.ToString();
 
             IsOutagesSetUp = OutagesGroup != "0" && OutagesGroup != string.Empty 
                             && OutagesCity != string.Empty;
@@ -26,31 +38,31 @@ namespace LightTimetable.SettingsPages.ViewModels
         #region Properties
 
         [ObservableProperty]
-        public string? _teamsLogin;
+        private string? _teamsLogin;
 
         [ObservableProperty]
-        public string _teamsText;
+        private string _teamsText;
 
         [ObservableProperty]
-        public string _teamsTitle = "Завантаження...";
+        private string _teamsTitle = "Завантаження...";
 
         [ObservableProperty]
-        private bool _showTeamsEvents = Settings.Default.ShowTeamsEvents;
+        private bool _showTeamsEvents;
 
         [ObservableProperty]
-        private bool _showOutages = Settings.Default.ShowOutages;
+        private bool _showOutages;
         
         [ObservableProperty]
-        private bool _showPossibleOutages = Settings.Default.ShowPossibleOutages;
+        private bool _showPossibleOutages;
         
         [ObservableProperty]
-        private bool _showOldEvents = Settings.Default.ShowOldEvents;
+        private bool _showOldEvents;
 
         [ObservableProperty]
-        private string _outagesCity = Settings.Default.OutagesCity;
+        private string _outagesCity;
 
         [ObservableProperty]
-        private string _outagesGroup = Settings.Default.OutagesGroup.ToString();
+        private string _outagesGroup;
 
         [ObservableProperty]
         private bool _isTeamsSetUp;
@@ -92,29 +104,29 @@ namespace LightTimetable.SettingsPages.ViewModels
         {
             var isSettingsChanged = IsSettingsChanged();
 
-            Settings.Default.ShowOutages = ShowOutages;
-            Settings.Default.ShowPossibleOutages = ShowPossibleOutages;
-            Settings.Default.OutagesGroup = int.Parse(_outagesGroup);
-            Settings.Default.OutagesCity = _outagesCity;
-            Settings.Default.ShowTeamsEvents = ShowTeamsEvents;
-            Settings.Default.ShowOldEvents = ShowOldEvents;
-            Settings.Default.Save();
+            _settings.ShowOutages = ShowOutages;
+            _settings.ShowPossibleOutages = ShowPossibleOutages;
+            _settings.OutagesGroup = int.Parse(OutagesGroup);
+            _settings.OutagesCity = OutagesCity;
+            _settings.ShowTeamsEvents = ShowTeamsEvents;
+            _settings.ShowOldEvents = ShowOldEvents;
+            _settings.Save();
             
             if (isSettingsChanged)
             {
-                WindowMediator.ReloadRequired();
-                WindowMediator.RepositionRequired();
+                _mediator.ReloadRequired();
+                _mediator.RepositionRequired();
             }
         }
 
         private bool IsSettingsChanged()
         {
-            return Settings.Default.ShowPossibleOutages != ShowPossibleOutages ||
-                   Settings.Default.OutagesGroup != int.Parse(_outagesGroup) ||
-                   Settings.Default.ShowTeamsEvents != ShowTeamsEvents ||
-                   Settings.Default.OutagesCity != _outagesCity ||
-                   Settings.Default.ShowOutages != ShowOutages ||
-                   Settings.Default.ShowOldEvents != ShowOldEvents;
+            return _settings.ShowPossibleOutages != ShowPossibleOutages ||
+                   _settings.OutagesGroup != int.Parse(OutagesGroup) ||
+                   _settings.ShowTeamsEvents != ShowTeamsEvents ||
+                   _settings.OutagesCity != OutagesCity ||
+                   _settings.ShowOutages != ShowOutages ||
+                   _settings.ShowOldEvents != ShowOldEvents;
         }
 
         private async Task GetAuthorizationStateAsync()

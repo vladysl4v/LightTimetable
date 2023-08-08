@@ -1,7 +1,7 @@
 ﻿using System.Windows.Controls;
 
 
-namespace LightTimetable.SettingsPages.Views
+namespace LightTimetable.Views.Pages
 {
     public partial class IntegrationsPageView : UserControl
     {

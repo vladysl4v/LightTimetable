@@ -4,9 +4,9 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using System.Windows;
 using System.ComponentModel;
 using System.Windows.Controls;
-using LightTimetable.Properties;
 
-namespace LightTimetable.SettingsPages.ViewModels
+
+namespace LightTimetable.ViewModels.Pages
 {
     public abstract partial class PageViewModelBase : ObservableObject 
     {   

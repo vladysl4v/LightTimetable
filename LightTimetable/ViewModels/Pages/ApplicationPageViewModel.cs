@@ -3,29 +3,42 @@
 using System;
 using System.Windows;
 using System.Security;
-using Microsoft.Win32;
 
-using LightTimetable.Tools;
+using Microsoft.Win32;
+using LightTimetable.Models;
 using LightTimetable.Properties;
 
 
-namespace LightTimetable.SettingsPages.ViewModels
+namespace LightTimetable.ViewModels.Pages
 {
     public partial class ApplicationPageViewModel : PageViewModelBase
     {
+        private readonly UpdatesMediator _mediator;
+        private readonly IUserSettings _settings;
+        public ApplicationPageViewModel(IUserSettings settings, UpdatesMediator mediator)
+        {
+            _settings = settings;
+            _mediator = mediator;
+
+            _startAutomatically = _settings.Autostart;
+            _openWindowMode = _settings.OpenWindowMode;
+            _middleMouseClick = _settings.MiddleMouseClick;
+            _windowPosition = _settings.WindowPosition;
+        }
+
         #region Properties
 
         [ObservableProperty]
-        private int _startAutomatically = Settings.Default.Autostart;
+        private int _startAutomatically;
         
         [ObservableProperty]
-        private int _openWindowMode = Settings.Default.OpenWindowMode;
+        private int _openWindowMode;
         
         [ObservableProperty]
-        private int _middleMouseClick = Settings.Default.MiddleMouseClick;
+        private int _middleMouseClick;
         
         [ObservableProperty]
-        private int _windowPosition = Settings.Default.WindowPosition;
+        private int _windowPosition;
 
         #endregion
 
@@ -69,9 +82,9 @@ namespace LightTimetable.SettingsPages.ViewModels
 
         public override void Save()
         {
-            bool isSettingsChanged = Settings.Default.WindowPosition != WindowPosition;
+            bool isSettingsChanged = _settings.WindowPosition != WindowPosition;
 
-            if (Settings.Default.Autostart != StartAutomatically)
+            if (_settings.Autostart != StartAutomatically)
             {
                 switch (StartAutomatically)
                 {
@@ -80,15 +93,15 @@ namespace LightTimetable.SettingsPages.ViewModels
                 }
             }
 
-            Settings.Default.OpenWindowMode = OpenWindowMode;
-            Settings.Default.MiddleMouseClick = MiddleMouseClick;
-            Settings.Default.WindowPosition = WindowPosition;
-            Settings.Default.Autostart = StartAutomatically;
-            Settings.Default.Save();
+            _settings.OpenWindowMode = OpenWindowMode;
+            _settings.MiddleMouseClick = MiddleMouseClick;
+            _settings.WindowPosition = WindowPosition;
+            _settings.Autostart = StartAutomatically;
+            _settings.Save();
             
             if (isSettingsChanged)
             {
-                WindowMediator.RepositionRequired();
+                _mediator.RepositionRequired();
             }
         }
 

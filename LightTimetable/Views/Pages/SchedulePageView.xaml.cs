@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 
 
-namespace LightTimetable.SettingsPages.Views
+namespace LightTimetable.Views.Pages
 {
     public partial class SchedulePageView : UserControl
     {

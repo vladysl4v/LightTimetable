@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace LightTimetable.SettingsPages.Views
+namespace LightTimetable.Views.Pages
 {
     /// <summary>
     /// Interaction logic for RenamingPageView.xaml

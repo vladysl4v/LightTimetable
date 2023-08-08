@@ -5,23 +5,39 @@ using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
-using LightTimetable.Tools;
-using LightTimetable.Common;
+using LightTimetable.Models;
 using LightTimetable.Properties;
-using LightTimetable.Models.Utilities;
+using LightTimetable.ScheduleSources;
+using LightTimetable.ScheduleSources.Abstractions;
 
 
-namespace LightTimetable.SettingsPages.ViewModels
+namespace LightTimetable.ViewModels.Pages
 {
     public partial class SchedulePageViewModel : PageViewModelBase
     {
-        private IScheduleSettings _settingsSource;
-        public SchedulePageViewModel(bool disableInitialization) { }
-        public SchedulePageViewModel()
+        private readonly SchedulesRepository _schedulesRepository;
+        private readonly UpdatesMediator _mediator;
+        private readonly IUserSettings _settings;
+
+        private IScheduleSettings? _settingsSource;
+
+        public SchedulePageViewModel(IUserSettings settings, UpdatesMediator mediator, SchedulesRepository schedulesRepository)
         {
+            _schedulesRepository = schedulesRepository;
+            _settings = settings;
+            _mediator = mediator;
+
+
+            _selectedScheduleSource = _settings.ScheduleSource;
+            _selectedFaculty = _settings.Faculty;
+            _selectedEducForm = _settings.EducationForm;
+            _selectedCourse = _settings.Course;
+            _selectedStudyGroup = _settings.StudyGroup;
+            _showRiggedSchedule = _settings.ShowRiggedSchedule;
+
             PropertyChanged += SomethingChanged;
 
-            ScheduleSourceSource = ScheduleActivator.GetAllScheduleNames();
+            ScheduleSourceSource = _schedulesRepository.GetScheduleNames();
             
             Task.Run(InitializeSettings).ConfigureAwait(false);
         }
@@ -54,22 +70,22 @@ namespace LightTimetable.SettingsPages.ViewModels
         private static List<KeyValuePair<string, string>>? _studyGroupsSource;
 
         [ObservableProperty]
-        private string _selectedScheduleSource = Settings.Default.ScheduleSource;
+        private string _selectedScheduleSource;
 
         [ObservableProperty]
-        private string _selectedFaculty = Settings.Default.Faculty;
+        private string _selectedFaculty;
         
         [ObservableProperty]
-        private string _selectedEducForm = Settings.Default.EducationForm;
+        private string _selectedEducForm;
         
         [ObservableProperty]
-        private string _selectedCourse = Settings.Default.Course;
+        private string _selectedCourse;
         
         [ObservableProperty]
-        private string _selectedStudyGroup = Settings.Default.StudyGroup;
+        private string _selectedStudyGroup;
         
         [ObservableProperty]
-        private bool _showRiggedSchedule = Settings.Default.ShowRiggedSchedule;
+        private bool _showRiggedSchedule;
 
         #endregion
         
@@ -77,27 +93,27 @@ namespace LightTimetable.SettingsPages.ViewModels
 
         public override void Save()
         {
-            var isSettingsChanged = Settings.Default.ShowRiggedSchedule != ShowRiggedSchedule || 
-                                    Settings.Default.ScheduleSource != SelectedScheduleSource ||
-                                    Settings.Default.StudyGroup != SelectedStudyGroup;
+            var isSettingsChanged = _settings.ShowRiggedSchedule != ShowRiggedSchedule ||
+                                    _settings.ScheduleSource != SelectedScheduleSource ||
+                                    _settings.StudyGroup != SelectedStudyGroup;
 
-            Settings.Default.ScheduleSource = SelectedScheduleSource;
-            Settings.Default.Faculty = SelectedFaculty;
-            Settings.Default.EducationForm = SelectedEducForm;
-            Settings.Default.Course = SelectedCourse;
-            Settings.Default.StudyGroup = SelectedStudyGroup;
-            Settings.Default.ShowRiggedSchedule = ShowRiggedSchedule;
-            Settings.Default.Save();
+            _settings.ScheduleSource = SelectedScheduleSource;
+            _settings.Faculty = SelectedFaculty;
+            _settings.EducationForm = SelectedEducForm;
+            _settings.Course = SelectedCourse;
+            _settings.StudyGroup = SelectedStudyGroup;
+            _settings.ShowRiggedSchedule = ShowRiggedSchedule;
+            _settings.Save();
             
             if (isSettingsChanged)
             {
-                WindowMediator.ReloadRequired();
+                _mediator.ReloadRequired();
             }
         }
         
         private async Task InitializeSettings()
         {
-            _settingsSource = ScheduleActivator.GetScheduleSettings(SelectedScheduleSource);
+            _settingsSource = _schedulesRepository.GetScheduleSettings(_selectedScheduleSource);
             if (_settingsSource == null)
             {
                 return;
@@ -106,7 +122,7 @@ namespace LightTimetable.SettingsPages.ViewModels
             await _settingsSource.LoadStudentFiltersAsync();
             
             (FacultiesVisibility, EducFormsVisibility, CoursesVisibility) = 
-                ScheduleActivator.ConfigureFiltersVisibility(SelectedScheduleSource);
+                (true, true, true);
         
             FacultiesSource = _settingsSource.Faculties?.ToList();
             EducFormsSource = _settingsSource.EducationTypes?.ToList();
