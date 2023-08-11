@@ -1,36 +1,48 @@
 using Newtonsoft.Json.Linq;
 
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
-using LightTimetable.Tools;
-using LightTimetable.Common;
+using LightTimetable.ScheduleSources.Abstractions;
 
 
-namespace LightTimetable.Models.ScheduleSources
+namespace LightTimetable.ScheduleSources.KrokSource
 {
     public sealed class UniversityKrokSettings : IScheduleSettings
     {
-        public Dictionary<string, string>? Faculties { get; set; }        
+        private readonly IHttpClientFactory _httpFactory;
+        public Dictionary<string, string>? Faculties { get; set; }
         public Dictionary<string, string>? Courses { get; set; }
         public Dictionary<string, string>? EducationTypes { get; set; }
+
+        public UniversityKrokSettings(IHttpClientFactory httpClientFactory)
+        {
+            _httpFactory = httpClientFactory;
+        }
 
         public async Task LoadStudentFiltersAsync()
         {
             var url = "https://vnz.osvita.net/BetaSchedule.asmx/GetStudentScheduleFiltersData?&" +
                       "aVuzID=11784";
-            
-            var serializedData = await HttpRequestService.LoadStringAsync(url);
 
-            if (string.IsNullOrEmpty(serializedData))
+            var httpClient = _httpFactory.CreateClient();
+            string serializedData;
+            try
+            {
+                serializedData = await httpClient.GetStringAsync(url);
+            }
+            catch
+            {
                 return;
-            
+            }
+
             var jsonData = JObject.Parse(serializedData)["d"];
 
             if (jsonData == null)
                 return;
-            
+
             Faculties = ((JArray)jsonData["faculties"]!)
                 .ToObject<List<KeyValuePair<string, string>>>()?
                     .ToDictionary(k => k.Value, v => v.Key);
@@ -38,7 +50,7 @@ namespace LightTimetable.Models.ScheduleSources
             EducationTypes = ((JArray)jsonData["educForms"]!)
                 .ToObject<List<KeyValuePair<string, string>>>()?
                     .ToDictionary(k => k.Value, v => v.Key);
-                    
+
             Courses = ((JArray)jsonData["courses"]!)
                 .ToObject<List<KeyValuePair<string, string>>>()?
                     .ToDictionary(k => k.Value, v => v.Key);
@@ -50,18 +62,23 @@ namespace LightTimetable.Models.ScheduleSources
             {
                 return null;
             }
-            var url = $"https://vnz.osvita.net/BetaSchedule.asmx/GetStudyGroups?&" + 
-                      $"aVuzID=11784&" + 
-                      $"aFacultyID=\"{faculty}\"&" + 
-                      $"aEducationForm=\"{educationType}\"&" + 
-                      $"aCourse=\"{course}\"&" + 
+            var url = $"https://vnz.osvita.net/BetaSchedule.asmx/GetStudyGroups?&" +
+                      $"aVuzID=11784&" +
+                      $"aFacultyID=\"{faculty}\"&" +
+                      $"aEducationForm=\"{educationType}\"&" +
+                      $"aCourse=\"{course}\"&" +
                       $"aGiveStudyTimes=false";
 
-            var serializedData = await HttpRequestService.LoadStringAsync(url, maxAttemps: 2);
-
-            if (string.IsNullOrEmpty(serializedData))
+            var httpClient = _httpFactory.CreateClient();
+            string serializedData;
+            try
+            {
+                serializedData = await httpClient.GetStringAsync(url);
+            }
+            catch
+            {
                 return null;
-
+            }
             var jsonData = JObject.Parse(serializedData)["d"];
 
             if (jsonData == null)
@@ -69,7 +86,7 @@ namespace LightTimetable.Models.ScheduleSources
 
             return ((JArray)jsonData["studyGroups"]!)
                 .ToObject<List<KeyValuePair<string, string>>>()?
-                    .ToDictionary(k => k.Value, v => v.Key);       
+                    .ToDictionary(k => k.Value, v => v.Key);
         }
     }
 }

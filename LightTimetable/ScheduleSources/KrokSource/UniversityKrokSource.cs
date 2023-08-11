@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using Microsoft.Extensions.DependencyInjection;
 
 using System;
 using System.Linq;
@@ -7,60 +6,67 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
-using LightTimetable.Tools;
-using LightTimetable.Common;
+using LightTimetable.Models;
 using LightTimetable.Properties;
-using LightTimetable.Models.Utilities;
+using LightTimetable.ScheduleSources.Exceptions;
+using LightTimetable.ScheduleSources.Abstractions;
 
 
-namespace LightTimetable.Models.ScheduleSources
+namespace LightTimetable.ScheduleSources.KrokSource
 {
-    [ScheduleSource("Унiверситет \"КРОК\"", typeof(UniversityKrokSettings))]
     public sealed class UniversityKrokSource : IScheduleSource
     {
-        private readonly IServiceProvider _serviceProvider;
 
-        public UniversityKrokSource(IServiceProvider serviceProvider)
+        private readonly DataItemBuilder _builder;
+
+        private readonly IHttpClientFactory _httpFactory;
+        private readonly IUserSettings _settings;
+
+        public UniversityKrokSource(IUserSettings settings,
+                                    IHttpClientFactory httpClientFactory,
+                                    DataItemBuilder dataItemBuilder)
         {
-            _serviceProvider = serviceProvider;
+            _settings = settings;
+            _httpFactory = httpClientFactory;
+
+            _builder = dataItemBuilder;
         }
-        
-        public async Task<Dictionary<DateTime, List<DataItem>>?> LoadDataAsync(DateTime startDate, DateTime endDate)
+
+        public async Task<Dictionary<DateTime, List<DataItem>>> LoadDataAsync(DateTime startDate, DateTime endDate)
         {
             var url = $"https://vnz.osvita.net/BetaSchedule.asmx/GetScheduleDataX?" +
                       $"aVuzID=11784&" +
-                      $"aStudyGroupID=\"{Settings.Default.StudyGroup}\"&" +
+                      $"aStudyGroupID=\"{_settings.StudyGroup}\"&" +
                       $"aStartDate=\"{startDate.ToShortDateString()}\"&" +
                       $"aEndDate=\"{endDate.ToShortDateString()}\"&" +
                       $"aStudyTypeID=null";
-            
-            var httpClient = _serviceProvider.GetRequiredService<IHttpClientFactory>().CreateClient();
+
+            var httpClient = _httpFactory.CreateClient();
             string serializedData;
             try
             {
-                serializedData = await httpClient.GetStringAsync(url); 
+                serializedData = await httpClient.GetStringAsync(url);
             }
-            catch
+            catch (Exception exception)
             {
-                return null;
+                throw new ScheduleLoadingException(exception, _settings.StudyGroup, "Could not load data from vnz osvita.");
             }
 
             return DeserializeData(serializedData);
         }
 
-        private Dictionary<DateTime, List<DataItem>>? DeserializeData(string serializedData)
+        private Dictionary<DateTime, List<DataItem>> DeserializeData(string serializedData)
         {
             var rawDataItems = JsonConvert.DeserializeObject<Dictionary<string, List<Dictionary<string, string>>>>(serializedData);
-            
+
             if (rawDataItems == null)
-                return null;
+            {
+                throw new ScheduleLoadingException(_settings.StudyGroup);
+            }
+
             var groupedData = rawDataItems["d"].GroupBy(x => x["full_date"]);
 
             var result = new Dictionary<DateTime, List<DataItem>>();
-
-            var builder = new DataItemBuilder();
-
-            builder.AddGlobalServices(_serviceProvider);
 
             foreach (var group in groupedData)
             {
@@ -70,19 +76,18 @@ namespace LightTimetable.Models.ScheduleSources
                 {
                     var timePeriod = new TimeInterval(TimeOnly.Parse(lesson["study_time_begin"]),
                             TimeOnly.Parse(lesson["study_time_end"]));
-                    
-                    builder.AddTimePeriod(Convert.ToDateTime(lesson["full_date"]), timePeriod);
-                    builder.AddBasicInformation(lesson["discipline"], lesson["study_type"],
+
+                    _builder.AddTimePeriod(Convert.ToDateTime(lesson["full_date"]), timePeriod);
+                    _builder.AddBasicInformation(lesson["discipline"], lesson["study_type"],
                             lesson["cabinet"], lesson["employee"]);
-                    builder.AddServices();
-                    
+
                     if (!string.IsNullOrEmpty(lesson["study_subgroup"]))
                     {
-                        builder.AddPromt(lesson["study_subgroup"]);
+                        _builder.AddPromt(lesson["study_subgroup"]);
                     }
-                    
-                    var dataItem = builder.Build();
-                    
+
+                    var dataItem = _builder.Build();
+
                     result[Convert.ToDateTime(group.Key)].Add(dataItem);
                 }
             }
