@@ -3,7 +3,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:vm="clr-namespace:LightTimetable.ViewModels"
         mc:Ignorable="d"
         Title="Налаштування"
         Height="450"
@@ -12,9 +11,6 @@
         WindowStartupLocation="CenterScreen"
         WindowStyle="SingleBorderWindow"
         Icon="../Assets/LightTimetable-Logo.ico">
-    <Window.DataContext>
-        <vm:SettingsViewModel/>
-    </Window.DataContext>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="185"/>

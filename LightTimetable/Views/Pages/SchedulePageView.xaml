@@ -1,0 +1,74 @@
+﻿<UserControl x:Class="LightTimetable.Views.Pages.SchedulePageView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="410"
+             d:DesignWidth="615"
+             Background="White"
+             x:Name="ScheduleControl">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="80"/>
+            <RowDefinition Height="110"/>
+            <RowDefinition Height="80"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="40"/>
+        </Grid.RowDefinitions>
+        <GroupBox Header="Джерело розкладу" Grid.Row="0">
+            <DockPanel>
+                <Label Content="Оберіть бажане джерело розкладу у випадаючому списку"  DockPanel.Dock="Top" />
+                <Grid DockPanel.Dock="Top" Margin="10 0 0 0" HorizontalAlignment="Left" Width="285" Height="22">
+                    <ComboBox Name="ScheduleSourceComboBox" SelectedValue="{Binding SelectedScheduleSource}" ItemsSource="{Binding ScheduleSourceSource}"/>
+                    <TextBlock Text="-- Оберіть джерело розкладу --" DataContext="{Binding ElementName=ScheduleSourceComboBox,Path=SelectedItem}" Style="{StaticResource ComboBoxDefaultValue}"/>
+                </Grid>
+            </DockPanel>
+        </GroupBox>
+        <GroupBox Header="Навчальна група" Grid.Row="1">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="25"/>
+                    <RowDefinition Height="26"/>
+                    <RowDefinition Height="26"/>
+                </Grid.RowDefinitions>
+
+                <Label Content="Налаштуйте Вашу навчальну групу" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                <StackPanel Orientation="Horizontal" Grid.Row="1">
+                    <Grid Margin="5 0 0 0" Height="22" Width="160" Visibility="{Binding FacultiesVisibility, Converter={StaticResource Boolean2Visibility}}" VerticalAlignment="Center">
+                        <ComboBox Name="FacultyComboBox" SelectedValue="{Binding SelectedFaculty}" ItemsSource="{Binding FacultiesSource}" DisplayMemberPath="Key" SelectedValuePath="Value"/>
+                        <TextBlock Text="-- Оберіть факультет --" DataContext="{Binding ElementName=FacultyComboBox,Path=SelectedItem}" Style="{StaticResource ComboBoxDefaultValue}"/> 
+                    </Grid>
+
+                    <Grid Margin="5 0 0 0" Height="22" Width="120" Visibility="{Binding EducFormsVisibility, Converter={StaticResource Boolean2Visibility}}" VerticalAlignment="Center">
+                        <ComboBox Name="EducFormComboBox" SelectedValue="{Binding SelectedEducForm}" ItemsSource="{Binding EducFormsSource}" DisplayMemberPath="Key" SelectedValuePath="Value"/>
+                        <TextBlock Text="- Оберіть форму -" DataContext="{Binding ElementName=EducFormComboBox,Path=SelectedItem}" Style="{StaticResource ComboBoxDefaultValue}"/>
+                    </Grid>
+                    
+                    <Grid Margin="5 0 0 0" Height="22" Width="125" Visibility="{Binding CoursesVisibility, Converter={StaticResource Boolean2Visibility}}" VerticalAlignment="Center">
+                        <ComboBox Name="CourseComboBox" SelectedValue="{Binding SelectedCourse}" ItemsSource="{Binding CoursesSource}" DisplayMemberPath="Key" SelectedValuePath="Value"/>
+                        <TextBlock Text="-- Оберіть курс --" DataContext="{Binding ElementName=CourseComboBox,Path=SelectedItem}" Style="{StaticResource ComboBoxDefaultValue}"/>
+                    </Grid>
+                </StackPanel>
+                <Grid Margin="4 0 0 0" Grid.Row="2" Height="22" Width="285" HorizontalAlignment="Left" VerticalAlignment="Center">
+                    <ComboBox Name="StudyGroupComboBox" SelectedValue="{Binding SelectedStudyGroup}" ItemsSource="{Binding StudyGroupsSource}" DisplayMemberPath="Key" SelectedValuePath="Value"/>
+                    <TextBlock Text="-- Оберіть навчальну групу --" DataContext="{Binding ElementName=StudyGroupComboBox,Path=SelectedItem}" Style="{StaticResource ComboBoxDefaultValue}"/>
+                </Grid>
+            </Grid>
+        </GroupBox>
+        <GroupBox Header="Передбачення розкладу" Grid.Row="2">
+            <DockPanel>
+                <Label Content="Дозволяє відображати майбутній розклад, використовуючи розклад поточних днів (Не є офіційним)"  DockPanel.Dock="Top" />
+                <CheckBox Content="Відображати передбачений розклад" Margin="5 0 0 0" IsChecked="{Binding ShowRiggedSchedule}" DockPanel.Dock="Top" Height="24"/>
+            </DockPanel>
+        </GroupBox>
+        <StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Right">
+            <!-- APPLY CHANGES AND CLOSE BUTTON -->
+            <Button Content="ОК" Command="{Binding SaveAndCloseCommand}" CommandParameter="{Binding ElementName=ScheduleControl}" Margin="0 0 10 0" BorderThickness="2" IsDefault="True" Width="90" Height="25"/>
+            <!-- CANCEL AND CLOSE BUTTON -->
+            <Button Content="Скасувати" Command="{Binding CloseSettingsCommand}" CommandParameter="{Binding ElementName=ScheduleControl}" Margin="0 0 10 0" VerticalAlignment="Center" Width="90" Height="25"/>
+            <!-- APPLY CHANGES BUTTON -->
+            <Button  Content="Застосувати" Command="{Binding SaveSettingsCommand}" IsEnabled="{Binding IsAnythingChanged}" Margin="0 0 10 0" VerticalAlignment="Center" Width="90" Height="25"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

@@ -1,40 +1,46 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 
-using LightTimetable.SettingsPages.ViewModels;
+using LightTimetable.Models;
+using LightTimetable.ViewModels.Pages;
 
 
 namespace LightTimetable.ViewModels
 {
     public partial class SettingsViewModel : ObservableObject
     {
-        public SettingsViewModel()
-        {
-            // Startup page
-            CurrentView = new ApplicationPageViewModel();
-        }
+        private readonly CreateViewModel<ApplicationPageViewModel> _createApplicationPageViewModel;
+        private readonly CreateViewModel<IntegrationsPageViewModel> _createIntegrationsPageViewModel;
+        private readonly CreateViewModel<RenamingPageViewModel> _createRenamingPageViewModel;
+        private readonly CreateViewModel<SchedulePageViewModel> _createSchedulePageViewModel;
 
-        #region Properties
+        public SettingsViewModel(CreateViewModel<ApplicationPageViewModel> createApplicationPageViewModel,
+                                 CreateViewModel<IntegrationsPageViewModel> createIntegrationsPageViewModel,
+                                 CreateViewModel<RenamingPageViewModel> createRenamingPageViewModel,
+                                 CreateViewModel<SchedulePageViewModel> createSchedulePageViewModel)
+        {
+            _createApplicationPageViewModel = createApplicationPageViewModel;
+            _createIntegrationsPageViewModel = createIntegrationsPageViewModel;
+            _createRenamingPageViewModel = createRenamingPageViewModel;
+            _createSchedulePageViewModel = createSchedulePageViewModel;
+
+            // Startup page
+            CurrentView = _createApplicationPageViewModel.Invoke();
+        }
 
         [ObservableProperty]
         private PageViewModelBase _currentView;
 
-        #endregion
-
-        #region Commands
-
         [RelayCommand]
-        private void ApplicationCategory() => CurrentView = new ApplicationPageViewModel();
+        private void ApplicationCategory() => CurrentView = _createApplicationPageViewModel.Invoke();
         
         [RelayCommand]
-        private void ScheduleCategory() => CurrentView = new SchedulePageViewModel(true);
+        private void ScheduleCategory() => CurrentView = _createSchedulePageViewModel.Invoke();
 
         [RelayCommand]
-        private void RenamingCategory() => CurrentView = new RenamingPageViewModel();
+        private void RenamingCategory() => CurrentView = _createRenamingPageViewModel.Invoke();
         
         [RelayCommand]
-        private void IntegrationsCategory() => CurrentView = new IntegrationsPageViewModel();
- 
-        #endregion
+        private void IntegrationsCategory() => CurrentView = _createIntegrationsPageViewModel.Invoke();
     }
 }

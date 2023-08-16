@@ -10,6 +10,7 @@
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.0" />
     <PackageReference Include="Hardcodet.NotifyIcon.Wpf" Version="1.1.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
     <PackageReference Include="Microsoft.Graph" Version="5.15.0" />
     <PackageReference Include="Microsoft.Identity.Client" Version="4.53.0" />
@@ -37,10 +38,10 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Update="SettingsPages\Views\ApplicationPageView.xaml.cs">
+    <Compile Update="Views\Pages\ApplicationPageView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="SettingsPages\Views\RenamingPageView.xaml.cs">
+    <Compile Update="Views\Pages\RenamingPageView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>

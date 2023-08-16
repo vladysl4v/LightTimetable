@@ -1,43 +1,57 @@
-﻿using CommunityToolkit.Mvvm.Input;
+﻿using System;
 
-using System.Windows;
-
-using LightTimetable.Views;
-using LightTimetable.Tools;
+using CommunityToolkit.Mvvm.Input;
+using LightTimetable.Models;
 using LightTimetable.Properties;
 
 
 namespace LightTimetable.ViewModels
 {
-    public partial class NotifyIconViewModel
+    public partial class NotifyIconViewModel : IDisposable
     {
-        private SettingsView? _settingsWindow;
+        public Action? CreateSettingsWindow { get; set; }
+        public Action? ShowTimetableWindow { get; set; }
+        public Action? CloseTimetableWindow { get; set; }
+        public Action? RefreshTimetableWindow { get; set; }
 
-        public NotifyIconViewModel()
+        private readonly UpdatesMediator _mediator;
+        private readonly IUserSettings _settings;
+
+        public NotifyIconViewModel(IUserSettings settings, UpdatesMediator mediator)
         {
-            Application.Current.MainWindow = new TimetableView();
+            _settings = settings;
+            _mediator = mediator;
+
+            _mediator.OnReloadRequired += RefreshData;
         }
 
-        #region Commands
+        public void Dispose()
+        {
+            _mediator.OnReloadRequired -= RefreshData;
+        }
 
         [RelayCommand]
         private void SingleClick()
         {
-            if (Settings.Default.OpenWindowMode == 0)
+            if (_settings.OpenWindowMode == 0)
+            {
                 ShowTimetable();
+            }
         }
-        
+
         [RelayCommand]
         private void DoubleClick()
         {
-            if (Settings.Default.OpenWindowMode == 1)
+            if (_settings.OpenWindowMode == 1)
+            {
                 ShowTimetable();
+            }
         }
 
         [RelayCommand]
         private void MiddleClick()
         {
-            switch (Settings.Default.MiddleMouseClick)
+            switch (_settings.MiddleMouseClick)
             {
                 case 1: RefreshData(); break;
                 case 2: OpenSettings(); break;
@@ -47,32 +61,25 @@ namespace LightTimetable.ViewModels
         [RelayCommand]
         private void ShowTimetable()
         {
-            Application.Current.MainWindow?.Show();
+            ShowTimetableWindow?.Invoke();
         }
 
         [RelayCommand]
         private void RefreshData()
         {
-            WindowMediator.ReloadRequired();
+            RefreshTimetableWindow?.Invoke();
         }
 
         [RelayCommand]
         private void OpenSettings()
         {
-            if (_settingsWindow != null) 
-                return;
-            _settingsWindow = new SettingsView();
-            _settingsWindow.Closed += (_, _) => _settingsWindow = null;
-            _settingsWindow.Show();
+            CreateSettingsWindow?.Invoke();
         }
 
         [RelayCommand]
         private void CloseApplication()
         {
-            Application.Current.Shutdown();
+            CloseTimetableWindow?.Invoke();
         }
-
-        #endregion
-
     }
 }

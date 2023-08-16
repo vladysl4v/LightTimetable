@@ -3,13 +3,11 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:vm="clr-namespace:LightTimetable.ViewModels"
         xmlns:settings="clr-namespace:LightTimetable.Properties"
         mc:Ignorable="d" 
         x:Name="TimetableWindow"
         Title="LightTimetable"
         MinHeight="91"
-        Width="{Binding Width, Mode=TwoWay}"
         SizeToContent="Height"
         ResizeMode="NoResize" 
         Topmost="True"
@@ -17,10 +15,6 @@
         WindowStyle="None"
         SizeChanged="WindowSizeChanged"
         Icon="../Assets/LightTimetable-Logo.ico">
-    
-    <Window.DataContext>
-        <vm:TimetableViewModel/>
-    </Window.DataContext>
     <StackPanel>
         <Grid>
             <Grid.ColumnDefinitions>
@@ -55,15 +49,14 @@
                 </DatePicker.Resources>
             </DatePicker>
             <!-- EXPAND DATAGRID BUTTON -->
-            <Expander IsExpanded="{Binding IsDataGridExpanded}" ExpandDirection="Right"
+            <Expander x:Name="TimetableExpander" Expanded="OnTimetableExpanded" Collapsed="OnTimetableExpanded" ExpandDirection="Right"
                       Focusable="False" Width="23" Height="23" Grid.Column="4"/>
             <!-- PREVIOUS DAY BUTTON -->
             <Button Content="←" Command="{Binding ChangeDateCommand}" CommandParameter="-1" Grid.Column="5"/>
             <!-- NEXT DAY BUTTON -->
             <Button Content="→" Command="{Binding ChangeDateCommand}" CommandParameter="+1" Grid.Column="6"/>
             <!-- HIDE WINDOW BUTTON -->
-            <Button Content="✕" Command="{Binding HideWindowCommand}" Grid.Column="7"
-                    CommandParameter="{Binding ElementName=TimetableWindow}"/>
+            <Button Content="✕" Click="OnCloseButtonClick"  Grid.Column="7"/>
         </Grid>
         <!-- DUMMY THAT ALLOWS TO BIND THE VISIBILITY OF A DATAGRID COLUMN -->
         <FrameworkElement x:Name="DummyElement" Visibility="Collapsed"/>
@@ -92,7 +85,7 @@
                 <DataGridTemplateColumn Header="Дисципліна" Width="200" CellTemplate="{StaticResource DisciplineWithToolTipsCellTemplate}" />
                 <DataGridTextColumn     Header="Тип"        Width="78"  Binding="{Binding StudyType}" />
                 <DataGridTextColumn     Header="Кабінет"    Width="52"  Binding="{Binding Cabinet}" />
-                <DataGridTextColumn     Header="Викладач"   Width="100" Binding="{Binding Employee}" Visibility="{Binding DataContext.IsDataGridExpanded, Source={x:Reference DummyElement}, Converter={StaticResource Boolean2Visibility}}"/>
+                <DataGridTextColumn     Header="Викладач"   Width="100" Binding="{Binding Employee}" Visibility="{Binding ElementName=TimetableExpander, Path=IsExpanded, Converter={StaticResource Boolean2Visibility}}"/>
             </DataGrid.Columns>
             <DataGrid.ContextMenu>
                 <ContextMenu>

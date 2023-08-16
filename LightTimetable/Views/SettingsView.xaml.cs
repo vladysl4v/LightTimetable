@@ -8,9 +8,11 @@ namespace LightTimetable.Views
     /// </summary>
     public partial class SettingsView : Window
     {
-        public SettingsView()
+        public SettingsView(object dataContext)
         {
             InitializeComponent();
+
+            DataContext = dataContext;
         }
     }
 }

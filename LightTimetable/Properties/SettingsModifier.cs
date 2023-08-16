@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace LightTimetable.Properties
 {
-    internal sealed partial class Settings
+    internal sealed partial class Settings : IUserSettings
     {
         public override void Save()
         {
