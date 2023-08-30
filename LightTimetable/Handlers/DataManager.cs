@@ -122,7 +122,7 @@ namespace LightTimetable.Handlers
             }
             if (_settings.ShowOutages)
             {
-                services.AddSingleton<IElectricityService, YasnoElectricityService>();
+                services.AddSingleton<IElectricityService, DtekElectricityService>();
             }
 
             services.AddTransient<DataItemBuilder>();

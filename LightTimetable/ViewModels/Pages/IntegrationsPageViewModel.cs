@@ -28,11 +28,10 @@ namespace LightTimetable.ViewModels.Pages
             _showOutages = _settings.ShowOutages;
             _showPossibleOutages = settings.ShowPossibleOutages;
             _showOldEvents = _settings.ShowOldEvents;
-            _outagesCity = _settings.OutagesCity;
+            //_outagesCity = _settings.OutagesCity;
             _outagesGroup = _settings.OutagesGroup.ToString();
 
-            IsOutagesSetUp = OutagesGroup != "0" && OutagesGroup != string.Empty 
-                            && OutagesCity != string.Empty;
+            IsOutagesSetUp = OutagesGroup != "0" && OutagesGroup != string.Empty; // && OutagesCity != string.Empty;
         }
 
         #region Properties
@@ -58,8 +57,8 @@ namespace LightTimetable.ViewModels.Pages
         [ObservableProperty]
         private bool _showOldEvents;
 
-        [ObservableProperty]
-        private string _outagesCity;
+        //[ObservableProperty]
+        //private string _outagesCity;
 
         [ObservableProperty]
         private string _outagesGroup;
@@ -107,7 +106,7 @@ namespace LightTimetable.ViewModels.Pages
             _settings.ShowOutages = ShowOutages;
             _settings.ShowPossibleOutages = ShowPossibleOutages;
             _settings.OutagesGroup = int.Parse(OutagesGroup);
-            _settings.OutagesCity = OutagesCity;
+            //_settings.OutagesCity = OutagesCity;
             _settings.ShowTeamsEvents = ShowTeamsEvents;
             _settings.ShowOldEvents = ShowOldEvents;
             _settings.Save();
@@ -124,7 +123,7 @@ namespace LightTimetable.ViewModels.Pages
             return _settings.ShowPossibleOutages != ShowPossibleOutages ||
                    _settings.OutagesGroup != int.Parse(OutagesGroup) ||
                    _settings.ShowTeamsEvents != ShowTeamsEvents ||
-                   _settings.OutagesCity != OutagesCity ||
+                   //_settings.OutagesCity != OutagesCity ||
                    _settings.ShowOutages != ShowOutages ||
                    _settings.ShowOldEvents != ShowOldEvents;
         }
@@ -154,10 +153,9 @@ namespace LightTimetable.ViewModels.Pages
 
         private void SomethingChanged(object? sender, PropertyChangedEventArgs args)
         {
-            if (args.PropertyName is nameof(OutagesGroup) or nameof(OutagesCity))
+            if (args.PropertyName is nameof(OutagesGroup)) //or nameof(OutagesCity))
             {
-                IsOutagesSetUp = OutagesGroup != "0" && OutagesGroup != string.Empty 
-                                 && OutagesCity != string.Empty;
+                IsOutagesSetUp = OutagesGroup != "0" && OutagesGroup != string.Empty; // && OutagesCity != string.Empty;
             }
         }
         #endregion 

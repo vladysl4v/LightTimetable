@@ -23,7 +23,7 @@
 * Using a cached schedule offline
 * Ability to use different schedule sources
 * Microsoft Teams event calendar integration
-* Blackout schedule integration <strong>(Kyiv and Dnipro)</strong>
+* Blackout schedule integration <strong>(only Kyiv)</strong>
 * Predicting next weeks schedule based on past
 * Adding notes for the coming lessons
 * Renaming lessons at your discretion

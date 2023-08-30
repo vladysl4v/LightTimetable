@@ -45,18 +45,21 @@
                     <CheckBox Content="Відображати МОЖЛИВІ відключення" IsEnabled="{Binding IsOutagesSetUp}" IsChecked="{Binding ShowPossibleOutages}" Margin="5 0 0 0" DockPanel.Dock="Top" HorizontalAlignment="Left" Height="16"/>
                 </DockPanel>
                 <DockPanel Grid.Column="1">
-                    <Grid Margin="0 7 10 0" DockPanel.Dock="Top" HorizontalAlignment="Right" Width="175" Height="22">
-                        <ComboBox x:Name="OutagesCityComboBox" SelectedValue="{Binding OutagesCity}"  SelectedValuePath="Tag" >
-                            <ComboBoxItem Content="Київ" Tag="kiev"/>
-                            <ComboBoxItem Content="Дніпро" Tag="dnipro"/>
-                        </ComboBox>
-                        <TextBlock Text="-- Оберіть регіон --" DataContext="{Binding ElementName=OutagesCityComboBox,Path=SelectedItem}" Style="{StaticResource ComboBoxDefaultValue}"/>
-                    </Grid>
-                    <Grid Margin="0 7 10 0" DockPanel.Dock="Top" HorizontalAlignment="Right" Width="175" Height="22">
+                    <!-- <Grid Margin="0 7 10 0" DockPanel.Dock="Top" HorizontalAlignment="Right" Width="175" Height="22"> -->
+                    <!-- <ComboBox x:Name="OutagesCityComboBox" SelectedValue="{Binding OutagesCity}"  SelectedValuePath="Tag" > -->
+                    <!-- <ComboBoxItem Content="Київ" Tag="kiev"/> -->
+                    <!-- <ComboBoxItem Content="Дніпро" Tag="dnipro"/> -->
+                    <!-- </ComboBox> -->
+                    <!-- <TextBlock Text=" Оберіть регіон " DataContext="{Binding ElementName=OutagesCityComboBox,Path=SelectedItem}" Style="{StaticResource ComboBoxDefaultValue}"/> -->
+                    <!-- </Grid> -->
+                    <Grid Margin="0 0 10 0" DockPanel.Dock="Top" HorizontalAlignment="Right" Width="175" Height="22">
                          <ComboBox x:Name="OutagesGroupComboBox" SelectedValue="{Binding OutagesGroup}" SelectedValuePath="Tag">
                             <ComboBoxItem Content="1 група" Tag="1"/>
                             <ComboBoxItem Content="2 група" Tag="2"/>
                             <ComboBoxItem Content="3 група" Tag="3"/>
+                            <ComboBoxItem Content="4 група" Tag="4"/>
+                            <ComboBoxItem Content="5 група" Tag="5"/>
+                            <ComboBoxItem Content="6 група" Tag="6"/>
                         </ComboBox>
                         <TextBlock Text="-- Оберіть групу --" DataContext="{Binding ElementName=OutagesGroupComboBox,Path=SelectedItem}" Style="{StaticResource ComboBoxDefaultValue}"/>
                     </Grid>
