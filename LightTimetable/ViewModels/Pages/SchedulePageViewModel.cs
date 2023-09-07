@@ -121,8 +121,8 @@ namespace LightTimetable.ViewModels.Pages
             
             await _settingsSource.LoadStudentFiltersAsync();
             
-            (FacultiesVisibility, EducFormsVisibility, CoursesVisibility) = 
-                (true, true, true);
+            (FacultiesVisibility, EducFormsVisibility, CoursesVisibility) =
+                _settingsSource.FiltersVisibility;
         
             FacultiesSource = _settingsSource.Faculties?.ToList();
             EducFormsSource = _settingsSource.EducationTypes?.ToList();

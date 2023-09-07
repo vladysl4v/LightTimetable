@@ -13,8 +13,8 @@ namespace LightTimetable.ScheduleSources.KpiSource
     public sealed class KpiScheduleSettings : IScheduleSettings
     {
         private readonly IHttpClientFactory _httpFactory;
-        
 
+        public (bool, bool, bool) FiltersVisibility => (true, false, false);
         public Dictionary<string, string>? Faculties { get; set; }
         public Dictionary<string, string>? Courses { get; set; }
         public Dictionary<string, string>? EducationTypes { get; set; }

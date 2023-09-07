@@ -9,7 +9,6 @@ using LightTimetable.Views.Utilities;
 
 namespace LightTimetable.Views
 {
-    // intentional violation of MVVM
     public partial class TimetableView : Window
     {
         private readonly UpdatesMediator _mediator;

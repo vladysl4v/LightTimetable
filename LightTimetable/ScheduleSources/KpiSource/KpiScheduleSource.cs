@@ -48,7 +48,9 @@ namespace LightTimetable.ScheduleSources.KpiSource
             var (firstWeek, secWeek) = await LoadScheduleForWeeks(_settings.StudyGroup);
 
             if (firstWeek == null || secWeek == null)
+            {
                 throw new ScheduleLoadingException(_settings.StudyGroup, "Schedule for weeks has not been loaded.");
+            }
 
             for (var date = startDate; date < endDate; date = date.AddDays(1))
             {
@@ -94,9 +96,9 @@ namespace LightTimetable.ScheduleSources.KpiSource
             {
                 serializedData = await httpClient.GetStringAsync(url);
             }
-            catch
+            catch (Exception ex)
             {
-                return (null, null);
+                throw new ScheduleLoadingException(ex, _settings.StudyGroup, "Could not load data from KPI API.");
             }
 
             var jsonData = JObject.Parse(serializedData);

@@ -13,6 +13,7 @@ namespace LightTimetable.ScheduleSources.KrokSource
     public sealed class UniversityKrokSettings : IScheduleSettings
     {
         private readonly IHttpClientFactory _httpFactory;
+        public (bool, bool, bool) FiltersVisibility => (true, true, true);
         public Dictionary<string, string>? Faculties { get; set; }
         public Dictionary<string, string>? Courses { get; set; }
         public Dictionary<string, string>? EducationTypes { get; set; }

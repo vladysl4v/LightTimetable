@@ -19,9 +19,6 @@ namespace LightTimetable.Handlers
             var startDate = startOfTheWeek.AddDays(-14);
             var endDate = startOfTheWeek.AddDays(+13);
 
-            startDate = new DateTime(2023, 01, 23);
-            endDate = new DateTime(2023, 02, 10);
-
             AvailableDates = Enumerable.Range(0, 1 + endDate.Subtract(startDate).Days)
                 .Select(offset => startDate.AddDays(offset))
                 .ToArray();

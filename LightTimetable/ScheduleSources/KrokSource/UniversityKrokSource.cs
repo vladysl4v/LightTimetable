@@ -47,9 +47,9 @@ namespace LightTimetable.ScheduleSources.KrokSource
             {
                 serializedData = await httpClient.GetStringAsync(url);
             }
-            catch (Exception exception)
+            catch (Exception ex)
             {
-                throw new ScheduleLoadingException(exception, _settings.StudyGroup, "Could not load data from vnz osvita.");
+                throw new ScheduleLoadingException(ex, _settings.StudyGroup, "Could not load data from vnz osvita.");
             }
 
             return DeserializeData(serializedData);

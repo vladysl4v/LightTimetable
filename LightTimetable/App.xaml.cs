@@ -69,7 +69,7 @@ namespace LightTimetable
         private void ShowInitialWindow()
         {
             var settings = _host.Services.GetRequiredService<IUserSettings>();
-            settings.Upgrade(); // Test this
+            settings.Upgrade();
             if (settings.StudyGroup.Any())
             {
                 return;
